@@ -1,30 +1,51 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { isLoggedIn } from "../../actions/auth-actions";
+import { useLocation, useNavigate } from "react-router-dom";
 import * as security from "../../services/auth-service";
+import * as service from "../../services/profile-service";
 
 const Header = () => {
-    const message = useSelector(state => state.response);
+    const update = useSelector((state) => state.auth);
     const [ loggedIn, setLoggedIn ] = useState(false);
-    // const navigate = useNavigate();
+    const [ user, setUser ] = useState({});
     const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const location = useLocation();
 
-    const logInHandler = () => {
-        console.log(loggedIn);
-        security.isLoggedIn(dispatch).then(r => {
-            setLoggedIn(true);
+    const userHandler = () => {
+        service.profile(dispatch).then(r => {
+            setUser(r);
             console.log(r);
         });
     };
+
+    const logInHandler = () => {
+        security.isLoggedIn(dispatch).then(r => {
+            setLoggedIn(r.loggedIn);
+        });
+    };
+
+    const logOutHandler = () => {
+        security.logout(dispatch, user).then(r => {
+            navigate('/', {});
+            setLoggedIn(false);
+            console.log(r);
+
+        });
+    };
+
     useEffect(() =>
-        logInHandler, [ message ]
+        userHandler(), [ location.key ]
     );
+    useEffect(() =>
+        logInHandler(), [ location.key ]
+    );
+
     return (
         <>
             <nav className="navbar sticky-top navbar-expand-lg navbar-dark bg-dark">
                 <div className="container-fluid">
-                    <a className="navbar-brand" href="#">Web Dev Final</a>
+                    <a className="navbar-brand" href="#">Spotify Clone</a>
                     <button className="navbar-toggler"
                             type="button"
                             data-toggle="collapse"
@@ -42,10 +63,14 @@ const Header = () => {
                         <div className="navbar-nav ms-auto">
                             {!loggedIn ? <>
                                     <a className="nav-link" href="/login">Login</a>
-                                    <a className="nav-link" href="/register">Register</a>
+                                    <a className="nav-link">Register</a>
                                 </>
                                 :
-                                <a className="nav-link" href="/logout">Logout</a>
+                                <a className="nav-link"
+                                   onClick={() => {
+                                       logOutHandler();
+                                   }
+                                   }>Logout</a>
 
                             }
                         </div>

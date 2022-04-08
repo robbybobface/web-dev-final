@@ -8,32 +8,31 @@ import { combineReducers, createStore } from "redux";
 
 import Header from "./components/partials/header";
 import Login from './components/login';
-import Home from './components/home'
+import Home from './components/home';
 
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import userReducer from "./reducers/user-reducer";
-import authReducer from "./reducers/auth-reducer";
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import userReducer from "./reducers/user-reducer.js";
+import authReducer from "./reducers/auth-reducer.js";
 
 const reducer = combineReducers({
-    users: userReducer, auth: authReducer
+    user: userReducer, auth: authReducer
 });
 const store = createStore(reducer);
 
 function App() {
     return (
         <Provider store={store}>
-            <BrowserRouter>
+            <Router>
                 <Header/>
                 <div className="container">
                     <Routes>
                         <Route exact={true} path="/" element={<Home/>}/>
                         <Route exact={true} path="/login" element={<Login/>}/>
-                        {/*<Route exact={true} path="/login" element={<Login/>}/>*/}
                         {/*<Route exact={true} path="/register" element={<Register/>}/>*/}
-                        {/*<Route exact={true} path="/profile" element={<Profile/>}/>*/}
+                        {/*<Route exact={true} path="/username" element={<Profile/>}/>*/}
                     </Routes>
                 </div>
-            </BrowserRouter>
+            </Router>
         </Provider>
     );
 }
