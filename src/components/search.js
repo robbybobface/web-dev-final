@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import * as security from "../services/auth-service";
 import { useNavigate } from "react-router-dom";
-import { toast } from 'react-toastify';
 import { Helmet } from 'react-helmet';
 import { Credentials } from "../Credentials";
 import axios from "axios";
@@ -12,26 +11,8 @@ import Listbox from "./listbox";
 import { MDBInput } from 'mdb-react-ui-kit';
 
 const Search = () => {
-    const [ loginUser, setLoginUser ] = useState({});
+    const [ search, setSearch ] = useState('');
     const navigate = useNavigate();
-
-    const login = () =>
-        security.login(loginUser)
-            .then((response) => {
-                console.log(response);
-                toast.success(response.success, {
-                    position: "top-right",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                });
-                navigate('/', {});
-            })
-            .catch(e =>
-                toast.error(e));
 
     const spotify = Credentials();
 
@@ -130,28 +111,6 @@ const Search = () => {
     };
     return (
         <>
-            {/*<div className="container">*/}
-            {/*    <h1>Search Screen</h1>*/}
-            {/*    <form onSubmit={buttonClicked}>*/}
-            {/*        <Dropdown label="Genre :"*/}
-            {/*                  options={genres.listOfGenresFromAPI}*/}
-            {/*                  selectedValue={genres.selectedGenre}*/}
-            {/*                  changed={genreChanged}/>*/}
-            {/*        <Dropdown label="Artist :"*/}
-            {/*                  options={artist.listOfArtistFromAPI}*/}
-            {/*                  selectedValue={artist.selectedArtist}*/}
-            {/*                  changed={artistChanged}/>*/}
-            {/*        <div className="col-sm-6 row form-group px-0">*/}
-            {/*            <button type="submit" className="btn btn-success col-sm-12">*/}
-            {/*                Search*/}
-            {/*            </button>*/}
-            {/*        </div>*/}
-            {/*        <div className="row">*/}
-            {/*            <Listbox items={tracks.listOfTracksFromAPI} clicked={listboxClicked}/>*/}
-            {/*            {trackDetail && <Detail {...trackDetail} />}*/}
-            {/*        </div>*/}
-            {/*    </form>*/}
-            {/*</div>*/}
             <Helmet>
                 <style>{'body {   background-image: url(\'https://images.unsplash.com/photo-1614854262318-831574f15f1f?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80\') !important;\n'
                     + '  background-repeat: no-repeat !important;\n'
@@ -171,7 +130,8 @@ const Search = () => {
                                               id="formControlLg"
                                               type="text"
                                               size="lg"
-                                              contrast/>
+                                              contrast
+                                                />
                                 </div>
 
                                 <div className="col-md-2">

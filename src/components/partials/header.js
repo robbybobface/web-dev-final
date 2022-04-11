@@ -160,7 +160,7 @@ const Header = () => {
                                 :
                                 <>
                                     <MDBNavbarNav fullWidth={false}>
-                                        <MDBNavbarLink active aria-current="page"
+                                        <MDBNavbarLink aria-current="page"
                                                        className={page === 'home'
                                                            ? `nav-link nav-link-override ${page
                                                            === 'home'
