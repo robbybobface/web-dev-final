@@ -1,0 +1,84 @@
+.intro {
+  background-image: url('../../images/gradient-2.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.mask-custom {
+  background: rgba(24, 24, 16, .2);
+  border-radius: 2em;
+  backdrop-filter: blur(15px);
+  border: 2px solid rgba(255, 255, 255, 0.05);
+  background-clip: padding-box;
+  box-shadow: 10px 10px 10px rgba(46, 54, 68, 0.03);
+}
+
+.mask-custom-2 {
+  background-color: rgba(61, 162, 195, 0.1);
+}
+
+.input-search::placeholder {
+  /*border: 1px solid white !important;*/
+  /*z-index: -1;*/
+  color: white !important;
+}
+
+.form-outline .form-control:focus ~ .form-label {
+  color: #00ce6b !important;
+}
+
+
+.input-search:focus ~ .label-search {
+  color: #00ce6b !important;
+  background-clip: padding-box !important;
+  z-index: 2;
+
+
+}
+
+.input-search:not(:placeholder-shown) ~ .label-search {
+  transform: translateY(-1rem) translateY(0.1rem) scale(.8) !important;
+  color: #00ce6b !important;
+
+}
+
+.label-search:focus {
+  color: #00ce6b !important;
+  background-clip: content-box !important;
+}
+
+
+.btn-hover-search {
+  width: 100%;
+  font-size: 18px;
+  font-family: "Roboto Light", serif;
+  color: #fff;
+  cursor: pointer;
+  height: 45px;
+  text-align: center;
+  border: none;
+  background-size: 300% 100%;
+
+  border-radius: 50px;
+  moz-transition: all .4s ease-in-out;
+  -o-transition: all .4s ease-in-out;
+  -webkit-transition: all .4s ease-in-out;
+  transition: all .4s ease-in-out;
+}
+
+.btn-hover-search:hover {
+  background-position: 100% 0;
+  moz-transition: all .4s ease-in-out;
+  -o-transition: all .4s ease-in-out;
+  -webkit-transition: all .4s ease-in-out;
+  transition: all .4s ease-in-out;
+}
+
+.btn-hover-search:focus {
+  outline: none;
+}
+
+.btn-hover-search.color-8 {
+  background-image: linear-gradient(to right, #9cbab2, #4bbb98, #2b7676, #437662);
+  box-shadow: 0 4px 15px 0 rgba(45, 54, 65, 0.75);
+}

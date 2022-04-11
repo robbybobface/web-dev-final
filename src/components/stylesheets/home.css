@@ -1,0 +1,90 @@
+.mask-custom-home {
+  background: linear-gradient(
+      45deg,
+      rgba(0, 255, 115, 0.24),
+      rgba(0, 247, 255, 0.7) 100%
+  );
+}
+
+#background-video {
+  object-fit: cover;
+  position: fixed;
+  min-width: 100vw;
+  min-height: 100vh;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: -1;
+}
+
+.header-home {
+  color: white;
+  font-size: 80px;
+  text-align: center;
+  font-family: "Roboto Light", serif;
+}
+
+.header-text {
+  color: #24262b;
+  font-size: 30px;
+  text-align: center;
+  font-family: "Roboto Light", serif;
+}
+
+* {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+.buttons {
+  margin: 10%;
+  text-align: center;
+}
+
+.btn-hover {
+  width: 200px;
+  font-size: 18px;
+  font-family: "Roboto Light", serif;
+  color: #fff;
+  cursor: pointer;
+  margin: 20px;
+  height: 55px;
+  text-align: center;
+  border: none;
+  background-size: 300% 100%;
+
+  border-radius: 50px;
+  moz-transition: all .4s ease-in-out;
+  -o-transition: all .4s ease-in-out;
+  -webkit-transition: all .4s ease-in-out;
+  transition: all .4s ease-in-out;
+}
+
+.btn-hover:hover {
+  background-position: 100% 0;
+  moz-transition: all .4s ease-in-out;
+  -o-transition: all .4s ease-in-out;
+  -webkit-transition: all .4s ease-in-out;
+  transition: all .4s ease-in-out;
+}
+
+.btn-hover:focus {
+  outline: none;
+}
+
+.btn-hover.color-1 {
+  background-image: linear-gradient(to right, #25aae1, #40e495, #30dd8a, #2bb673);
+  box-shadow: 0 4px 15px 0 rgba(49, 196, 190, 0.75);
+}
+
+.btn-hover.color-10 {
+  background-image: linear-gradient(to right, #ed6ea0, #ec8c69, #f7186a, #FBB03B);
+  box-shadow: 0 4px 15px 0 rgba(236, 116, 149, 0.75);
+}
+
+.btn-hover.color-8 {
+  background-image: linear-gradient(to right, #9cbab2, #4bbb98, #2b7676, #437662);
+  box-shadow: 0 4px 15px 0 rgba(45, 54, 65, 0.75);
+}

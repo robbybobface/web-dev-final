@@ -1,0 +1,102 @@
+.gradient-custom-2 {
+  /* fallback for old browsers */
+  background: #fccb90;
+
+  /* Chrome 10-25, Safari 5.1-6 */
+  background: -webkit-linear-gradient(45deg, #25aae1, #40e495, #30dd8a, #2bb673);
+
+  /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  background: linear-gradient(45deg, #25aae1, #40e495, #30dd8a, #2bb673);
+}
+
+.btn-hover-create {
+  width: 150px;
+  font-size: 16px;
+  font-family: "Roboto Light", serif;
+  color: #fff;
+  cursor: pointer;
+  margin: 10px;
+  height: 45px;
+  text-align: center;
+  border: none;
+  background-size: 300% 100%;
+
+  border-radius: 50px;
+  moz-transition: all .4s ease-in-out;
+  -o-transition: all .4s ease-in-out;
+  -webkit-transition: all .4s ease-in-out;
+  transition: all .4s ease-in-out;
+}
+
+.btn-hover-create:hover {
+  background-position: 100% 0;
+  moz-transition: all .4s ease-in-out;
+  -o-transition: all .4s ease-in-out;
+  -webkit-transition: all .4s ease-in-out;
+  transition: all .4s ease-in-out;
+}
+
+.btn-hover-create:focus {
+  outline: none;
+}
+
+.p-text {
+  font-family: 'Roboto Regular', serif;
+  color: black;
+}
+
+.h4-text {
+  font-family: "Roboto Medium", serif;
+}
+
+.btn-hover-create.color-1 {
+  background-image: linear-gradient(to right, #25aae1, #40e495, #30dd8a, #2bb673);
+  box-shadow: 0 4px 15px 0 rgba(49, 196, 190, 0.75);
+}
+
+.btn-hover-create.color-10 {
+  background-image: linear-gradient(to right, #ed6ea0, #ec8c69, #f7186a, #FBB03B);
+  box-shadow: 0 4px 15px 0 rgba(236, 116, 149, 0.75);
+}
+
+.btn-hover-create.color-8 {
+  background-image: linear-gradient(to right, #25aae1, #40e495, #30dd8a, #2bb673);
+  box-shadow: 0 4px 15px 0 rgba(45, 54, 65, 0.75);
+}
+
+.input-login {
+  border: 1px solid black !important;
+}
+
+.input-login:focus ~ .label-login {
+  color: #00ce6b !important;
+  background-color: white !important;
+}
+
+.input-login:not(:placeholder-shown) ~ .label-login {
+  transform: translateY(-1rem) translateY(0.1rem) scale(.8) !important;
+  color: #00ce6b !important;
+  background-color: white !important;
+}
+
+.label-login:focus {
+  color: #00ce6b !important;
+  background-color: white !important;
+}
+
+.gradient-form {
+  margin-top: 60px;
+}
+
+/*@media (min-width: 768px) {*/
+/*  .gradient-form {*/
+/*    height: 100vh !important;*/
+/*  }*/
+/*}*/
+
+@media (min-width: 769px) {
+  .gradient-custom-2 {
+    border-top-right-radius: .3rem;
+    border-bottom-right-radius: .3rem;
+  }
+}

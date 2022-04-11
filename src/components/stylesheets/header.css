@@ -1,0 +1,67 @@
+.cover-container {
+  max-width: 60vw;
+}
+
+.navbar-brand {
+  font-family: "Roboto Medium", serif;
+  font-size: 24px;
+  color: white !important;
+}
+
+.nav-link {
+  padding: 0.25rem 0;
+  font-family: "Roboto Light", serif;
+  font-size: 20px;
+  color: rgba(255, 255, 255, 0.85) !important;
+  margin-left: 1rem;
+  border-bottom: thin solid transparent;
+}
+
+.nav-link:hover {
+  color: rgba(255, 255, 255, 0.5);
+  border-bottom-color: rgba(255, 255, 255, 0.5);
+  border-bottom-width: thin;
+  cursor: pointer;
+}
+
+.nav-link.nav-link-override.active {
+  color: #ffffff !important;
+  border-bottom-color: #ffffff !important;
+  border-bottom-width: thin;
+
+}
+
+.navbar-brand.navbar-brand-alt {
+  color: black !important;
+}
+
+.nav-link-override-alt {
+  color: rgb(0, 0, 0) !important;
+}
+
+.nav-link-override-alt:hover {
+  color: rgb(0, 0, 0);
+  border-bottom-color: rgb(0, 0, 0);
+  border-bottom-width: thin;
+  cursor: pointer;
+}
+
+.nav-link.nav-link-override-alt.active {
+  color: rgb(0, 0, 0) !important;
+  border-bottom-color: #000000 !important;
+  border-bottom-width: thin;
+
+}
+
+.btn-secondary, .btn-secondary:hover {
+  color: #333;
+  text-shadow: none;
+}
+
+.navbar-toggler-icon {
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 30 30%27%3E%3Cpath stroke=%27rgba%28255, 255, 255, 0.55%29%27 stroke-linecap=%27round%27 stroke-miterlimit=%2710%27 stroke-width=%272%27 d=%27M4 7h22M4 15h22M4 23h22%27/%3E%3C/svg%3E") !important;
+}
+
+.navbar-toggler-icon-light {
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 30 30%27%3E%3Cpath stroke=%27rgba%280, 0, 0, 0.55%29%27 stroke-linecap=%27round%27 stroke-miterlimit=%2710%27 stroke-width=%272%27 d=%27M4 7h22M4 15h22M4 23h22%27/%3E%3C/svg%3E") !important;
+}
