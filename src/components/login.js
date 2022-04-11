@@ -84,7 +84,7 @@ const Login = () => {
 
                                             <div className="text-center">
                                                 <img src="spotify.png"
-                                                     style={{ width: '150px' }} alt="logo"/>
+                                                     style={{ width: '100px' }} alt="logo"/>
                                                 <h4 className="mt-4 mb-5 pb-1 h4-text">
                                                     The Spotify Clone</h4>
                                             </div>

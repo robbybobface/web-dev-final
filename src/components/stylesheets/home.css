@@ -1,9 +1,22 @@
 .mask-custom-home {
   background: linear-gradient(
       45deg,
-      rgba(0, 255, 115, 0.24),
+      rgba(0, 255, 115, 0.37),
       rgba(0, 247, 255, 0.7) 100%
   );
+}
+
+.container-home {
+  z-index: 1;
+  position: relative;
+  margin-top: 7rem;
+}
+
+.button-row {
+  display: flex;
+  flex-direction: row;
+  align-content: center !important;
+  justify-content: center !important;
 }
 
 #background-video {
@@ -16,6 +29,11 @@
   right: 0;
   bottom: 0;
   z-index: -1;
+  /*background: linear-gradient(*/
+  /*    45deg,*/
+  /*    rgba(0, 255, 115, 0.37),*/
+  /*    rgba(0, 247, 255, 0.7) 100%*/
+  /*);*/
 }
 
 .header-home {

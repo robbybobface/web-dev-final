@@ -145,30 +145,34 @@ const Home = () => {
             {/*        {trackDetail && <Detail {...trackDetail} />}*/}
             {/*    </div>*/}
             {/*</form>*/}
-            <div className="bg-image vh-100 mask mask-custom-home">
+            <div className="bg-image mask mask-custom-home">
                 <video id="background-video" playsInline autoPlay muted loop>
                     <source className="h-100"
                             src="https://mdbootstrap.com/img/video/Lines.mp4"
                             type="video/mp4"/>
                 </video>
-                <div className="container d-flex flex-column align-items-center justify-content-center center-content vh-100">
-                    <h1 className="mb-3 header-home">Welcome to our Spotify Clone</h1>
-                    <h5 className="mb-4 header-text">Best & free guide of responsive web design</h5>
-                    <div className="">
-                        <button className="btn-hover color-8"
-                                onClick={() => {
-                                    navigate('/search');
-                                }}>
-                            Search Songs
-                        </button>
-                        <button className="btn-hover color-8"
-                                onClick={() => {
-                                    navigate('/register');
-                                }}>
-                            Sign Up Now!
-                        </button>
+            </div>
+            <div className="container container-home">
+                <div className="row d-flex flex-column align-items-center justify-content-center">
+                    <div className="col-xl-8">
+                        <h1 className="mb-3 header-home">Welcome to our Spotify Clone</h1>
+                        <h5 className="mb-4 header-text">Best & free guide of responsive web
+                                                         design</h5>
+                        <div className="button-row">
+                            <button className="btn-hover color-8"
+                                    onClick={() => {
+                                        navigate('/search');
+                                    }}>
+                                Search Songs
+                            </button>
+                            <button className="btn-hover color-8"
+                                    onClick={() => {
+                                        navigate('/register');
+                                    }}>
+                                Sign Up Now!
+                            </button>
+                        </div>
                     </div>
-
                 </div>
             </div>
 

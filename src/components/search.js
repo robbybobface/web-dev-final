@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import * as security from "../services/auth-service";
 import { useNavigate } from "react-router-dom";
 import { toast } from 'react-toastify';
+import { Helmet } from 'react-helmet';
 import { Credentials } from "../Credentials";
 import axios from "axios";
 import Dropdown from "./dropdown";
@@ -151,9 +152,15 @@ const Search = () => {
             {/*        </div>*/}
             {/*    </form>*/}
             {/*</div>*/}
-            <div className="mask d-flex align-items-center h-100 mask-custom-2 intro">
-                <div className="container">
-                    <div className="card mask-custom p-4">
+            <Helmet>
+                <style>{'body {   background-image: url(\'https://images.unsplash.com/photo-1614854262318-831574f15f1f?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80\') !important;\n'
+                    + '  background-repeat: no-repeat !important;\n'
+                    + '  background-size: cover !important;\n'
+                    + '  background-color: rgba(61, 162, 195, 0.1) !important; }'}</style>
+            </Helmet>
+            <div className="container container-search mt-5">
+                <div className="row align-content-center justify-content-center">
+                    <div className="card mask-custom p-4 col-xl-9">
                         <div className="card-body">
                             <p className="h1 font-weight-bold mb-4 text-white text-center">
                                 Discover Amazing Music</p>
@@ -175,6 +182,28 @@ const Search = () => {
                             </div>
                         </div>
                     </div>
+                </div>
+                <div className="row align-content-center justify-content-center">
+                    <form onSubmit={buttonClicked}>
+                        <Dropdown label="Genre :"
+                                  options={genres.listOfGenresFromAPI}
+                                  selectedValue={genres.selectedGenre}
+                                  changed={genreChanged}/>
+                        <Dropdown label="Artist :"
+                                  options={artist.listOfArtistFromAPI}
+                                  selectedValue={artist.selectedArtist}
+                                  changed={artistChanged}/>
+                        <div className="col-sm-6 row form-group px-0">
+                            <button type="submit" className="btn btn-success col-sm-12">
+                                Search
+                            </button>
+                        </div>
+                        <div className="row">
+                            <Listbox items={tracks.listOfTracksFromAPI}
+                                     clicked={listboxClicked}/>
+                            {trackDetail && <Detail {...trackDetail} />}
+                        </div>
+                    </form>
                 </div>
             </div>
         </>

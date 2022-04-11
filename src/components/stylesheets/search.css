@@ -1,7 +1,14 @@
 .intro {
-  background-image: url('../../images/gradient-2.jpg');
-  background-repeat: no-repeat;
-  background-size: cover;
+  background-image: url('https://images.unsplash.com/photo-1614854262318-831574f15f1f?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80') !important;
+  background-repeat: no-repeat !important;
+  background-size: cover !important;
+  background-color: rgba(61, 162, 195, 0.1) !important;
+}
+
+.container-search {
+  z-index: 1;
+  position: relative;
+
 }
 
 .mask-custom {
@@ -23,13 +30,14 @@
   color: white !important;
 }
 
+/*this is the one i want*/
 .form-outline .form-control:focus ~ .form-label {
-  color: #00ce6b !important;
+  color: #8fffc9 !important;
 }
 
 
 .input-search:focus ~ .label-search {
-  color: #00ce6b !important;
+  color: #8fffc9 !important;
   background-clip: padding-box !important;
   z-index: 2;
 
@@ -38,12 +46,12 @@
 
 .input-search:not(:placeholder-shown) ~ .label-search {
   transform: translateY(-1rem) translateY(0.1rem) scale(.8) !important;
-  color: #00ce6b !important;
+  color: #8fffc9 !important;
 
 }
 
 .label-search:focus {
-  color: #00ce6b !important;
+  color: #ffffff !important;
   background-clip: content-box !important;
 }
 

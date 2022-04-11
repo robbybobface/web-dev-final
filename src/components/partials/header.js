@@ -50,6 +50,7 @@ const Header = () => {
                 });
                 setPage('home');
                 navigate('', {});
+                setShowNavSecond(!showNavSecond);
                 setLoggedIn(false);
 
             });
@@ -68,18 +69,21 @@ const Header = () => {
                 });
             }
             navigate('/profile/' + user.username, {});
+            setShowNavSecond(!showNavSecond);
             setPage('profile');
         };
 
         const loginHandler = () => {
             setPage('login');
             navigate('/login', {});
+            setShowNavSecond(!showNavSecond);
 
         };
 
         const registerHandler = () => {
             setPage('register');
             navigate('/register', {});
+            setShowNavSecond(!showNavSecond);
         };
 
         const pageHandler = () => {
@@ -107,7 +111,11 @@ const Header = () => {
 
         return (
             <>
-                <MDBNavbar expand="lg" light sticky bgColor={page === 'home' ? '' : 'white'}>
+                <MDBNavbar expand="lg"
+                           light
+                           sticky
+                           bgColor={page === 'home' ? '' : 'white'}
+                           className="navbar-clip">
                     <MDBContainer>
                         <MDBNavbarBrand className={page === 'home' ? `navbar-brand`
                             : `navbar-brand navbar-brand-alt`}>
@@ -132,6 +140,7 @@ const Header = () => {
                                                            === 'home' ? 'active' : ""}`}
                                                        onClick={() => {
                                                            navigate('/', {});
+                                                           setShowNavSecond(!showNavSecond);
                                                        }}>
                                             Home
                                         </MDBNavbarLink>
@@ -142,6 +151,7 @@ const Header = () => {
                                                 ? 'active' : ""}`}
                                                        onClick={() => {
                                                            navigate('/search');
+                                                           setShowNavSecond(!showNavSecond);
                                                        }}>
                                             Search
                                         </MDBNavbarLink>
@@ -149,7 +159,7 @@ const Header = () => {
                                 </>
                                 :
                                 <>
-                                    <MDBNavbarNav>
+                                    <MDBNavbarNav fullWidth={false}>
                                         <MDBNavbarLink active aria-current="page"
                                                        className={page === 'home'
                                                            ? `nav-link nav-link-override ${page
@@ -159,7 +169,8 @@ const Header = () => {
                                                            === 'home'
                                                                ? 'active' : ""}`}
                                                        onClick={() => {
-                                                           navigate('/', {});
+                                                           navigate('/dashboard', {});
+                                                           setShowNavSecond(!showNavSecond);
                                                        }}>
                                             Dashboard
                                         </MDBNavbarLink>
@@ -170,6 +181,7 @@ const Header = () => {
                                                 ? 'active' : ""}`}
                                                        onClick={() => {
                                                            navigate('/search');
+                                                           setShowNavSecond(!showNavSecond);
                                                        }}>
                                             Search
                                         </MDBNavbarLink>
