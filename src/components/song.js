@@ -154,7 +154,7 @@ const Song = () => {
                     </div>
                 </div>
                 <div className="col-sm-4 pt-4 float-end">
-                    <h5>Other tracks by Aphex Twin </h5>
+                    <h5>Other tracks by {track.TrackInfo.artists[0]?.name} </h5>
                     <ul className="list-group col-sm-8">
                         <li className="list-group-item">{tracks.OtherTracks[0]?.name}</li>
                         <li className="list-group-item">{tracks.OtherTracks[1]?.name}</li>
