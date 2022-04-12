@@ -161,6 +161,7 @@ const Home = () => {
                                 }}>
                             Search Songs
                         </button>
+
                         <button className="btn-hover color-8"
                                 onClick={() => {
                                     navigate('/register');

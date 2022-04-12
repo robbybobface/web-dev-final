@@ -6,6 +6,7 @@ import './components/stylesheets/home.css';
 import './components/stylesheets/header.css';
 import './components/stylesheets/login.css';
 import './components/stylesheets/search.css';
+import './components/stylesheets/privacypolicy.css';
 
 import { Provider } from "react-redux";
 import { combineReducers, createStore } from "redux";
@@ -17,6 +18,8 @@ import Login from './components/login';
 import Home from './components/home';
 import Register from "./components/register";
 import Search from "./components/search";
+import PrivacyPolicy from "./components/privacypolicy";
+import Footer from "./components/partials/footer";
 
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import userReducer from "./reducers/user-reducer.js";
@@ -38,6 +41,7 @@ function App() {
                     <Route exact={true} path="/register" element={<Register/>}/>
                     <Route exact={true} path="/search" element={<Search/>}/>
                     {/*<Route exact={true} path="/user/:username" element={<Profile/>}/>*/}
+                    <Route exact={true} path="/privacy-policy" element={<PrivacyPolicy/>}/>
                 </Routes>
                 <ToastContainer
                     position="top-right"
@@ -50,6 +54,7 @@ function App() {
                     draggable
                     pauseOnHover
                 />
+                <Footer/>
             </Router>
         </Provider>
     );
