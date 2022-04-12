@@ -90,3 +90,55 @@
   background-image: linear-gradient(to right, #9cbab2, #4bbb98, #2b7676, #437662);
   box-shadow: 0 4px 15px 0 rgba(45, 54, 65, 0.75);
 }
+
+.search-category {
+  color: #000000;
+  font-family: 'Roboto Light', serif;
+  font-style: italic;
+}
+
+.form-check-label {
+  color: white;
+}
+
+.form-check-input {
+  border-color: white;
+  background-color: transparent;
+}
+
+.form-check-input:checked.custom-radio {
+  border-color: white;
+  color: #8fffc9;
+  background-color: transparent;
+}
+
+.form-check-input:focus.custom-radio {
+  border-color: #8fffc9;
+  outline: 0;
+  box-shadow: 0 0 0 0.25rem rgba(0, 255, 115, 0.37);
+}
+
+.form-check-input[type=radio]:checked:after {
+  border-radius: 50%;
+  width: 0.625rem;
+  height: 0.625rem;
+  border-color: #8fffc9;
+  background-color: #8fffc9;
+  transition: border-color;
+  transform: translate(-50%, -50%);
+  position: absolute;
+  left: 50%;
+  top: 50%;
+}
+
+
+.form-check-input[type=radio]:after {
+  content: "";
+  position: absolute;
+  width: 1rem;
+  height: 1rem;
+  z-index: 1;
+  display: block;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0);
+}

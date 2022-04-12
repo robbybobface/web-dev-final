@@ -4,26 +4,27 @@ import { useNavigate } from "react-router-dom";
 import { Helmet } from 'react-helmet';
 import { Credentials } from "../Credentials";
 import axios from "axios";
-import Dropdown from "./dropdown";
-import Detail from "./detail";
-import Listbox from "./listbox";
 
-import { MDBInput } from 'mdb-react-ui-kit';
+import TrackListItem from "./partials/TrackListItem";
+
+import { MDBBtnGroup, MDBCol, MDBInput, MDBRadio, MDBRow } from 'mdb-react-ui-kit';
 
 const Search = () => {
     const [ search, setSearch ] = useState('');
+    const [ trackSearch, setTrackSearch ] = useState(true);
+    const [ artistSearch, setArtistSearch ] = useState(false);
+    const [ albumSearch, setAlbumSearch ] = useState(false);
     const navigate = useNavigate();
 
     const spotify = Credentials();
 
     const [ token, setToken ] = useState('');
-    const [ genres, setGenres ] = useState({ selectedGenre: '', listOfGenresFromAPI: [] });
-    const [ artist, setArtist ] = useState({ selectedArtist: '', listOfArtistFromAPI: [] });
-    const [ tracks, setTracks ] = useState({ selectedTrack: '', listOfTracksFromAPI: [] });
-    const [ trackDetail, setTrackDetail ] = useState(null);
 
-    useEffect(() => {
+    const [ artists, setArtists ] = useState([]);
+    const [ albums, setAlbums ] = useState([]);
+    const [ tracks, setTracks ] = useState([]);
 
+    const getArtists = () => {
         axios('https://accounts.spotify.com/api/token', {
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
@@ -33,82 +34,104 @@ const Search = () => {
             method: 'POST'
         })
             .then(tokenResponse => {
-                console.log(tokenResponse);
+                // console.log(tokenResponse);
                 setToken(tokenResponse.data.access_token);
 
-                axios('https://api.spotify.com/v1/recommendations/available-genre-seeds', {
-                    method: 'GET',
-                    headers: { 'Authorization': 'Bearer ' + tokenResponse.data.access_token }
-                })
-                    .then(genreResponse => {
-                        console.log(genreResponse);
-                        setGenres({
-                            selectedGenre: genres.selectedGenre,
-                            listOfGenresFromAPI: genreResponse.data.genres
-                        });
+                axios(`https://api.spotify.com/v1/search?q=${search}&type=artist&market=US&limit=8`,
+                    {
+                        method: 'GET',
+                        headers: { 'Authorization': 'Bearer ' + tokenResponse.data.access_token }
+                    })
+                    .then(artistResponse => {
+                        console.log(artistResponse);
+                        setArtists(artistResponse.data.artists.items);
                     });
 
             });
-
-    }, [ genres.selectedGenre, spotify.ClientId, spotify.ClientSecret ]);
-
-    const genreChanged = val => {
-        setGenres({
-            selectedGenre: val,
-            listOfGenresFromAPI: genres.listOfGenresFromAPI
-        });
-        console.log('val changed too ' + val);
-
-        axios(`https://api.spotify.com/v1/search?q=genre:"${val}"&type=artist&market=US&limit=20`, {
-            method: 'GET',
-            headers: { 'Authorization': 'Bearer ' + token }
-        })
-            .then(artistResponse => {
-                console.log(artistResponse);
-                setArtist({
-                    selectedArtist: artist.selectedArtist,
-                    listOfArtistFromAPI: artistResponse.data.artists.items
-                });
-            });
-
     };
 
-    const artistChanged = val => {
-        console.log(val);
-        setArtist({
-            selectedArtist: val,
-            listOfArtistFromAPI: artist.listOfArtistFromAPI
-        });
-
-    };
-
-    const buttonClicked = e => {
-        e.preventDefault();
-
-        axios(`https://api.spotify.com/v1/artists/${artist.selectedArtist}/top-tracks?market=US`, {
-            method: 'GET',
+    const getTracks = () => {
+        axios('https://accounts.spotify.com/api/token', {
             headers: {
-                'Authorization': 'Bearer ' + token
-            }
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Authorization': 'Basic ' + btoa(spotify.ClientId + ':' + spotify.ClientSecret)
+            },
+            data: 'grant_type=client_credentials',
+            method: 'POST'
         })
-            .then(tracksResponse => {
-                console.log(tracksResponse);
-                setTracks({
-                    selectedTrack: tracks.selectedTrack,
-                    listOfTracksFromAPI: tracksResponse.data.tracks
-                });
+            .then(tokenResponse => {
+                // console.log(tokenResponse);
+                setToken(tokenResponse.data.access_token);
+
+                axios(`https://api.spotify.com/v1/search?q=${search}&type=track&market=US&limit=8`,
+                    {
+                        method: 'GET',
+                        headers: { 'Authorization': 'Bearer ' + tokenResponse.data.access_token }
+                    })
+                    .then(trackResponse => {
+                        console.log(trackResponse);
+                        setTracks(trackResponse.data.tracks.items);
+                    });
+
             });
     };
 
-    const listboxClicked = val => {
+    const getAlbums = () => {
+        axios('https://accounts.spotify.com/api/token', {
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Authorization': 'Basic ' + btoa(spotify.ClientId + ':' + spotify.ClientSecret)
+            },
+            data: 'grant_type=client_credentials',
+            method: 'POST'
+        })
+            .then(tokenResponse => {
+                // console.log(tokenResponse);
+                setToken(tokenResponse.data.access_token);
 
-        const currentTracks = [ ...tracks.listOfTracksFromAPI ];
+                axios(`https://api.spotify.com/v1/search?q=${search}&type=album&market=US&limit=8`,
+                    {
+                        method: 'GET',
+                        headers: { 'Authorization': 'Bearer ' + tokenResponse.data.access_token }
+                    })
+                    .then(albumResponse => {
+                        console.log(albumResponse);
+                        setAlbums(albumResponse.data.albums.items);
+                    });
 
-        const trackInfo = currentTracks.filter(t => t.id === val);
-
-        setTrackDetail(trackInfo[0]);
-
+            });
     };
+
+    const searchHandler = () => {
+        console.log(search);
+        getArtists();
+        getAlbums();
+        getTracks();
+    };
+
+    const trackHandler = () => {
+        setTrackSearch(true);
+        setAlbumSearch(false);
+        setArtistSearch(false);
+    };
+
+    const albumHandler = () => {
+        setTrackSearch(false);
+        setAlbumSearch(true);
+        setArtistSearch(false);
+    };
+    const artistHandler = () => {
+        setTrackSearch(false);
+        setAlbumSearch(false);
+        setArtistSearch(true);
+    };
+
+    useEffect(() => {
+        console.log(artists);
+        console.log(tracks);
+        console.log(albums);
+    });
+
     return (
         <>
             <Helmet>
@@ -119,7 +142,7 @@ const Search = () => {
             </Helmet>
             <div className="container container-search mt-5">
                 <div className="row align-content-center justify-content-center">
-                    <div className="card mask-custom p-4 col-xl-9">
+                    <div className="card mask-custom px-4 pt-4 pb-2 col-10 col-sm-11 col-xl-9">
                         <div className="card-body">
                             <p className="h1 font-weight-bold mb-4 text-white text-center">
                                 Discover Amazing Music</p>
@@ -131,40 +154,73 @@ const Search = () => {
                                               type="text"
                                               size="lg"
                                               contrast
-                                                />
+                                              onChange={(e) => {
+                                                  setSearch(e.target.value);
+                                              }}
+                                    />
                                 </div>
 
                                 <div className="col-md-2">
                                     <input className="btn-hover-search color-8"
                                            type="submit"
-                                           value="Search"/>
+                                           value="Search"
+                                           onClick={searchHandler}/>
+                                </div>
+                            </div>
+                            <div className="row d-flex mt-4">
+                                <div className="category-toggle d-flex align-items-center justify-content-center">
+                                    <MDBRadio name="inlineRadio"
+                                              className="custom-radio"
+                                              id="inlineRadio1"
+                                              value="option1"
+                                              label="Tracks"
+                                              defaultChecked
+                                              inline
+                                              onClick={trackHandler}/>
+                                    <MDBRadio name="inlineRadio"
+                                              className="custom-radio"
+                                              id="inlineRadio2"
+                                              value="option2"
+                                              label="Artists"
+                                              inline
+                                              onClick={artistHandler}/>
+                                    <MDBRadio name="inlineRadio"
+                                              className="custom-radio"
+                                              id="inlineRadio3"
+                                              value="option3"
+                                              label="Albums"
+                                              inline
+                                              onClick={albumHandler}/>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div className="row align-content-center justify-content-center">
-                    <form onSubmit={buttonClicked}>
-                        <Dropdown label="Genre :"
-                                  options={genres.listOfGenresFromAPI}
-                                  selectedValue={genres.selectedGenre}
-                                  changed={genreChanged}/>
-                        <Dropdown label="Artist :"
-                                  options={artist.listOfArtistFromAPI}
-                                  selectedValue={artist.selectedArtist}
-                                  changed={artistChanged}/>
-                        <div className="col-sm-6 row form-group px-0">
-                            <button type="submit" className="btn btn-success col-sm-12">
-                                Search
-                            </button>
-                        </div>
-                        <div className="row">
-                            <Listbox items={tracks.listOfTracksFromAPI}
-                                     clicked={listboxClicked}/>
-                            {trackDetail && <Detail {...trackDetail} />}
-                        </div>
-                    </form>
-                </div>
+                {trackSearch ?
+                    <>
+                        <h1 className="search-category">Tracks</h1>
+                        <MDBRow className="row-cols-2 row-cols-md-2 row-cols-lg-4 g-4 flex-row">
+                            {
+                                tracks.map && tracks.map(track =>
+                                    <>
+                                        <MDBCol className="align-content-center justify-content-center"
+                                                style={{ display: 'flex' }}>
+                                            <TrackListItem key={track.id} track={track}/>
+                                        </MDBCol>
+                                    </>)
+                            }
+                        </MDBRow>
+                    </>
+                    :
+                    artistSearch ? <>
+                            <h1 className="search-category">Artists</h1>
+                        </>
+                        : <>
+                            <h1 className="search-category">Albums</h1>
+                        </>
+                }
+
+
             </div>
         </>
     );
