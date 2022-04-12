@@ -32,8 +32,9 @@ const Song = () => {
 
     const [ token, setToken ] = useState('');
     const [track, setTrack] = useState({TrackInfo: {}});
-    const [artist, setArtists] = useState({RelatedArtists: []});
+    const [artists, setArtists] = useState({RelatedArtists: []});
     const [tracks, setTracks] = useState({OtherTracks: []});
+    const [artistSummary, setArtistSummary] = useState({ArtistSummary: ''});
 
     useEffect(() => {
 
@@ -46,10 +47,10 @@ const Song = () => {
             method: 'POST'
         })
             .then(tokenResponse => {
-                console.log(tokenResponse);
                 setToken(tokenResponse.data.access_token);
                 let artistid = 0;
-                let trackid = 0
+                let trackid = 0;
+                let artistname = '';
                 axios(`https://api.spotify.com/v1/tracks/60Pe9j2pCBa4Zp4ztf5nhd`, {
                     method: 'GET',
                     headers: {
@@ -57,20 +58,27 @@ const Song = () => {
                     }
                 })
                     .then(tracksResponse => {
-                        console.log(tracksResponse);
-                        console.log(tracksResponse.data);
-                        console.log(tracksResponse.data.artists);
+                        console.log(tracksResponse.data)
                         setTrack({
                             TrackInfo: tracksResponse.data
                         });
                         artistid = tracksResponse.data.artists[0].id;
                         trackid = tracksResponse.data.id;
-                        console.log(trackid)
+                        artistname = tracksResponse.data.artists[0].name;
                     });
 
 
 
-                console.log(artistid);
+                axios(`https://en.wikipedia.org/api/rest_v1/page/summary/${track.TrackInfo.artists[0].name}`, {
+                    method: 'GET',
+                })
+                    .then(artistsInfoResponse => {
+                        setArtistSummary({
+                            ArtistSummary: artistsInfoResponse.data.extract
+                        });
+                    });
+
+
                 axios(`https://api.spotify.com/v1/artists/6kBDZFXuLrZgHnvmPu9NsG/related-artists`, {
                     method: 'GET',
                     headers: {
@@ -93,11 +101,9 @@ const Song = () => {
                     }
                 })
                     .then(otherSongsResponse => {
-                        console.log(otherSongsResponse.data.tracks);
                         const othertracks = otherSongsResponse.data.tracks.filter(track => track.id !== trackid)
-                        console.log(othertracks)
                         setTracks({
-                            OtherTracks: otherSongsResponse.data.tracks
+                            OtherTracks: othertracks
                         });
                     });
 
@@ -116,18 +122,18 @@ const Song = () => {
                 <div className="col-sm-4 pt-4 ps-5">
                     <h5>Similar Artists </h5>
                     <ul className="list-group col-sm-8">
-                        <a href="/" className="list-group-item list-group-item-action">{artist.RelatedArtists[0]?.name}</a>
-                        <a href="/" className="list-group-item list-group-item-action">{artist.RelatedArtists[1]?.name}</a>
-                        <a href="/" className="list-group-item list-group-item-action">{artist.RelatedArtists[2]?.name}</a>
-                        <a href="/" className="list-group-item list-group-item-action">{artist.RelatedArtists[3]?.name}</a>
-                        <a href="/" className="list-group-item list-group-item-action">{artist.RelatedArtists[4]?.name}</a>
+                        <a href="/" className="list-group-item list-group-item-action">{artists.RelatedArtists[0]?.name}</a>
+                        <a href="/" className="list-group-item list-group-item-action">{artists.RelatedArtists[1]?.name}</a>
+                        <a href="/" className="list-group-item list-group-item-action">{artists.RelatedArtists[2]?.name}</a>
+                        <a href="/" className="list-group-item list-group-item-action">{artists.RelatedArtists[3]?.name}</a>
+                        <a href="/" className="list-group-item list-group-item-action">{artists.RelatedArtists[4]?.name}</a>
                     </ul>
                 </div>
                 <div className="col-sm-4 pt-4">
-                    <div className="row col-sm-10">
+                    <div className="row col-sm-8 d-block ms-5">
                         <img className="rounded px-0"
                             // src={album.images[0].ur
-                             src={'https://i.scdn.co/image/ab67616d0000b273f5b910ba28f8fc7572cb8018'}
+                             src={track.TrackInfo.album?.images[0]?.url}
                              alt={'aphex twin'}>
                         </img>
                     </div>
@@ -147,8 +153,15 @@ const Song = () => {
                     </div>
                     <div className="h4 text-center col-sm-10 px-0">
                         <Link to="/">
-                            <label htmlFor='Aphex Twin' className="form-label"> {/*artists[0].name*/}
+                            <label htmlFor='Aphex Twin' className="form-label">
                                 {track.TrackInfo.artists[0]?.name}
+                            </label>
+                        </Link>
+                    </div>
+                    <div className="h6 text-center col-sm-10">
+                        <Link to="/">
+                            <label htmlFor='Aphex Twin' className="form-label">
+                                {artistSummary.ArtistSummary}
                             </label>
                         </Link>
                     </div>

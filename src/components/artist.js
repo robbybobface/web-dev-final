@@ -17,6 +17,7 @@ const Artist = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const location = useLocation();
+    const artistid = '6kBDZFXuLrZgHnvmPu9NsG';
     const loggedInHandler = () => {
         security.isLoggedIn(dispatch).then(r => {
             setLoggedIn(r.loggedIn);
@@ -30,9 +31,11 @@ const Artist = () => {
 
     const spotify = Credentials();
 
-    const [tracks, setTrack] = useState({listOfTracksFromAPI: []});
-    const [artist] = useState({Artist: ''});
-    const [artists] = useState({listofArtistsFromAPI: []});
+    const [ token, setToken ] = useState('');
+    const [artist, setArtist] = useState({ArtistInfo: {}});
+    const [artists, setArtists] = useState({RelatedArtists: []});
+    const [tracks, setTracks] = useState({PopularTracks: []});
+    const [artistSummary, setArtistSummary] = useState({ArtistSummary: ''});
 
     useEffect(() => {
 
@@ -47,22 +50,80 @@ const Artist = () => {
             .then(tokenResponse => {
                 console.log(tokenResponse);
                 setToken(tokenResponse.data.access_token);
+                let trackid = 0;
+                let artistname = '';
+                // axios(`https://api.spotify.com/v1/tracks/60Pe9j2pCBa4Zp4ztf5nhd`, {
+                //     method: 'GET',
+                //     headers: {
+                //         'Authorization': 'Bearer ' + tokenResponse.data.access_token
+                //     }
+                // })
+                //     .then(tracksResponse => {
+                //         setTrack({
+                //             TrackInfo: tracksResponse.data
+                //         });
+                //         artistid = tracksResponse.data.artists[0].id;
+                //         trackid = tracksResponse.data.id;
+                //         artistname = tracksResponse.data.artists[0].name;
+                //     });
 
-                axios(`https://api.spotify.com/v1/tracks/60Pe9j2pCBa4Zp4ztf5nhd`, {
+                axios(`https://api.spotify.com/v1/artists/${artistid}`, {
                     method: 'GET',
-                    headers: {'Authorization': 'Bearer ' + tokenResponse.data.access_token}
+                    headers: {
+                        'Authorization': 'Bearer ' + tokenResponse.data.access_token
+                    }
                 })
-                    .then(tracksResponse => {
-                        console.log(tracksResponse);
-                        setTrack({
-                            selectedTrack: tracks.selectedTrack,
-                            listOfTracksFromAPI: tracksResponse.data.tracks
+                    .then(artistResponse => {
+                        console.log(artistResponse.data)
+                        setArtist({
+                            ArtistInfo: artistResponse.data
+                        });
+                    });
+
+
+                axios(`https://en.wikipedia.org/api/rest_v1/page/summary/${artist.ArtistInfo?.name}`, {
+                    method: 'GET',
+                })
+                    .then(artistsInfoResponse => {
+                        console.log(artistsInfoResponse.data.extract)
+                        setArtistSummary({
+                            ArtistSummary: artistsInfoResponse.data.extract
+                        });
+                    });
+
+
+                axios(`https://api.spotify.com/v1/artists/${artistid}/related-artists`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': 'Bearer ' + tokenResponse.data.access_token
+                    }
+                })
+                    .then(artistsResponse => {
+                        console.log(artistsResponse.data.artists)
+                        setArtists({
+                            RelatedArtists: artistsResponse.data.artists
+                        });
+                    });
+
+                axios(`https://api.spotify.com/v1/artists/${artistid}/top-tracks`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': 'Bearer ' + tokenResponse.data.access_token
+                    },
+                    params: {
+                        'country': 'RU'
+                    }
+                })
+                    .then(popularTracksResponse => {
+                        const populartracks = popularTracksResponse.data.tracks.filter(track => track.id !== trackid)
+                        setTracks({
+                            PopularTracks: populartracks
                         });
                     });
 
             });
 
-    });
+    }, [ spotify.ClientId, spotify.ClientSecret ]);
     return (
         <>
             <Helmet>
@@ -75,52 +136,47 @@ const Artist = () => {
                 <div className="col-sm-4 pt-4 ps-5">
                     <h5>Similar Artists </h5>
                     <ul className="list-group col-sm-8">
-                        <a href="/" className="list-group-item list-group-item-action">Gorillaz</a>
-                        <a href="/" className="list-group-item list-group-item-action">Skrillex</a>
-                        <a href="/" className="list-group-item list-group-item-action">Squarepusher</a>
-                        <a href="/" className="list-group-item list-group-item-action">Autechre</a>
-                        <a href="/" className="list-group-item list-group-item-action">deadmau5</a>
+                        <a href="/" className="list-group-item list-group-item-action">{artists.RelatedArtists[0]?.name}</a>
+                        <a href="/" className="list-group-item list-group-item-action">{artists.RelatedArtists[1]?.name}</a>
+                        <a href="/" className="list-group-item list-group-item-action">{artists.RelatedArtists[2]?.name}</a>
+                        <a href="/" className="list-group-item list-group-item-action">{artists.RelatedArtists[3]?.name}</a>
+                        <a href="/" className="list-group-item list-group-item-action">{artists.RelatedArtists[4]?.name}</a>
                     </ul>
                 </div>
                 <div className="col-sm-4 pt-4">
                     <div className="row col-sm-10">
                         <img className="rounded px-0"
                             // src={album.images[0].ur
-                             src={'https://seeklogo.com/images/A/Aphex_Twin-logo-16E408E1FC-seeklogo.com.png'}
+                             src={artist.ArtistInfo.images[0].url}
                              alt={'aphex twin'}>
                         </img>
                     </div>
                     <div className="h1 text-center col-sm-10 px-0">
                         <Link to="/">
                             <label htmlFor='Name' className="form-label"> {/* name */}
-                                Aphex Twin
+                                {artist.ArtistInfo.name}
                             </label>
                         </Link>
                     </div>
-                    <div className="h3 text-center col-sm-10 px-0">
+                    <div className="h3 text-center col-sm-10">
                         <Link to="/">
-                            <label htmlFor='Genres' className="form-label"> {/* name */}
-                                Electronic, Techno, Ambient
+                            <label htmlFor='Aphex Twin' className="form-label">
+                                {artist.ArtistInfo?.genres.toString()}
                             </label>
                         </Link>
                     </div>
                     <div className="h6 text-center col-sm-10 px-0">
-                        <p>Richard David James (born 18 August 1971),
-                            best known by the alias Aphex Twin and less prominently as AFX, is an Irish-born
-                            British musician, composer and DJ. He is best known for his idiosyncratic work in
-                            electronic styles such as techno, ambient, and jungle. Music journalists from
-                            publications including Mixmag, The New York Times, NME, Fact, Clash and The Guardian have
-                            called James one of the most influential or important contemporary electronic musicians.</p>
+                        <p>{artistSummary.ArtistSummary}</p>
                     </div>
                 </div>
                 <div className="col-sm-4 pt-4 float-end">
                     <h5>Popular Tracks </h5>
                     <ul className="list-group col-sm-8">
-                        <li className="list-group-item">Alberto Balsalm</li>
-                        <li className="list-group-item">Flim</li>
-                        <li className="list-group-item">Windowlicker</li>
-                        <li className="list-group-item">#19</li>
-                        <li className="list-group-item">Come to Daddy</li>
+                        <li className="list-group-item">{tracks.PopularTracks[0]?.name}</li>
+                        <li className="list-group-item">{tracks.PopularTracks[1]?.name}</li>
+                        <li className="list-group-item">{tracks.PopularTracks[2]?.name}</li>
+                        <li className="list-group-item">{tracks.PopularTracks[3]?.name}</li>
+                        <li className="list-group-item">{tracks.PopularTracks[4]?.name}</li>
                     </ul>
                 </div>
             </div>
