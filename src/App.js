@@ -20,6 +20,8 @@ import Search from "./components/search";
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import userReducer from "./reducers/user-reducer.js";
 import authReducer from "./reducers/auth-reducer.js";
+import Song from "./components/song";
+import Artist from "./components/artist";
 
 const reducer = combineReducers({
     user: userReducer, auth: authReducer
@@ -36,6 +38,8 @@ function App() {
                     <Route exact={true} path="/login" element={<Login/>}/>
                     <Route exact={true} path="/register" element={<Register/>}/>
                     <Route exact={true} path="/search" element={<Search/>}/>
+                    <Route exact={true} path="/song" element={<Song/>}/>
+                    <Route exact={true} path="/artist" element={<Artist/>}/>
                     {/*<Route exact={true} path="/user/:username" element={<Profile/>}/>*/}
                 </Routes>
                 <ToastContainer

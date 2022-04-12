@@ -77,7 +77,6 @@ const Header = () => {
             setPage('login');
             navigate('/login', {});
             setShowNavSecond(!showNavSecond);
-
         };
 
         const registerHandler = () => {
@@ -85,6 +84,12 @@ const Header = () => {
             navigate('/register', {});
             setShowNavSecond(!showNavSecond);
         };
+
+    const homeHandler = () => {
+        setPage('home');
+        navigate('/', {});
+        setShowNavSecond(!showNavSecond);
+    };
 
         const pageHandler = () => {
             const url = location.pathname.split('/');
@@ -117,10 +122,12 @@ const Header = () => {
                            bgColor={page === 'home' ? '' : 'white'}
                            className="navbar-clip">
                     <MDBContainer>
-                        <MDBNavbarBrand className={page === 'home' ? `navbar-brand`
-                            : `navbar-brand navbar-brand-alt`}>
+                        <MDBNavbarLink onClick={() => {
+                                           navigate('/', {});
+                                           setShowNavSecond(!showNavSecond);
+                                       }}>
                             Spotify Clone
-                        </MDBNavbarBrand>
+                        </MDBNavbarLink>
                         <MDBNavbarToggler
                             aria-expanded="false"
                             aria-label="Toggle navigation"
