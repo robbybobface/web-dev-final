@@ -2,7 +2,7 @@ import * as security from "../../services/auth-service";
 import * as service from "../../services/profile-service";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import {
     MDBCollapse,
@@ -50,7 +50,7 @@ const Header = () => {
                 });
                 setPage('home');
                 navigate('', {});
-                setShowNavSecond(!showNavSecond);
+                secondNavHandler();
                 setLoggedIn(false);
 
             });
@@ -69,32 +69,40 @@ const Header = () => {
                 });
             }
             navigate('/profile/' + user.username, {});
-            setShowNavSecond(!showNavSecond);
+            secondNavHandler();
             setPage('profile');
         };
 
         const loginHandler = () => {
             setPage('login');
             navigate('/login', {});
-            setShowNavSecond(!showNavSecond);
+            secondNavHandler();
 
         };
 
         const registerHandler = () => {
             setPage('register');
             navigate('/register', {});
-            setShowNavSecond(!showNavSecond);
+            secondNavHandler();
         };
 
         const pageHandler = () => {
             const url = location.pathname.split('/');
-            console.log(url);
+            // console.log(url);
             if (url[1] !== '') {
                 setPage(url[1]);
-                console.log(page);
+                // console.log(page);
             } else {
                 setPage('home');
-                console.log(page);
+                // console.log(page);
+            }
+        };
+
+        const secondNavHandler = () => {
+            if (showNavSecond) {
+                setShowNavSecond(false);
+            } else {
+                return;
             }
         };
 
@@ -115,12 +123,14 @@ const Header = () => {
                            light
                            sticky
                            bgColor={page === 'home' ? '' : 'white'}
-                           className="navbar-clip">
+                           className="navbar-clip w-100">
                     <MDBContainer>
-                        <MDBNavbarBrand className={page === 'home' ? `navbar-brand`
-                            : `navbar-brand navbar-brand-alt`}>
-                            Spotify Clone
-                        </MDBNavbarBrand>
+                        <Link to="/">
+                            <MDBNavbarBrand className={page === 'home' ? `navbar-brand`
+                                : `navbar-brand navbar-brand-alt`}>
+                                Spotify Clone
+                            </MDBNavbarBrand>
+                        </Link>
                         <MDBNavbarToggler
                             aria-expanded="false"
                             aria-label="Toggle navigation"
@@ -140,7 +150,7 @@ const Header = () => {
                                                            === 'home' ? 'active' : ""}`}
                                                        onClick={() => {
                                                            navigate('/', {});
-                                                           setShowNavSecond(!showNavSecond);
+                                                           secondNavHandler();
                                                        }}>
                                             Home
                                         </MDBNavbarLink>
@@ -151,7 +161,7 @@ const Header = () => {
                                                 ? 'active' : ""}`}
                                                        onClick={() => {
                                                            navigate('/search');
-                                                           setShowNavSecond(!showNavSecond);
+                                                           secondNavHandler();
                                                        }}>
                                             Search
                                         </MDBNavbarLink>
@@ -160,20 +170,20 @@ const Header = () => {
                                 :
                                 <>
                                     <MDBNavbarNav fullWidth={false}>
-                                        <MDBNavbarLink aria-current="page"
-                                                       className={page === 'home'
-                                                           ? `nav-link nav-link-override ${page
-                                                           === 'home'
-                                                               ? 'active' : ""}`
-                                                           : `nav-link nav-link-override-alt ${page
-                                                           === 'home'
-                                                               ? 'active' : ""}`}
-                                                       onClick={() => {
-                                                           navigate('/dashboard', {});
-                                                           setShowNavSecond(!showNavSecond);
-                                                       }}>
-                                            Dashboard
-                                        </MDBNavbarLink>
+                                        {/*<MDBNavbarLink aria-current="page"*/}
+                                        {/*               className={page === 'home'*/}
+                                        {/*                   ? `nav-link nav-link-override ${page*/}
+                                        {/*                   === 'home'*/}
+                                        {/*                       ? 'active' : ""}`*/}
+                                        {/*                   : `nav-link nav-link-override-alt ${page*/}
+                                        {/*                   === 'home'*/}
+                                        {/*                       ? 'active' : ""}`}*/}
+                                        {/*               onClick={() => {*/}
+                                        {/*                   navigate('/dashboard', {});*/}
+                                        {/*                   secondNavHandler();*/}
+                                        {/*               }}>*/}
+                                        {/*    Dashboard*/}
+                                        {/*</MDBNavbarLink>*/}
                                         <MDBNavbarLink className={page === 'home'
                                             ? `nav-link nav-link-override ${page === 'search'
                                                 ? 'active' : ""}`
@@ -181,7 +191,7 @@ const Header = () => {
                                                 ? 'active' : ""}`}
                                                        onClick={() => {
                                                            navigate('/search');
-                                                           setShowNavSecond(!showNavSecond);
+                                                           secondNavHandler();
                                                        }}>
                                             Search
                                         </MDBNavbarLink>

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import * as security from "../services/auth-service";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { MDBInput } from "mdb-react-ui-kit";
 
 const Register = () => {
     const [ registerUser, setRegisterUser ] = useState({});
@@ -28,72 +29,12 @@ const Register = () => {
                         draggable: true,
                         progress: undefined,
                     });
-                    navigate('/', {});
+                    navigate('/search', {});
                 }
             })
             .catch(e => toast.error(e));
     return (
         <>
-
-            {/*<div className="container d-flex justify-content-center align-items-center mt-5 login-card">*/}
-            {/*    <div className="row">*/}
-            {/*        <div className="col-md-8 offset-md-2 col-lg-6 offset-lg-3 col-xl-4 offset-xl-4">*/}
-            {/*            <div className="card shadow card-container">*/}
-            {/*                <img src="https://images.unsplash.com/photo-1524678606370-a47ad25cb82a?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2338&q=80"*/}
-            {/*                     alt="" className="card-img-top"/>*/}
-            {/*                <div className="card-body card-body-login">*/}
-            {/*                    <h5 className="card-title">Login</h5>*/}
-            {/*                    <div className="mb-3">*/}
-            {/*                        <label className="form-label"*/}
-            {/*                               htmlFor="email">Email</label>*/}
-            {/*                        <input className="form-control"*/}
-            {/*                               type="email"*/}
-            {/*                               id="email"*/}
-            {/*                               name="email"*/}
-            {/*                               autoFocus*/}
-            {/*                               onChange={(e) =>*/}
-            {/*                                   setRegisterUser({*/}
-            {/*                                       ...registerUser,*/}
-            {/*                                       email: e.target.value*/}
-            {/*                                   })}*/}
-            {/*                               required/>*/}
-            {/*                    </div>*/}
-            {/*                    <div className="mb-3">*/}
-            {/*                        <label className="form-label"*/}
-            {/*                               htmlFor="username">Username</label>*/}
-            {/*                        <input className="form-control"*/}
-            {/*                               type="text"*/}
-            {/*                               id="username"*/}
-            {/*                               name="username"*/}
-            {/*                               onChange={(e) =>*/}
-            {/*                                   setRegisterUser({*/}
-            {/*                                       ...registerUser,*/}
-            {/*                                       username: e.target.value*/}
-            {/*                                   })}*/}
-            {/*                               required/>*/}
-            {/*                    </div>*/}
-            {/*                    <div className="mb-4">*/}
-            {/*                        <label className="form-label"*/}
-            {/*                               htmlFor="password">Password</label>*/}
-            {/*                        <input className="form-control"*/}
-            {/*                               type="password"*/}
-            {/*                               id="password"*/}
-            {/*                               name="password"*/}
-            {/*                               onChange={(e) =>*/}
-            {/*                                   setRegisterUser({*/}
-            {/*                                       ...registerUser,*/}
-            {/*                                       password: e.target.value*/}
-            {/*                                   })}*/}
-            {/*                               required/>*/}
-            {/*                    </div>*/}
-            {/*                    <button className="btn btn-login btn-block"*/}
-            {/*                            onClick={register}>Register*/}
-            {/*                    </button>*/}
-            {/*                </div>*/}
-            {/*            </div>*/}
-            {/*        </div>*/}
-            {/*    </div>*/}
-            {/*</div>*/}
 
             <section className="gradient-form">
                 <div className="container">
@@ -106,62 +47,94 @@ const Register = () => {
 
                                             <div className="text-center">
                                                 <img src="spotify.png"
-                                                     style={{ width: '150px' }} alt="logo"/>
-                                                <h4 className="mt-4 mb-5 pb-1 h4-text">
+                                                     style={{ width: '100px' }} alt="logo"/>
+                                                <h4 className="mt-4 mb-4 pb-1 h4-text">
                                                     The Spotify Clone</h4>
                                             </div>
                                             <form>
                                                 <p className="p-text">
                                                     Sign Up Now</p>
                                                 <div className="form-outline mb-4">
-                                                    <input type="email"
-                                                           id="register-email"
-                                                           className="form-control input-login"
-                                                           placeholder="Email"
-                                                           onChange={(e) =>
-                                                               setRegisterUser({
-                                                                   ...registerUser,
-                                                                   email: e.target.value
-                                                               })}
-                                                           required/>
-                                                    <label className="form-label label-login"
-                                                           htmlFor="register-email">Email</label>
+                                                    <MDBInput className="form-control-login"
+                                                              label="Email"
+                                                              id="register-email"
+                                                              type="email"
+                                                              size="lg"
+                                                              required
+                                                              onChange={(e) =>
+                                                                  setRegisterUser({
+                                                                      ...registerUser,
+                                                                      email: e.target.value
+                                                                  })}/>
+                                                    {/*<input type="email"*/}
+                                                    {/*       id="register-email"*/}
+                                                    {/*       className="form-control input-login"*/}
+                                                    {/*       placeholder="Email"*/}
+                                                    {/*       onChange={(e) =>*/}
+                                                    {/*           setRegisterUser({*/}
+                                                    {/*               ...registerUser,*/}
+                                                    {/*               email: e.target.value*/}
+                                                    {/*           })}*/}
+                                                    {/*       required/>*/}
+                                                    {/*<label className="form-label label-login"*/}
+                                                    {/*       htmlFor="register-email">Email</label>*/}
                                                 </div>
                                                 <div className="form-outline mb-4">
-                                                    <input type="email"
-                                                           id="register-username"
-                                                           className="form-control input-login"
-                                                           placeholder="Username"
-                                                           onChange={(e) =>
-                                                               setRegisterUser({
-                                                                   ...registerUser,
-                                                                   username: e.target.value
-                                                               })}
-                                                           required/>
-                                                    <label className="form-label label-login"
-                                                           htmlFor="register-username">Username</label>
+                                                    <MDBInput className="form-control-login"
+                                                              label="Username"
+                                                              id="register-username"
+                                                              type="text"
+                                                              size="lg"
+                                                              required
+                                                              onChange={(e) =>
+                                                                  setRegisterUser({
+                                                                      ...registerUser,
+                                                                      username: e.target.value
+                                                                  })}/>
+                                                    {/*<input type="email"*/}
+                                                    {/*       id="register-username"*/}
+                                                    {/*       className="form-control input-login"*/}
+                                                    {/*       placeholder="Username"*/}
+                                                    {/*       onChange={(e) =>*/}
+                                                    {/*           setRegisterUser({*/}
+                                                    {/*               ...registerUser,*/}
+                                                    {/*               username: e.target.value*/}
+                                                    {/*           })}*/}
+                                                    {/*       required/>*/}
+                                                    {/*<label className="form-label label-login"*/}
+                                                    {/*       htmlFor="register-username">Username</label>*/}
                                                 </div>
-
                                                 <div className="form-outline mb-4">
-                                                    <input type="password"
-                                                           id="register-password"
-                                                           placeholder="Password"
-                                                           className="form-control input-login"
-                                                           onChange={(e) =>
-                                                               setRegisterUser({
-                                                                   ...registerUser,
-                                                                   password: e.target.value
-                                                               })}
-                                                           required/>
-                                                    <label className="form-label label-login"
-                                                           htmlFor="register-password">Password</label>
+                                                    <MDBInput className="form-control-login"
+                                                              label="Password"
+                                                              id="register-username"
+                                                              type="password"
+                                                              size="lg"
+                                                              required
+                                                              onChange={(e) =>
+                                                                  setRegisterUser({
+                                                                      ...registerUser,
+                                                                      password: e.target.value
+                                                                  })}/>
+                                                    {/*<input type="password"*/}
+                                                    {/*       id="register-password"*/}
+                                                    {/*       placeholder="Password"*/}
+                                                    {/*       className="form-control input-login"*/}
+                                                    {/*       onChange={(e) =>*/}
+                                                    {/*           setRegisterUser({*/}
+                                                    {/*               ...registerUser,*/}
+                                                    {/*               password: e.target.value*/}
+                                                    {/*           })}*/}
+                                                    {/*       required/>*/}
+                                                    {/*<label className="form-label label-login"*/}
+                                                    {/*       htmlFor="register-password">Password</label>*/}
                                                 </div>
 
                                                 <div className="text-center pt-1 mb-3 pb-1">
                                                     <button className="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3"
                                                             type="button"
                                                             onClick={register}>
-                                                        Log in
+                                                        Create Account
                                                     </button>
                                                 </div>
 

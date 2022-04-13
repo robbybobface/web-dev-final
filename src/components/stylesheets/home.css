@@ -7,9 +7,12 @@
 }
 
 .container-home {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   z-index: 1;
   position: relative;
-  margin-top: 7rem;
+  height: 85vh;
 }
 
 .button-row {

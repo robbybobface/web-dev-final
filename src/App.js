@@ -5,6 +5,7 @@ import './components/stylesheets/home.css';
 import './components/stylesheets/header.css';
 import './components/stylesheets/login.css';
 import './components/stylesheets/search.css';
+import './components/stylesheets/details.css';
 
 import { Provider } from "react-redux";
 import { combineReducers, createStore } from "redux";
@@ -16,10 +17,14 @@ import Login from './components/login';
 import Home from './components/home';
 import Register from "./components/register";
 import Search from "./components/search";
+import Profile from './components/profile';
 
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import userReducer from "./reducers/user-reducer.js";
 import authReducer from "./reducers/auth-reducer.js";
+import Artist from "./components/artist";
+import Album from "./components/album";
+import Track from "./components/track";
 
 const reducer = combineReducers({
     user: userReducer, auth: authReducer
@@ -36,7 +41,12 @@ function App() {
                     <Route exact={true} path="/login" element={<Login/>}/>
                     <Route exact={true} path="/register" element={<Register/>}/>
                     <Route exact={true} path="/search" element={<Search/>}/>
-                    {/*<Route exact={true} path="/user/:username" element={<Profile/>}/>*/}
+                    <Route exact={true} path="/search/:searchString" element={<Search/>}/>
+                    <Route exact={true} path="/profile/:username" element={<Profile/>}/>
+                    <Route exact={true} path="/artist/:aid" element={<Artist/>}/>
+                    <Route exact={true} path="/album/:aid" element={<Album/>}/>
+                    <Route exact={true} path="/track/:tid" element={<Track/>}/>
+                    {/*<Route path="*" element={<PageNotFound/>}/>*/}
                 </Routes>
                 <ToastContainer
                     position="top-right"
@@ -48,6 +58,7 @@ function App() {
                     pauseOnFocusLoss
                     draggable
                     pauseOnHover
+                    theme={"colored"}
                 />
             </Router>
         </Provider>

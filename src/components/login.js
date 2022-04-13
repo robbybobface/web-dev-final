@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import * as security from "../services/auth-service";
 import { useNavigate } from "react-router-dom";
 import { toast } from 'react-toastify';
+import { MDBInput } from "mdb-react-ui-kit";
 
 const Login = () => {
     const [ loginUser, setLoginUser ] = useState({});
@@ -20,59 +21,14 @@ const Login = () => {
                     draggable: true,
                     progress: undefined,
                 });
-                navigate('/', {});
+                navigate('/search', {});
             })
             .catch(e =>
-                toast.error(e));
+                toast.error('Invalid Username or Password')
+            );
+    // toast.error(e));
     return (
         <>
-
-            {/*<div className="container d-flex justify-content-center align-items-center mt-5 login-card">*/}
-            {/*    <div className="row">*/}
-            {/*        <div className="col-md-8 offset-md-2 col-lg-6 offset-lg-3 col-xl-4 offset-xl-4">*/}
-            {/*            <div className="card shadow card-container">*/}
-            {/*                <img src="https://images.unsplash.com/photo-1494232410401-ad00d5433cfa?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2340&q=80"*/}
-            {/*                     alt="" className="card-img-top"/>*/}
-            {/*                <div className="card-body card-body-login">*/}
-            {/*                    <h5 className="card-title">Login</h5>*/}
-            {/*                    <div className="mb-3">*/}
-            {/*                        <label className="form-label"*/}
-            {/*                               htmlFor="username">Username</label>*/}
-            {/*                        <input className="form-control"*/}
-            {/*                               type="text"*/}
-            {/*                               id="username"*/}
-            {/*                               name="username"*/}
-            {/*                               autoFocus*/}
-            {/*                               onChange={(e) =>*/}
-            {/*                                   setLoginUser({*/}
-            {/*                                       ...loginUser,*/}
-            {/*                                       username: e.target.value*/}
-            {/*                                   })}*/}
-            {/*                               required/>*/}
-            {/*                    </div>*/}
-            {/*                    <div className="mb-4">*/}
-            {/*                        <label className="form-label"*/}
-            {/*                               htmlFor="password">Password</label>*/}
-            {/*                        <input className="form-control"*/}
-            {/*                               type="password"*/}
-            {/*                               id="password"*/}
-            {/*                               name="password"*/}
-            {/*                               onChange={(e) =>*/}
-            {/*                                   setLoginUser({*/}
-            {/*                                       ...loginUser,*/}
-            {/*                                       password: e.target.value*/}
-            {/*                                   })}*/}
-            {/*                               required/>*/}
-            {/*                    </div>*/}
-            {/*                    <button className="btn btn-login btn-block"*/}
-            {/*                            onClick={login}>Login*/}
-            {/*                    </button>*/}
-            {/*                </div>*/}
-            {/*            </div>*/}
-            {/*        </div>*/}
-            {/*    </div>*/}
-            {/*</div>*/}
-
             <section className="gradient-form">
                 <div className="container">
                     <div className="row d-flex justify-content-center align-items-center">
@@ -85,40 +41,39 @@ const Login = () => {
                                             <div className="text-center">
                                                 <img src="spotify.png"
                                                      style={{ width: '100px' }} alt="logo"/>
-                                                <h4 className="mt-4 mb-5 pb-1 h4-text">
+                                                <h4 className="mt-4 mb-4 pb-1 h4-text">
                                                     The Spotify Clone</h4>
                                             </div>
                                             <form>
                                                 <p className="p-text">
                                                     Please login to your account</p>
+
                                                 <div className="form-outline mb-4">
-                                                    <input type="email"
-                                                           id="login-username"
-                                                           className="form-control input-login"
-                                                           placeholder="Username"
-                                                           onChange={(e) =>
-                                                               setLoginUser({
-                                                                   ...loginUser,
-                                                                   username: e.target.value
-                                                               })}
-                                                           required/>
-                                                    <label className="form-label label-login"
-                                                           htmlFor="login-username">Username</label>
+                                                    <MDBInput className="form-control-login"
+                                                              label="Username"
+                                                              id="register-username"
+                                                              type="text"
+                                                              size="lg"
+                                                              required
+                                                              onChange={(e) =>
+                                                                  setLoginUser({
+                                                                      ...loginUser,
+                                                                      username: e.target.value
+                                                                  })}/>
                                                 </div>
 
                                                 <div className="form-outline mb-4">
-                                                    <input type="password"
-                                                           id="login-password"
-                                                           placeholder="Password"
-                                                           className="form-control input-login"
-                                                           onChange={(e) =>
-                                                               setLoginUser({
-                                                                   ...loginUser,
-                                                                   password: e.target.value
-                                                               })}
-                                                           required/>
-                                                    <label className="form-label label-login"
-                                                           htmlFor="login-password">Password</label>
+                                                    <MDBInput className="form-control-login"
+                                                              label="Password"
+                                                              id="register-password"
+                                                              type="password"
+                                                              size="lg"
+                                                              required
+                                                              onChange={(e) =>
+                                                                  setLoginUser({
+                                                                      ...loginUser,
+                                                                      password: e.target.value
+                                                                  })}/>
                                                 </div>
 
                                                 <div className="text-center pt-1 mb-3 pb-1">

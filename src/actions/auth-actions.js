@@ -38,8 +38,9 @@ export const logout = async (dispatch) => {
     });
 };
 
-export const isAccountOwner = async (dispatch, user) => {
-    const response = await service.isAccountOwner(user);
+export const isAccountOwner = async (dispatch, username) => {
+    console.log('the username was ' + username);
+    const response = await service.isAccountOwner(username);
     dispatch({
         type: 'IS_ACCOUNT_OWNER',
         response

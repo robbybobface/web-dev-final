@@ -34,9 +34,9 @@ const Home = () => {
                             type="video/mp4"/>
                 </video>
             </div>
-            <div className="container container-home">
-                <div className="row d-flex flex-column align-items-center justify-content-center">
-                    <div className="col-xl-8">
+            <div className="container container-home ">
+                <div className="d-flex row align-items-center justify-content-center">
+                    <div className="col-lg-8 col-xl-9 col-xxl-10 my-auto align-items-center justify-content-center">
                         <h1 className="mb-3 header-home">Welcome to our Spotify Clone</h1>
                         <h5 className="mb-4 header-text">Best & free guide of responsive web
                                                          design</h5>
@@ -47,19 +47,22 @@ const Home = () => {
                                     }}>
                                 Search Songs
                             </button>
-                            <button className="btn-hover color-8"
-                                    onClick={() => {
-                                        navigate('/register');
-                                    }}>
-                                Sign Up Now!
-                            </button>
+                            {loggedIn ? '' :
+                                <button className="btn-hover color-8"
+                                        onClick={() => {
+                                            navigate('/register');
+                                        }}>
+                                    Sign Up Now!
+                                </button>}
+
                         </div>
                     </div>
                 </div>
             </div>
 
         </>
-    );
+    )
+        ;
 };
 
 export default Home;
