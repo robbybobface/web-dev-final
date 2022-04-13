@@ -99,6 +99,7 @@
   font-family: "Roboto Light", serif;
   font-size: 24px;
   font-style: italic;
+  margin-bottom: 0 !important;
 }
 
 .progress-feat {
@@ -155,29 +156,34 @@
 }
 
 .recommended-card.gradient-custom {
+  background-size: 300% 100%;
   /* fallback for old browsers */
-  background: rgba(63, 155, 165, 0.6);
+  background-image: linear-gradient(to right bottom, rgba(202, 143, 236, 0.6), rgba(63, 155, 165, 0.6));
 
   /* Chrome 10-25, Safari 5.1-6 */
-  background: -webkit-linear-gradient(to right bottom, rgba(202, 143, 236, 0.6), rgba(63, 155, 165, 0.6));
+  background-image: -webkit-linear-gradient(to right bottom, rgba(202, 143, 236, 0.6), rgba(63, 155, 165, 0.6), rgba(237, 110, 160, 0.6), rgba(251, 176, 59, 0.6));
 
   /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-  background: linear-gradient(to right bottom, rgba(216, 181, 255, 0.6), rgba(0, 201, 185, 0.71));
+  background-image: linear-gradient(to right bottom, rgba(216, 181, 255, 0.6), rgba(0, 201, 185, 0.71), rgba(237, 110, 160, 0.6), rgba(251, 176, 59, 0.6));
   transition: all 0.5s ease-in-out;
-  -webkit-transition: all 0.5s ease-out;
+  moz-transition: all .4s ease-in-out;
+  -o-transition: all .4s ease-in-out;
+  -webkit-transition: all .4s ease-in-out;
+  transition: all .4s ease-in-out;
   cursor: pointer;
 }
 
 
 .recommended-card.gradient-custom:hover {
+  background-position: 100% 0;
   /* fallback for old browsers */
-  background: rgba(237, 110, 160, 0.6);
+  background-image: linear-gradient(to right bottom, rgba(237, 110, 160, 0.8), rgba(251, 176, 59, 0.8));
 
   /* Chrome 10-25, Safari 5.1-6 */
-  background: -webkit-linear-gradient(to right bottom, rgba(237, 110, 160, 0.8), rgba(251, 176, 59, 0.8));
+  background-image: -webkit-linear-gradient(to right bottom, rgba(202, 143, 236, 0.6), rgba(63, 155, 165, 0.6), rgba(237, 110, 160, 0.8), rgba(251, 176, 59, 0.8));
 
   /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-  background: linear-gradient(to right bottom, rgba(237, 110, 160, 0.6), rgba(251, 176, 59, 0.6));
+  background-image: linear-gradient(to right bottom, rgba(202, 143, 236, 0.6), rgba(63, 155, 165, 0.6), rgba(237, 110, 160, 0.6), rgba(251, 176, 59, 0.6));
   box-shadow: 0 4px 15px 0 rgba(236, 116, 149, 0.5);
 }
 
