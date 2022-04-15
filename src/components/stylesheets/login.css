@@ -12,7 +12,8 @@
 .btn-hover-create {
   width: 150px;
   font-size: 16px;
-  font-family: "Roboto Light", serif;
+  font-family: "Roboto", serif;
+  font-weight: 300;
   color: #fff;
   cursor: pointer;
   margin: 10px;
@@ -41,12 +42,14 @@
 }
 
 .p-text {
-  font-family: 'Roboto Regular', serif;
+  font-family: 'Roboto', serif;
+  font-weight: 400;
   color: black;
 }
 
 .h4-text {
-  font-family: "Roboto Medium", serif;
+  font-family: "Roboto", serif;
+  font-weight: 500;
 }
 
 .btn-hover-create.color-1 {

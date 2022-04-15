@@ -179,10 +179,10 @@ const Header = () => {
                                             <MDBNavbarLink aria-current="page"
                                                            className={page === 'home'
                                                                ? `nav-link nav-link-override ${page
-                                                               === 'home'
+                                                               === 'dashboard'
                                                                    ? 'active' : ""}`
                                                                : `nav-link nav-link-override-alt ${page
-                                                               === 'home'
+                                                               === 'dashboard'
                                                                    ? 'active' : ""}`}
                                                            onClick={() => {
                                                                navigate('/dashboard', {});

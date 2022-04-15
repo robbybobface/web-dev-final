@@ -30,9 +30,10 @@ const Home = () => {
             <div className="container container-home ">
                 <div className="d-flex row align-items-center justify-content-center">
                     <div className="col-lg-8 col-xl-9 col-xxl-10 my-auto align-items-center justify-content-center">
-                        <h1 className="mb-3 header-home">Welcome to our Spotify Search</h1>
-                        <h5 className="mb-4 header-text">Search Details about your favorite artists,
-                                                         albums, and songs!</h5>
+                        <h1 className="mb-3 header-home">Welcome to Spotify Search</h1>
+                        <h5 className="mb-4 px-5 header-text">Search Details about your favorite
+                                                              artists,
+                                                              albums, and songs!</h5>
                         <div className="button-row">
                             <button className="btn-hover color-8"
                                     onClick={() => {

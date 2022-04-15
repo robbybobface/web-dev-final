@@ -43,14 +43,16 @@
   color: white;
   font-size: 80px;
   text-align: center;
-  font-family: "Roboto Light", serif;
+  font-family: "Roboto", serif;
+  font-weight: 300;
 }
 
 .header-text {
   color: #24262b;
   font-size: 30px;
   text-align: center;
-  font-family: "Roboto Light", serif;
+  font-family: "Roboto", serif;
+  font-weight: 300;
 }
 
 * {
@@ -67,7 +69,8 @@
 .btn-hover {
   width: 150px;
   font-size: 18px;
-  font-family: "Roboto Light", serif;
+  font-family: "Roboto", serif;
+  font-weight: 300;
   color: #fff;
   cursor: pointer;
   margin: 20px;
