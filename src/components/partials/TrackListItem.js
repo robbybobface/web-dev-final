@@ -7,34 +7,30 @@ const TrackListItem = ({ track }) => {
     const explicit = track.explicit;
     return (
         <>
-            <MDBCard style={{ width: '16rem', height: '8rem' }}
-                     className="h-100 align-content-center justify-content-center search-card">
-                <MDBRipple rippleColor="light" rippleTag="div" className="bg-image hover-overlay">
-                    <MDBCardImage src={track.album.images[0].url} alt="..." position="top"/>
-                    <a>
-                        <div className="mask"
-                             style={{ backgroundColor: 'rgba(251, 251, 251, 0.05)' }}/>
-                    </a>
-                </MDBRipple>
-                <MDBCardBody>
-                    <MDBCardText>
-                        <span className="search-track-name align-content-center">{track.name}</span>
-                        {explicit
-                            ?
+
+            <div className="card recommended-card h-100 gradient-custom-2 mb-4 mb-md-0">
+                <div className="card-body h-100 text-center">
+                    <img src={track.album.images[0].url
+                        || 'https://images.unsplash.com/photo-1573247374056-ba7c8c5ca4fa?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1480&q=80'}
+                         alt="avatar"
+                         className="img-fluid track-image-recommended"/>
+                    <h5 className="item-name-recommended-search mt-3 mt-md-3 mt-xl-4">
+                        {track.name}
+                        {explicit ?
                             <span className="material-icons green-color">explicit </span>
-                            : ''}
-                        <br/>
-                        <span className="search-track-artist">{track.artists.map((artist) => {
+                            : ''}</h5>
+                    <p className="item-descriptor" key={track.id}>
+                        {track.artists.map((artist) => {
                             return artist.name.concat(', ');
                         }).join(' ').slice(0, -2)
-                        }</span>
-                        <br/>
-                        <span className="search-track-duration">{moment.duration(track.duration_ms,
+                        }
+                    </p>
+                    <p className="item-descriptor-recommended mb-sm-1 mb-lg-1">
+                        {moment.duration(track.duration_ms,
                             "milliseconds").format(
-                            'h [hrs], m [min], ss [secs]')}</span>
-                    </MDBCardText>
-                </MDBCardBody>
-            </MDBCard>
+                            'h [hrs], m [min], ss [secs]')}</p>
+                </div>
+            </div>
         </>
     );
 };

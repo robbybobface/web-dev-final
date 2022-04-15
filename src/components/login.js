@@ -1,32 +1,57 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import * as security from "../services/auth-service";
 import { useNavigate } from "react-router-dom";
 import { toast } from 'react-toastify';
 import { MDBInput } from "mdb-react-ui-kit";
+import * as service from "../services/profile-service";
+import { UserContext } from "../Utils/UserContext";
+import { useDispatch } from "react-redux";
 
 const Login = () => {
+    const { user, loggedIn } = useContext(UserContext);
+    const [ stateUser, setStateUser ] = user;
+    const [ stateLoggedIn, setStateLoggedIn ] = loggedIn;
     const [ loginUser, setLoginUser ] = useState({});
-    const navigate = useNavigate();
 
-    const login = () =>
-        security.login(loginUser)
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+
+    const login = async () =>
+        await security.login(loginUser)
+            .catch(error => toast.error('Invalid Username or Password'))
             .then((response) => {
-                console.log(response);
-                toast.success(response.success, {
-                    position: "top-right",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                });
-                navigate('/search', {});
-            })
-            .catch(e =>
-                toast.error('Invalid Username or Password')
-            );
+                if (response === 'Invalid Username or Password') {
+                    toast.error('Invalid Username or Password');
+                } else {
+                    // console.log(response);
+                    toast.success(response.success, {
+                        position: "top-right",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    });
+                    isLoggedInHandler();
+                    userHandler();
+                    navigate('/search', {});
+                }
+            });
     // toast.error(e));
+
+    const userHandler = () => {
+        service.profile(dispatch).then(r => {
+            setStateUser(r);
+            // console.log(r);
+        });
+    };
+
+    const isLoggedInHandler = () => {
+        security.isLoggedIn(dispatch).then(r => {
+            setStateLoggedIn(r.loggedIn);
+        });
+    };
     return (
         <>
             <section className="gradient-form">
@@ -42,7 +67,7 @@ const Login = () => {
                                                 <img src="spotify.png"
                                                      style={{ width: '100px' }} alt="logo"/>
                                                 <h4 className="mt-4 mb-4 pb-1 h4-text">
-                                                    The Spotify Clone</h4>
+                                                    Spotify Search</h4>
                                             </div>
                                             <form>
                                                 <p className="p-text">
@@ -77,7 +102,7 @@ const Login = () => {
                                                 </div>
 
                                                 <div className="text-center pt-1 mb-3 pb-1">
-                                                    <button className="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3"
+                                                    <button className="btn btn-primary btn-block fa-lg gradient-custom-3 mb-3"
                                                             type="button"
                                                             onClick={login}>
                                                         Log in
@@ -100,7 +125,7 @@ const Login = () => {
 
                                         </div>
                                     </div>
-                                    <div className="col-lg-6 d-flex align-items-center gradient-custom-2">
+                                    <div className="col-lg-6 d-flex align-items-center gradient-custom-3">
                                         <div className="text-white px-3 py-4 p-md-5 mx-md-4">
                                             <h4 className="mb-4">
                                                 Something about a Spotify Thingy</h4>

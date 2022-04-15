@@ -1,5 +1,6 @@
 import React from "react";
 import momentDurationFormatSetup from "moment-duration-format";
+import moment from "moment";
 
 const MoreByListItem = ({ track }) => {
     const explicit = track.explicit;
@@ -16,11 +17,15 @@ const MoreByListItem = ({ track }) => {
                             ?
                             <span className="material-icons green-color green-color-track-recommended">explicit</span>
                             : ''}</h5>
-                    <p className="item-descriptor-recommended mb-sm-1 mb-lg-1">{track.artists.map(
-                        (artist) => {
-                            return artist.name.concat(', ');
-                        }).join(' ').slice(0, -2)
-                    }</p>
+                    <p className="item-descriptor-recommended mb-sm-1 mb-lg-1">{
+                        // track.artists.map(
+                        // (artist) => {
+                        //     return artist.name.concat(', ');
+                        // }).join(' ').slice(0, -2)
+                        moment(track.release_date).format('YYYY')} - {track.album_type.charAt(
+                            0).toUpperCase()
+                        + track.album_type.slice(
+                            1)}</p>
                 </div>
             </div>
         </>

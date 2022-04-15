@@ -1,30 +1,23 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import * as security from "../services/auth-service";
-
-import Listbox from "../components/listbox";
-import Detail from "../components/detail";
-import Dropdown from "../components/dropdown";
-import { Credentials } from '../Credentials';
-import axios from 'axios';
 
 import { useDispatch } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
+import { UserContext } from "../Utils/UserContext";
 
 const Home = () => {
-    const [ loggedIn, setLoggedIn ] = useState(false);
+    // const [ loggedIn, setLoggedIn ] = useState(false);
+    const { user, loggedIn } = useContext(UserContext);
+    const [ stateUser, setStateUser ] = user;
+    const [ stateLoggedIn, setStateLoggedIn ] = loggedIn;
+
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const location = useLocation();
-    const loggedInHandler = () => {
-        security.isLoggedIn(dispatch).then(r => {
-            setLoggedIn(r.loggedIn);
-            console.log(r);
-        });
-    };
 
-    useEffect(() =>
-        loggedInHandler(), [ loggedIn, location.key ]
-    );
+    console.log(stateUser);
+    console.log(stateLoggedIn);
+
     return (
         <>
             <div className="bg-image mask mask-custom-home">
@@ -37,7 +30,7 @@ const Home = () => {
             <div className="container container-home ">
                 <div className="d-flex row align-items-center justify-content-center">
                     <div className="col-lg-8 col-xl-9 col-xxl-10 my-auto align-items-center justify-content-center">
-                        <h1 className="mb-3 header-home">Welcome to our Spotify Clone</h1>
+                        <h1 className="mb-3 header-home">Welcome to our Spotify Search</h1>
                         <h5 className="mb-4 header-text">Best & free guide of responsive web
                                                          design</h5>
                         <div className="button-row">
@@ -47,7 +40,7 @@ const Home = () => {
                                     }}>
                                 Search Songs
                             </button>
-                            {loggedIn ? '' :
+                            {stateLoggedIn ? '' :
                                 <button className="btn-hover color-8"
                                         onClick={() => {
                                             navigate('/register');

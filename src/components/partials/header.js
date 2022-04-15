@@ -1,6 +1,6 @@
 import * as security from "../../services/auth-service";
 import * as service from "../../services/profile-service";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -14,31 +14,37 @@ import {
     MDBNavbarNav,
     MDBNavbarToggler
 } from "mdb-react-ui-kit";
+import { UserContext } from "../../Utils/UserContext";
 
 const Header = () => {
         const [ showNavSecond, setShowNavSecond ] = useState(false);
-        const [ loggedIn, setLoggedIn ] = useState(false);
-        const [ user, setUser ] = useState({});
+        // const [ loggedIn, setLoggedIn ] = useState(false);
+        // const [ user, setUser ] = useState({});
         const [ page, setPage ] = useState('home');
+
+        const { user, loggedIn } = useContext(UserContext);
+        const [ stateUser, setStateUser ] = user;
+        const [ stateLoggedIn, setStateLoggedIn ] = loggedIn;
+
         const dispatch = useDispatch();
         const navigate = useNavigate();
         const location = useLocation();
 
         const userHandler = () => {
             service.profile(dispatch).then(r => {
-                setUser(r);
-                console.log(r);
+                setStateUser(r);
+                // console.log(r);
             });
         };
 
         const isLoggedInHandler = () => {
             security.isLoggedIn(dispatch).then(r => {
-                setLoggedIn(r.loggedIn);
+                setStateLoggedIn(r.loggedIn);
             });
         };
 
         const logOutHandler = () => {
-            security.logout(dispatch, user).then(r => {
+            security.logout(dispatch, stateUser).then(r => {
                 toast.success(r.success, {
                     position: "top-right",
                     autoClose: 5000,
@@ -51,13 +57,12 @@ const Header = () => {
                 setPage('home');
                 navigate('', {});
                 secondNavHandler();
-                setLoggedIn(false);
-
+                setStateLoggedIn(false);
             });
         };
 
         const profileHandler = () => {
-            if (!loggedIn) {
+            if (!stateLoggedIn) {
                 toast.error("You're not logged in!", {
                     position: "top-right",
                     autoClose: 5000,
@@ -68,7 +73,7 @@ const Header = () => {
                     progress: undefined
                 });
             }
-            navigate('/profile/' + user.username, {});
+            navigate('/profile/' + stateUser.username, {});
             secondNavHandler();
             setPage('profile');
         };
@@ -128,7 +133,7 @@ const Header = () => {
                         <Link to="/">
                             <MDBNavbarBrand className={page === 'home' ? `navbar-brand`
                                 : `navbar-brand navbar-brand-alt`}>
-                                Spotify Clone
+                                Spotify Search
                             </MDBNavbarBrand>
                         </Link>
                         <MDBNavbarToggler
@@ -139,7 +144,7 @@ const Header = () => {
                             <MDBIcon icon="bars" fas/>
                         </MDBNavbarToggler>
                         <MDBCollapse navbar show={showNavSecond}>
-                            {!loggedIn ?
+                            {!stateLoggedIn ?
                                 <>
                                     <MDBNavbarNav>
                                         <MDBNavbarLink aria-current="page"
@@ -170,20 +175,22 @@ const Header = () => {
                                 :
                                 <>
                                     <MDBNavbarNav fullWidth={false}>
-                                        {/*<MDBNavbarLink aria-current="page"*/}
-                                        {/*               className={page === 'home'*/}
-                                        {/*                   ? `nav-link nav-link-override ${page*/}
-                                        {/*                   === 'home'*/}
-                                        {/*                       ? 'active' : ""}`*/}
-                                        {/*                   : `nav-link nav-link-override-alt ${page*/}
-                                        {/*                   === 'home'*/}
-                                        {/*                       ? 'active' : ""}`}*/}
-                                        {/*               onClick={() => {*/}
-                                        {/*                   navigate('/dashboard', {});*/}
-                                        {/*                   secondNavHandler();*/}
-                                        {/*               }}>*/}
-                                        {/*    Dashboard*/}
-                                        {/*</MDBNavbarLink>*/}
+                                        {stateUser.admin &&
+                                            <MDBNavbarLink aria-current="page"
+                                                           className={page === 'home'
+                                                               ? `nav-link nav-link-override ${page
+                                                               === 'home'
+                                                                   ? 'active' : ""}`
+                                                               : `nav-link nav-link-override-alt ${page
+                                                               === 'home'
+                                                                   ? 'active' : ""}`}
+                                                           onClick={() => {
+                                                               navigate('/dashboard', {});
+                                                               secondNavHandler();
+                                                           }}>
+                                                Dashboard
+                                            </MDBNavbarLink>
+                                        }
                                         <MDBNavbarLink className={page === 'home'
                                             ? `nav-link nav-link-override ${page === 'search'
                                                 ? 'active' : ""}`
@@ -198,7 +205,7 @@ const Header = () => {
                                     </MDBNavbarNav>
                                 </>
                             }
-                            {!loggedIn ?
+                            {!stateLoggedIn ?
                                 <>
                                     <div className="ms-auto">
                                         <MDBNavbarNav>
@@ -236,10 +243,11 @@ const Header = () => {
                                                            className={page === 'home'
                                                                ? `nav-link nav-link-override ${page
                                                                === 'profile/'
-                                                               + user.username
+                                                               + stateUser.username
                                                                    ? 'active' : ""}`
                                                                : `nav-link nav-link-override-alt ${page
-                                                               === 'profile/' + user.username ? 'active'
+                                                               === 'profile/' + stateUser.username
+                                                                   ? 'active'
                                                                    : ""}`}
                                                            href="javascript:;"
                                                            onClick={() => {

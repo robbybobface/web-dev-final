@@ -8,7 +8,18 @@
   /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
   background: linear-gradient(to right bottom, rgba(216, 181, 255, 0.6), rgba(0, 201, 185, 0.71));
   transition: all 0.2s ease-in-out;
-  -webkit-transition: all 2s ease-out;
+}
+
+.gradient-custom-2 {
+  /* fallback for old browsers */
+  background: rgba(63, 155, 165, 0.6);
+
+  /* Chrome 10-25, Safari 5.1-6 */
+  background: -webkit-linear-gradient(to right bottom, rgba(202, 143, 236, 0.6), rgba(63, 155, 165, 0.6));
+
+  /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  background: linear-gradient(to right bottom, rgba(216, 181, 255, 0.6), rgba(0, 201, 185, 0.71));
+  transition: all 0.2s ease-in-out;
 }
 
 .mask-custom-details {
@@ -61,6 +72,12 @@
   font-size: 25px;
 }
 
+.track-image-recommended {
+  width: 100% !important;
+  height: auto !important;
+  object-fit: cover !important;
+}
+
 .item-name {
   font-size: 30px;
   font-family: "Roboto Regular", serif;
@@ -72,6 +89,27 @@
   font-size: 16px;
   font-family: "Roboto Light", serif;
   font-style: italic;
+  transition: all 0.1s ease-in-out;
+}
+
+p.item-descriptor {
+  margin-bottom: 8px;
+}
+
+.item-descriptor.artist-name:hover {
+  color: #ed6ea0;
+}
+
+.follower-count {
+  color: #ff197b !important;
+}
+
+.view-all {
+  font-size: 20px;
+  font-family: "Roboto Light", serif;
+  font-style: italic;
+  color: white;
+  text-decoration: 1px underline white;
 }
 
 .item-heading {
@@ -82,7 +120,7 @@
 
 .item-descriptor-recommended {
   color: #232323;
-  font-size: 15px;
+  font-size: 16px;
   font-family: "Roboto Light", serif;
   font-style: italic;
 }
@@ -99,7 +137,7 @@
   font-family: "Roboto Light", serif;
   font-size: 24px;
   font-style: italic;
-  margin-bottom: 0 !important;
+  margin-bottom: 0;
 }
 
 .progress-feat {
@@ -125,24 +163,38 @@
   margin: 0;
 }
 
+.hr-mb {
+  margin-bottom: 16px;
+  margin-top: 0;
+}
+
 .duration {
   text-align: right !important;
 }
 
 .track-list-row {
   background-color: transparent;
-  padding-top: 16px;
-  padding-bottom: 16px;
+  margin-left: -24px;
+  margin-right: -24px;
   transition: all 0.2s ease-in-out;
+  padding: 16px 24px;
+}
+
+.track-list-row-long {
+  padding: 5px 24px !important;
 }
 
 .track-list-row-last {
   background-color: transparent;
-  padding-top: 16px;
-  padding-bottom: 16px;
   margin-bottom: -16px;
   transition: all 0.2s ease-in-out;
+  margin-left: -24px;
+  margin-right: -24px;
+  padding: 16px 24px;
+}
 
+.track-list-row-long-last {
+  padding: 5px 24px !important;
 }
 
 .track-list-row-last:hover {
@@ -155,6 +207,11 @@
   cursor: pointer;
 }
 
+.track-thumbnail {
+  margin-left: -50px;
+  width: 20%;
+}
+
 .recommended-card.gradient-custom {
   background-size: 300% 100%;
   /* fallback for old browsers */
@@ -162,7 +219,6 @@
 
   /* Chrome 10-25, Safari 5.1-6 */
   background-image: -webkit-linear-gradient(to right bottom, rgba(202, 143, 236, 0.6), rgba(63, 155, 165, 0.6), rgba(237, 110, 160, 0.6), rgba(251, 176, 59, 0.6));
-
   /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
   background-image: linear-gradient(to right bottom, rgba(216, 181, 255, 0.6), rgba(0, 201, 185, 0.71), rgba(237, 110, 160, 0.6), rgba(251, 176, 59, 0.6));
   transition: all 0.5s ease-in-out;
@@ -180,11 +236,42 @@
   background-image: linear-gradient(to right bottom, rgba(237, 110, 160, 0.8), rgba(251, 176, 59, 0.8));
 
   /* Chrome 10-25, Safari 5.1-6 */
-  background-image: -webkit-linear-gradient(to right bottom, rgba(202, 143, 236, 0.6), rgba(63, 155, 165, 0.6), rgba(237, 110, 160, 0.8), rgba(251, 176, 59, 0.8));
+  background-image: -webkit-linear-gradient(to right bottom, rgba(202, 143, 236, 0.6), rgba(63, 155, 165, 0.6), rgba(237, 110, 160, 0.6), rgba(251, 176, 59, 0.6));
 
   /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
   background-image: linear-gradient(to right bottom, rgba(202, 143, 236, 0.6), rgba(63, 155, 165, 0.6), rgba(237, 110, 160, 0.6), rgba(251, 176, 59, 0.6));
   box-shadow: 0 4px 15px 0 rgba(236, 116, 149, 0.5);
+}
+
+.recommended-card.gradient-custom-2 {
+  background-size: 200% 100%;
+  /* fallback for old browsers */
+  background-image: linear-gradient(to right bottom, rgba(202, 143, 236, 0.6), rgba(63, 155, 165, 0.6));
+
+  /* Chrome 10-25, Safari 5.1-6 */
+  background-image: -webkit-linear-gradient(to right bottom, rgba(199, 121, 255, 0.6), rgba(35, 227, 227, 0.6), rgba(255, 110, 159, 0.6), rgba(255, 226, 125, 0.6));
+  /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  background-image: linear-gradient(to right bottom, rgba(199, 121, 255, 0.6), rgba(35, 227, 227, 0.6), rgba(255, 110, 159, 0.6), rgba(255, 226, 125, 0.6));
+  transition: all 0.5s ease-in-out;
+  moz-transition: all .4s ease-in-out;
+  -o-transition: all .4s ease-in-out;
+  -webkit-transition: all .4s ease-in-out;
+  transition: all .4s ease-in-out;
+  cursor: pointer;
+}
+
+
+.recommended-card.gradient-custom-2:hover {
+  background-position: 100% 0;
+  /* fallback for old browsers */
+  background-image: linear-gradient(to right bottom, rgba(237, 110, 160, 0.8), rgba(251, 176, 59, 0.8));
+
+  /* Chrome 10-25, Safari 5.1-6 */
+  background-image: -webkit-linear-gradient(to right bottom, rgba(199, 121, 255, 0.6), rgba(35, 227, 227, 0.6), rgba(255, 110, 159, 0.6), rgba(255, 226, 125, 0.6));
+
+  /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  background-image: linear-gradient(to right bottom, rgba(199, 121, 255, 0.6), rgba(35, 227, 227, 0.6), rgba(255, 110, 159, 0.6), rgba(255, 226, 125, 0.6));
+  box-shadow: 0 4px 15px 0 rgba(255, 20, 111, 0.5);
 }
 
 .btn-hover-like {
@@ -244,7 +331,13 @@
 
 /*Small Devices*/
 @media (min-width: 576px) {
+  .card.gradient-custom {
+    width: 75%;
+  }
 
+  .card.recommended-card {
+    width: 100%;
+  }
 }
 
 /*Medium Devices*/
@@ -272,6 +365,19 @@
   .green-color-track-recommended {
     font-size: 18px;
   }
+
+  .track-thumbnail {
+    margin-left: -30px;
+    width: 22%;
+  }
+
+  .card.gradient-custom {
+    width: 100%;
+  }
+
+  .card.recommended-card {
+    width: 100%;
+  }
 }
 
 /*Large Devices*/
@@ -292,11 +398,20 @@
     font-size: 14px;
   }
 
+  .track-thumbnail {
+    margin-left: -60px;
+    width: 17%;
+  }
+
 
 }
 
 /*X-Large Devices*/
 @media (min-width: 1200px) {
+  .track-thumbnail {
+    margin-left: -30px;
+    width: 12%;
+  }
 }
 
 /*XX-L Devices*/
@@ -315,5 +430,10 @@
 
   .item-descriptor {
     font-size: 18px;
+  }
+
+  .track-thumbnail {
+    margin-left: -30px;
+    width: 10%;
   }
 }

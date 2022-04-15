@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Helmet } from 'react-helmet';
 import { Credentials } from "../Credentials";
@@ -12,6 +12,7 @@ import ArtistListItem from "./partials/ArtistListItem";
 import { ScaleLoader } from "react-spinners";
 import { toast } from "react-toastify";
 import { css } from "@emotion/react";
+import { UserContext } from "../Utils/UserContext";
 
 const override = css`
   display: block;
@@ -21,10 +22,14 @@ const override = css`
 
 const Search = () => {
         const { searchString } = useParams();
+        const { searchBy } = useContext(UserContext);
+        const [ stateSearchBy, setStateSearchBy ] = searchBy;
         const [ search, setSearch ] = useState(searchString);
-        const [ trackSearch, setTrackSearch ] = useState(true);
-        const [ artistSearch, setArtistSearch ] = useState(false);
-        const [ albumSearch, setAlbumSearch ] = useState(false);
+
+        // const [ trackSearch, setTrackSearch ] = useState(true);
+        // const [ artistSearch, setArtistSearch ] = useState(false);
+        // const [ albumSearch, setAlbumSearch ] = useState(false);
+
         const [ searched, setSearched ] = useState(false);
         const [ loading, setLoading ] = useState(true);
 
@@ -49,77 +54,29 @@ const Search = () => {
                 method: 'POST'
             });
             setToken(token.data.access_token);
-            // const token = await axios('https://accounts.spotify.com/api/token', {
-            //     headers: {
-            //         'Content-Type': 'application/x-www-form-urlencoded',
-            //         'Authorization': 'Basic ' + btoa(spotify.ClientId + ':' +
-            // spotify.ClientSecret) }, data: 'grant_type=client_credentials', method: 'POST' });
-            // setToken(token.data.access_token); const featuredResponse = await axios.get(
-            // `https://api.spotify.com/v1/playlists/37i9dQZEVXbNG2KDcFcKOF`, { headers: {
-            // 'Authorization': 'Bearer ' + token.data.access_token } });
-            // console.log(featuredResponse); setTopSongs(featuredResponse.data.tracks.items);
             const artistCall = await axios.get(
                 `https://api.spotify.com/v1/search?q=${search}&type=artist&market=US&limit=8`,
                 {
                     headers: { 'Authorization': 'Bearer ' + token.data.access_token }
                 });
-            console.log(artistCall.data.artists.items);
+            // console.log(artistCall.data.artists.items);
             setArtists(artistCall.data.artists.items);
             const trackResponse = await axios.get(
                 `https://api.spotify.com/v1/search?q=${search}&type=track&market=US&limit=8`,
                 {
                     headers: { 'Authorization': 'Bearer ' + token.data.access_token }
                 });
-            console.log(trackResponse.data.tracks.items);
+            // console.log(trackResponse.data.tracks.items);
             setTracks(trackResponse.data.tracks.items);
             const albumResponse = await axios.get(
                 `https://api.spotify.com/v1/search?q=${search}&type=album&market=US&limit=8`,
                 {
                     headers: { 'Authorization': 'Bearer ' + token.data.access_token }
                 });
-            console.log(albumResponse.data.albums.items);
+            // console.log(albumResponse.data.albums.items);
             setAlbums(albumResponse.data.albums.items);
             setLoading(false);
         };
-
-        // const getArtists = () => {
-        //     axios('https://accounts.spotify.com/api/token', {
-        //         headers: {
-        //             'Content-Type': 'application/x-www-form-urlencoded',
-        //             'Authorization': 'Basic ' + btoa(spotify.ClientId + ':' +
-        // spotify.ClientSecret) }, data: 'grant_type=client_credentials', method: 'POST' })
-        // .then(tokenResponse => { // console.log(tokenResponse);
-        // setToken(tokenResponse.data.access_token);
-        // axios(`https://api.spotify.com/v1/search?q=${search}&type=artist&market=US&limit=8`, {
-        // method: 'GET', headers: { 'Authorization': 'Bearer ' + tokenResponse.data.access_token }
-        // }) .then(artistResponse => { console.log(artistResponse);
-        // setArtists(artistResponse.data.artists.items); });  }); };
-
-        // const getTracks = () => {
-        //     axios('https://accounts.spotify.com/api/token', {
-        //         headers: {
-        //             'Content-Type': 'application/x-www-form-urlencoded',
-        //             'Authorization': 'Basic ' + btoa(spotify.ClientId + ':' +
-        // spotify.ClientSecret) }, data: 'grant_type=client_credentials', method: 'POST' })
-        // .then(tokenResponse => { // console.log(tokenResponse);
-        // setToken(tokenResponse.data.access_token);
-        // axios(`https://api.spotify.com/v1/search?q=${search}&type=track&market=US&limit=8`, {
-        // method: 'GET', headers: { 'Authorization': 'Bearer ' + tokenResponse.data.access_token }
-        // }) .then(trackResponse => { console.log(trackResponse);
-        // setTracks(trackResponse.data.tracks.items); });  }); };
-
-        // const getAlbums = () => {
-        //     axios('https://accounts.spotify.com/api/token', {
-        //         headers: {
-        //             'Content-Type': 'application/x-www-form-urlencoded',
-        //             'Authorization': 'Basic ' + btoa(spotify.ClientId + ':' +
-        // spotify.ClientSecret) }, data: 'grant_type=client_credentials', method: 'POST' })
-        // .then(tokenResponse => { // console.log(tokenResponse);
-        // setToken(tokenResponse.data.access_token);
-        // axios(`https://api.spotify.com/v1/search?q=${search}&type=album&market=US&limit=8`, {
-        // method: 'GET', headers: { 'Authorization': 'Bearer ' + tokenResponse.data.access_token }
-        // }) .then(albumResponse => { console.log(albumResponse);
-        // setAlbums(albumResponse.data.albums.items); });  }); };
 
         const getFeatured = async () => {
             const token = await axios('https://accounts.spotify.com/api/token', {
@@ -137,7 +94,7 @@ const Search = () => {
                 {
                     headers: { 'Authorization': 'Bearer ' + token.data.access_token }
                 });
-            console.log(featuredResponse);
+            // console.log(featuredResponse);
             setTopSongs(featuredResponse.data.tracks.items);
             setLoading(false);
         };
@@ -146,7 +103,7 @@ const Search = () => {
             if (!search) {
                 return;
             }
-            console.log(search);
+            // console.log(search);
             setLoading(true);
             getSearch().catch(error => toast.error(error));
             setSearched(true);
@@ -154,20 +111,14 @@ const Search = () => {
         };
 
         const trackHandler = () => {
-            setTrackSearch(true);
-            setAlbumSearch(false);
-            setArtistSearch(false);
+            setStateSearchBy('tracks');
         };
 
         const albumHandler = () => {
-            setTrackSearch(false);
-            setAlbumSearch(true);
-            setArtistSearch(false);
+            setStateSearchBy('albums');
         };
         const artistHandler = () => {
-            setTrackSearch(false);
-            setAlbumSearch(false);
-            setArtistSearch(true);
+            setStateSearchBy('artists');
         };
 
         const artistNavigate = (aid) => {
@@ -209,13 +160,13 @@ const Search = () => {
             <>
                 <Helmet>
                     <style>{'body {   background-image: url(\'https://images.unsplash.com/photo-1614854262318-831574f15f1f?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80\') !important;\n'
-                    + '  background-repeat: no-repeat !important;\n'
-                    + '  background-size: cover !important;\n'
-                    + '  background-color: rgba(61, 162, 195, 0.1) !important; }'}</style>
+                        + '  background-repeat: no-repeat !important;\n'
+                        + '  background-size: cover !important;\n'
+                        + '  background-color: rgba(61, 162, 195, 0.1) !important; }'}</style>
                 </Helmet>
                 <div className="container container-search mt-5">
                     <div className="row align-content-center justify-content-center">
-                        <div className="card mask-custom px-4 pt-4 pb-2 col-10 col-sm-11 col-xl-9">
+                        <div className="card mask-custom px-4 py-2 col-10 col-sm-11 col-xl-9">
                             <div className="card-body">
                                 <p className="h1 font-weight-bold mb-4 text-white text-center">
                                     Discover Amazing Music</p>
@@ -248,7 +199,8 @@ const Search = () => {
                                                   id="inlineRadio1"
                                                   value="option1"
                                                   label="Tracks"
-                                                  defaultChecked
+                                                  onChange={() => stateSearchBy === 'tracks'}
+                                                  checked={stateSearchBy === 'tracks'}
                                                   inline
                                                   onClick={trackHandler}/>
                                         <MDBRadio name="inlineRadio"
@@ -256,6 +208,8 @@ const Search = () => {
                                                   id="inlineRadio2"
                                                   value="option2"
                                                   label="Artists"
+                                                  onChange={() => stateSearchBy === 'artists'}
+                                                  checked={stateSearchBy === 'artists'}
                                                   inline
                                                   onClick={artistHandler}/>
                                         <MDBRadio name="inlineRadio"
@@ -263,6 +217,8 @@ const Search = () => {
                                                   id="inlineRadio3"
                                                   value="option3"
                                                   label="Albums"
+                                                  onChange={() => stateSearchBy === 'albums'}
+                                                  checked={stateSearchBy === 'albums'}
                                                   inline
                                                   onClick={albumHandler}/>
                                     </div>
@@ -284,19 +240,21 @@ const Search = () => {
                             </div>
                         </>
                         :
-                        trackSearch && searched ?
+                        stateSearchBy === 'tracks' && searched ?
                             <>
                                 <h1 className="search-category text-center py-3">
                                     <span className="category-underline">Tracks</span></h1>
                                 <MDBRow className="row-cols-2 row-cols-md-2 row-cols-lg-4 g-4 flex-row">
                                     {
-                                        tracks.map && tracks.map(track =>
+                                        tracks.map && tracks.map((track, index) =>
                                             <>
                                                 <MDBCol className="align-content-center justify-content-center"
                                                         style={{ display: 'flex' }}
                                                         onClick={() => {
                                                             trackNavigate(track.id);
-                                                        }}>
+                                                            window.scrollTo(0, 0);
+                                                        }}
+                                                        key={index}>
                                                     <TrackListItem key={track.id} track={track}/>
                                                 </MDBCol>
                                             </>)
@@ -304,20 +262,22 @@ const Search = () => {
                                 </MDBRow>
                             </>
                             :
-                            artistSearch && searched
+                            stateSearchBy === 'artists' && searched
                                 ?
                                 <>
                                     <h1 className="search-category text-center py-3">
                                         <span className="category-underline">Artists</span></h1>
                                     <MDBRow className="row-cols-2 row-cols-md-2 row-cols-lg-4 g-4 flex-row">
                                         {
-                                            artists.map && artists.map(artist =>
+                                            artists.map((artist, index) =>
                                                 <>
                                                     <MDBCol className="align-content-center justify-content-center"
                                                             style={{ display: 'flex' }}
                                                             onClick={() => {
                                                                 artistNavigate(artist.id);
-                                                            }}>
+                                                                window.scrollTo(0, 0);
+                                                            }}
+                                                            key={index}>
                                                         <ArtistListItem key={artist.id}
                                                                         artist={artist}/>
                                                     </MDBCol>
@@ -326,19 +286,22 @@ const Search = () => {
                                     </MDBRow>
                                 </>
                                 :
-                                albumSearch && searched ?
+                                stateSearchBy === 'albums' && searched ?
                                     <>
                                         <h1 className="search-category text-center py-3">
                                             <span className="category-underline">Albums</span></h1>
                                         <MDBRow className="row-cols-2 row-cols-md-2 row-cols-lg-4 g-4 flex-row">
                                             {
-                                                albums.map && albums.map(album =>
+                                                albums.map((album, index) =>
                                                     <>
                                                         <MDBCol className="align-content-center justify-content-center"
                                                                 style={{ display: 'flex' }}
                                                                 onClick={() => {
                                                                     albumNavigate(album.id);
-                                                                }}>
+                                                                    window.scrollTo(0, 0);
+                                                                }}
+                                                                key={index}
+                                                        >
                                                             <AlbumListItem key={album.id}
                                                                            album={album}/>
                                                         </MDBCol>
@@ -353,14 +316,16 @@ const Search = () => {
                                         </h1>
                                         <MDBRow className="row-cols-2 row-cols-md-2 row-cols-lg-4 g-4 flex-row">
                                             {
-                                                topSongs.map && topSongs.map(track =>
+                                                topSongs.map((track, index) =>
                                                     <>
                                                         <MDBCol className="align-content-center justify-content-center"
                                                                 style={{ display: 'flex' }}
+                                                                key={index}
                                                         >
                                                             <div onClick={() => {
                                                                 trackNavigate(
                                                                     track.track.id);
+                                                                window.scrollTo(0, 0);
                                                             }}>
                                                                 <TrackListItem key={track.track.id}
                                                                                track={track.track}/>
