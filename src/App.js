@@ -28,6 +28,8 @@ import Album from "./components/album";
 import Track from "./components/track";
 import Tracks from "./components/tracks";
 import Albums from "./components/albums";
+import Footer from "./components/partials/Footer";
+import PrivacyPolicy from "./components/private-policy";
 
 const reducer = combineReducers({
     user: userReducer, auth: authReducer
@@ -62,8 +64,10 @@ function App() {
                         <Route exact={true} path="/track/:tid" element={<Track/>}/>
                         <Route exact={true} path="/tracks/:aid" element={<Tracks/>}/>
                         <Route exact={true} path="/albums/:aid" element={<Albums/>}/>
+                        <Route exact={true} path="/privacy-policy" element={<PrivacyPolicy/>}/>
                         {/*<Route path="*" element={<PageNotFound/>}/>*/}
                     </Routes>
+                    <Footer/>
                     <ToastContainer
                         position="top-right"
                         autoClose={5000}

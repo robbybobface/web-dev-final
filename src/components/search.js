@@ -246,7 +246,7 @@ const Search = () => {
                                     <span className="category-underline">Tracks</span></h1>
                                 <MDBRow className="row-cols-2 row-cols-md-2 row-cols-lg-4 g-4 flex-row">
                                     {
-                                        tracks.map && tracks.map((track, index) =>
+                                        tracks.map((track, index) =>
                                             <>
                                                 <MDBCol className="align-content-center justify-content-center"
                                                         style={{ display: 'flex' }}
@@ -320,13 +320,13 @@ const Search = () => {
                                                     <>
                                                         <MDBCol className="align-content-center justify-content-center"
                                                                 style={{ display: 'flex' }}
-                                                                key={index}
-                                                        >
+                                                                key={index}>
                                                             <div onClick={() => {
                                                                 trackNavigate(
                                                                     track.track.id);
                                                                 window.scrollTo(0, 0);
-                                                            }}>
+                                                            }}
+                                                                 key={index + 1}>
                                                                 <TrackListItem key={track.track.id}
                                                                                track={track.track}/>
                                                             </div>
@@ -337,7 +337,6 @@ const Search = () => {
                                     </>
                     }
                 </div>
-                }
             </>
 
         );
