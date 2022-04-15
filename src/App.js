@@ -30,6 +30,7 @@ import Tracks from "./components/tracks";
 import Albums from "./components/albums";
 import Footer from "./components/partials/Footer";
 import PrivacyPolicy from "./components/private-policy";
+import Dashboard from "./components/dashboard";
 
 const reducer = combineReducers({
     user: userReducer, auth: authReducer
@@ -64,6 +65,7 @@ function App() {
                         <Route exact={true} path="/track/:tid" element={<Track/>}/>
                         <Route exact={true} path="/tracks/:aid" element={<Tracks/>}/>
                         <Route exact={true} path="/albums/:aid" element={<Albums/>}/>
+                        <Route exact={true} path="/dashboard" element={<Dashboard/>}/>
                         <Route exact={true} path="/privacy-policy" element={<PrivacyPolicy/>}/>
                         {/*<Route path="*" element={<PageNotFound/>}/>*/}
                     </Routes>

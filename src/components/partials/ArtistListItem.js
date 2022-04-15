@@ -12,7 +12,7 @@ const ArtistListItem = ({ artist }) => {
                         : artist.images[0].url}
                          alt="avatar"
                          className="img-fluid track-image-recommended"/>
-                    <h5 className="item-name-recommended mt-3 mt-md-3 mt-xl-4">{artist.name}</h5>
+                    <h5 className="item-name-recommended-search mt-3 mt-md-3 mt-xl-4">{artist.name}</h5>
                     <p className="item-descriptor mb-sm-1 mb-lg-1" key={artist.id}>
                         {artist.genres.length > 1 ? <span className="genres">Genres: </span>
                             : artist.genres.length === 1 ?

@@ -12,7 +12,7 @@ const AlbumListItem = ({ album }) => {
                         || 'https://images.unsplash.com/photo-1573247374056-ba7c8c5ca4fa?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1480&q=80'}
                          alt="avatar"
                          className="img-fluid track-image-recommended"/>
-                    <h5 className="item-name-recommended mt-3 mt-md-3 mt-xl-4">{album.name}</h5>
+                    <h5 className="item-name-recommended-search mt-3 mt-md-3 mt-xl-4">{album.name}</h5>
                     <p className="item-descriptor" key={album.id}>
                         {album.artists.map(
                             (artist, i, { length }) =>
@@ -20,7 +20,8 @@ const AlbumListItem = ({ album }) => {
                                     <span className="item-descriptor" key={i}>{artist.name}</span>
                                     :
                                     <>
-                                        <span className="item-descriptor" key={i}>{artist.name}</span>
+                                        <span className="item-descriptor"
+                                              key={i}>{artist.name}</span>
                                         {', '}
 
                                     </>)

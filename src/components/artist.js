@@ -81,8 +81,10 @@ const Artist = () => {
         // console.log(checkAlbums);
         if (checkAlbums.length !== albumsCall.data.items.length) {
             setDiscography(checkAlbums);
+            console.log(checkAlbums);
         } else {
             setDiscography(albumsCall.data.items);
+            console.log(albumsCall.data.items);
         }
 
         const similarCall = await axios.get(
@@ -92,13 +94,6 @@ const Artist = () => {
         // console.log(similarCall.data.artists);
         setSimilar(similarCall.data.artists);
         setLoading(false);
-    };
-
-    const loggedInHandler = () => {
-        security.isLoggedIn(dispatch).then(r => {
-            setLoggedIn(r.loggedIn);
-            // console.log(r);
-        });
     };
 
     const getLiked = () => {
@@ -118,10 +113,6 @@ const Artist = () => {
         setAlbumSearch(true);
         setSingleSearch(false);
     };
-
-    useEffect(() =>
-        loggedInHandler(), [ loggedIn, location.key ]
-    );
 
     useEffect(() => {
         getData().catch(error => toast.error(error));
@@ -161,7 +152,8 @@ const Artist = () => {
                                                 'https://images.unsplash.com/photo-1488109811119-98431feb6929?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1480&q=80'
                                                 : artist.images[0].url}
                                                  alt="avatar"
-                                                 className="img-fluid"/>
+                                                 className="img-fluid"
+                                                 style={{ aspectRatio: '1/1', objectFit: 'cover' }}/>
                                             <h5 className="item-name mt-3 mt-md-4 mt-xl-4">
                                                 {artist.name}
                                             </h5>
@@ -258,129 +250,146 @@ const Artist = () => {
                                     </div>
                                 </div>
                             </div>
-                            <div className="row d-flex justify-content-center">
-                                <div className="col-xxl-10">
-                                    <div className="card mask-custom-details-lighter mb-4 mb-md-0">
-                                        <div className="card-body">
-                                            <p className="mb-4 progress-header">
-                                                Discography
-                                            </p>
-                                            <div className="row d-flex mt-2 my-4">
-                                                <div className="col-6">
-                                                    <div className="category-toggle align-items-center justify-content-start">
-                                                        <MDBRadio name="inlineRadio"
-                                                                  className="custom-radio"
-                                                                  id="inlineRadio1"
-                                                                  value="option1"
-                                                                  label="Albums"
-                                                                  defaultChecked
-                                                                  inline
-                                                                  onClick={albumHandler}/>
-                                                        <MDBRadio name="inlineRadio"
-                                                                  className="custom-radio"
-                                                                  id="inlineRadio2"
-                                                                  value="option2"
-                                                                  label="Tracks and EPs"
-                                                                  inline
-                                                                  onClick={singleHandler}/>
+                            {discography.filter(
+                                recommendation =>
+                                    recommendation.album_group
+                                    === 'album').length > 0 && discography.filter(
+                                recommendation =>
+                                    recommendation.album_group
+                                    === 'single').length > 0 ?
+                                <div className="row d-flex mt-lg-4 justify-content-center">
+                                    <div className="col-xxl-10">
+                                        <div className="card mask-custom-details-lighter mb-4 mb-md-0">
+                                            <div className="card-body">
+                                                <p className="mb-4 progress-header">
+                                                    Discography
+                                                </p>
+                                                <div className="row d-flex mt-2 my-4">
+                                                    <div className="col-6">
+                                                        <div className="category-toggle align-items-center justify-content-start">
+                                                            <MDBRadio name="inlineRadio"
+                                                                      className="custom-radio"
+                                                                      id="inlineRadio1"
+                                                                      value="option1"
+                                                                      label="Albums"
+                                                                      defaultChecked
+                                                                      inline
+                                                                      onClick={albumHandler}/>
+                                                            <MDBRadio name="inlineRadio"
+                                                                      className="custom-radio"
+                                                                      id="inlineRadio2"
+                                                                      value="option2"
+                                                                      label="Tracks and EPs"
+                                                                      inline
+                                                                      onClick={singleHandler}/>
+                                                        </div>
+                                                    </div>
+                                                    <div className="col-6 justify-content-end text-end">
+                                                        <div className="view-all-btn align-items-center justify-content-end">
+                                                            {albumSearch && discography.filter(
+                                                                recommendation =>
+                                                                    recommendation.album_group
+                                                                    === 'album').length > 4 ?
+                                                                <Link to={`/albums/${aid}`}>
+                                                                    <span className="view-all">View All</span>
+                                                                </Link>
+                                                                : ''}
+                                                            {singleSearch && discography.filter(
+                                                                recommendation =>
+                                                                    recommendation.album_group
+                                                                    === 'single').length > 4
+                                                                ? <Link to={`/tracks/${aid}`}>
+                                                                    <span className="view-all">View All</span>
+                                                                </Link>
+                                                                : ''}
+                                                        </div>
                                                     </div>
                                                 </div>
-                                                <div className="col-6 justify-content-end text-end">
-                                                    <div className="view-all-btn align-items-center justify-content-end">
-                                                        {albumSearch && discography.filter(
+                                                <MDBRow className="row-cols-2 row-cols-sm-2 row-cols-md-4 row-cols-lg-4 g-4">
+                                                    {discography && albumSearch
+                                                        && discography.filter(
                                                             recommendation =>
                                                                 recommendation.album_group
-                                                                === 'album').length > 4 ?
-                                                            <Link to={`/albums/${aid}`}>
-                                                                <span className="view-all">View All</span>
-                                                            </Link>
-                                                            : ''}
-                                                        {singleSearch && discography.filter(
-                                                            recommendation =>
-                                                                recommendation.album_group
-                                                                === 'single').length > 4
-                                                            ? <Link to={`/tracks/${aid}`}>
-                                                                <span className="view-all">View All</span>
-                                                            </Link>
-                                                            : ''}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <MDBRow className="row-cols-2 row-cols-sm-2 row-cols-md-4 row-cols-lg-4 g-4">
-                                                {discography && albumSearch && discography.filter(
-                                                    recommendation =>
-                                                        recommendation.album_group === 'album').map(
-                                                    (recommendation, index) =>
-                                                        <>
-                                                            <MDBCol className="align-content-center justify-content-center"
-                                                                    style={{ display: 'flex' }}
-                                                                    onClick={async () => {
-                                                                        if (recommendation.album_group
-                                                                            === 'album') {
-                                                                            navigate(
-                                                                                `/album/${recommendation.id}`);
-                                                                            window.scrollTo(0,
-                                                                                0);
-                                                                        }
-                                                                    }}
-                                                                    key={index}>
-                                                                <MoreByListItem key={recommendation.id}
-                                                                                track={recommendation}/>
-                                                            </MDBCol>
-                                                        </>).slice(0, 4)}
-
-                                                {discography && singleSearch ? discography.filter(
-                                                    recommendation =>
-                                                        recommendation.album_group
-                                                        === 'single').map((recommendation, index) =>
-                                                    <>
-                                                        <MDBCol className="align-content-center justify-content-center"
-                                                                style={{ display: 'flex' }}
-                                                                onClick={async () => {
-                                                                    if (recommendation.album_group
-                                                                        === 'single') {
-                                                                        setLoading(true);
-                                                                        const token = await axios(
-                                                                            'https://accounts.spotify.com/api/token',
-                                                                            {
-                                                                                headers: {
-                                                                                    'Content-Type': 'application/x-www-form-urlencoded',
-                                                                                    'Authorization': 'Basic '
-                                                                                        + btoa(
-                                                                                            spotify.ClientId
-                                                                                            + ':'
-                                                                                            + spotify.ClientSecret)
-                                                                                },
-                                                                                data: 'grant_type=client_credentials',
-                                                                                method: 'POST'
-                                                                            });
-                                                                        const newAlbum = await axios.get(
-                                                                            `https://api.spotify.com/v1/albums/${recommendation.id}?market=US`,
-                                                                            {
-                                                                                headers: {
-                                                                                    'Authorization': 'Bearer '
-                                                                                        + token.data.access_token
+                                                                === 'album').map(
+                                                            (recommendation, index) =>
+                                                                <>
+                                                                    <MDBCol className="align-content-center justify-content-center"
+                                                                            style={{ display: 'flex' }}
+                                                                            onClick={async () => {
+                                                                                if (recommendation.album_group
+                                                                                    === 'album') {
+                                                                                    navigate(
+                                                                                        `/album/${recommendation.id}`);
+                                                                                    window.scrollTo(
+                                                                                        0,
+                                                                                        0);
                                                                                 }
-                                                                            });
-                                                                        console.log(
-                                                                            newAlbum.data);
-                                                                        navigate(
-                                                                            `/track/${newAlbum.data.tracks.items[0].id}`);
-                                                                        window.scrollTo(0,
-                                                                            0);
-                                                                    }
-                                                                }}
-                                                                key={index}>
-                                                            <MoreByListItem key={recommendation.id}
-                                                                            track={recommendation}/>
-                                                        </MDBCol>
-                                                    </>
-                                                ).slice(0, 4) : ''}
-                                            </MDBRow>
+                                                                            }}
+                                                                            key={index}>
+                                                                        <MoreByListItem key={recommendation.id}
+                                                                                        track={recommendation}/>
+                                                                    </MDBCol>
+                                                                </>).slice(0, 4)}
+
+                                                    {discography && singleSearch
+                                                        ? discography.filter(
+                                                            recommendation =>
+                                                                recommendation.album_group
+                                                                === 'single').map(
+                                                            (recommendation, index) =>
+                                                                <>
+                                                                    <MDBCol className="align-content-center justify-content-center"
+                                                                            style={{ display: 'flex' }}
+                                                                            onClick={async () => {
+                                                                                if (recommendation.album_group
+                                                                                    === 'single') {
+                                                                                    setLoading(
+                                                                                        true);
+                                                                                    const token = await axios(
+                                                                                        'https://accounts.spotify.com/api/token',
+                                                                                        {
+                                                                                            headers: {
+                                                                                                'Content-Type': 'application/x-www-form-urlencoded',
+                                                                                                'Authorization': 'Basic '
+                                                                                                    + btoa(
+                                                                                                        spotify.ClientId
+                                                                                                        + ':'
+                                                                                                        + spotify.ClientSecret)
+                                                                                            },
+                                                                                            data: 'grant_type=client_credentials',
+                                                                                            method: 'POST'
+                                                                                        });
+                                                                                    const newAlbum = await axios.get(
+                                                                                        `https://api.spotify.com/v1/albums/${recommendation.id}?market=US`,
+                                                                                        {
+                                                                                            headers: {
+                                                                                                'Authorization': 'Bearer '
+                                                                                                    + token.data.access_token
+                                                                                            }
+                                                                                        });
+                                                                                    console.log(
+                                                                                        newAlbum.data);
+                                                                                    navigate(
+                                                                                        `/track/${newAlbum.data.tracks.items[0].id}`);
+                                                                                    window.scrollTo(
+                                                                                        0,
+                                                                                        0);
+                                                                                }
+                                                                            }}
+                                                                            key={index}>
+                                                                        <MoreByListItem key={recommendation.id}
+                                                                                        track={recommendation}/>
+                                                                    </MDBCol>
+                                                                </>
+                                                        ).slice(0, 4) : ''}
+                                                </MDBRow>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                                :
+                                ''
+                            }
                             {similar.length === 0 ? '' :
                                 <div className="row d-flex align-items-center justify-content-center mt-3">
                                     <div className="col-xxl-10">
