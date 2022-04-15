@@ -1,78 +1,59 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import * as security from "../services/auth-service";
 import { useNavigate } from "react-router-dom";
 import { toast } from 'react-toastify';
+import { MDBInput } from "mdb-react-ui-kit";
+import * as service from "../services/profile-service";
+import { UserContext } from "../Utils/UserContext";
+import { useDispatch } from "react-redux";
 
 const Login = () => {
+    const { user, loggedIn } = useContext(UserContext);
+    const [ stateUser, setStateUser ] = user;
+    const [ stateLoggedIn, setStateLoggedIn ] = loggedIn;
     const [ loginUser, setLoginUser ] = useState({});
-    const navigate = useNavigate();
 
-    const login = () =>
-        security.login(loginUser)
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+
+    const login = async () =>
+        await security.login(loginUser)
+            .catch(error => toast.error('Invalid Username or Password'))
             .then((response) => {
-                console.log(response);
-                toast.success(response.success, {
-                    position: "top-right",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                });
-                navigate('/', {});
-            })
-            .catch(e =>
-                toast.error(e));
+                if (response === 'Invalid Username or Password') {
+                    toast.error('Invalid Username or Password');
+                } else {
+                    // console.log(response);
+                    toast.success(response.success, {
+                        position: "top-right",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    });
+                    isLoggedInHandler();
+                    userHandler();
+                    navigate('/search', {});
+                }
+            });
+    // toast.error(e));
+
+    const userHandler = () => {
+        service.profile(dispatch).then(r => {
+            setStateUser(r);
+            // console.log(r);
+        });
+    };
+
+    const isLoggedInHandler = () => {
+        security.isLoggedIn(dispatch).then(r => {
+            setStateLoggedIn(r.loggedIn);
+        });
+    };
     return (
         <>
-
-            {/*<div className="container d-flex justify-content-center align-items-center mt-5 login-card">*/}
-            {/*    <div className="row">*/}
-            {/*        <div className="col-md-8 offset-md-2 col-lg-6 offset-lg-3 col-xl-4 offset-xl-4">*/}
-            {/*            <div className="card shadow card-container">*/}
-            {/*                <img src="https://images.unsplash.com/photo-1494232410401-ad00d5433cfa?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2340&q=80"*/}
-            {/*                     alt="" className="card-img-top"/>*/}
-            {/*                <div className="card-body card-body-login">*/}
-            {/*                    <h5 className="card-title">Login</h5>*/}
-            {/*                    <div className="mb-3">*/}
-            {/*                        <label className="form-label"*/}
-            {/*                               htmlFor="username">Username</label>*/}
-            {/*                        <input className="form-control"*/}
-            {/*                               type="text"*/}
-            {/*                               id="username"*/}
-            {/*                               name="username"*/}
-            {/*                               autoFocus*/}
-            {/*                               onChange={(e) =>*/}
-            {/*                                   setLoginUser({*/}
-            {/*                                       ...loginUser,*/}
-            {/*                                       username: e.target.value*/}
-            {/*                                   })}*/}
-            {/*                               required/>*/}
-            {/*                    </div>*/}
-            {/*                    <div className="mb-4">*/}
-            {/*                        <label className="form-label"*/}
-            {/*                               htmlFor="password">Password</label>*/}
-            {/*                        <input className="form-control"*/}
-            {/*                               type="password"*/}
-            {/*                               id="password"*/}
-            {/*                               name="password"*/}
-            {/*                               onChange={(e) =>*/}
-            {/*                                   setLoginUser({*/}
-            {/*                                       ...loginUser,*/}
-            {/*                                       password: e.target.value*/}
-            {/*                                   })}*/}
-            {/*                               required/>*/}
-            {/*                    </div>*/}
-            {/*                    <button className="btn btn-login btn-block"*/}
-            {/*                            onClick={login}>Login*/}
-            {/*                    </button>*/}
-            {/*                </div>*/}
-            {/*            </div>*/}
-            {/*        </div>*/}
-            {/*    </div>*/}
-            {/*</div>*/}
-
             <section className="gradient-form">
                 <div className="container">
                     <div className="row d-flex justify-content-center align-items-center">
@@ -84,45 +65,44 @@ const Login = () => {
 
                                             <div className="text-center">
                                                 <img src="spotify.png"
-                                                     style={{ width: '150px' }} alt="logo"/>
-                                                <h4 className="mt-4 mb-5 pb-1 h4-text">
-                                                    The Spotify Clone</h4>
+                                                     style={{ width: '100px' }} alt="logo"/>
+                                                <h4 className="mt-4 mb-4 pb-1 h4-text">
+                                                    Spotify Search</h4>
                                             </div>
                                             <form>
                                                 <p className="p-text">
                                                     Please login to your account</p>
+
                                                 <div className="form-outline mb-4">
-                                                    <input type="email"
-                                                           id="login-username"
-                                                           className="form-control input-login"
-                                                           placeholder="Username"
-                                                           onChange={(e) =>
-                                                               setLoginUser({
-                                                                   ...loginUser,
-                                                                   username: e.target.value
-                                                               })}
-                                                           required/>
-                                                    <label className="form-label label-login"
-                                                           htmlFor="login-username">Username</label>
+                                                    <MDBInput className="form-control-login"
+                                                              label="Username"
+                                                              id="register-username"
+                                                              type="text"
+                                                              size="lg"
+                                                              required
+                                                              onChange={(e) =>
+                                                                  setLoginUser({
+                                                                      ...loginUser,
+                                                                      username: e.target.value
+                                                                  })}/>
                                                 </div>
 
                                                 <div className="form-outline mb-4">
-                                                    <input type="password"
-                                                           id="login-password"
-                                                           placeholder="Password"
-                                                           className="form-control input-login"
-                                                           onChange={(e) =>
-                                                               setLoginUser({
-                                                                   ...loginUser,
-                                                                   password: e.target.value
-                                                               })}
-                                                           required/>
-                                                    <label className="form-label label-login"
-                                                           htmlFor="login-password">Password</label>
+                                                    <MDBInput className="form-control-login"
+                                                              label="Password"
+                                                              id="register-password"
+                                                              type="password"
+                                                              size="lg"
+                                                              required
+                                                              onChange={(e) =>
+                                                                  setLoginUser({
+                                                                      ...loginUser,
+                                                                      password: e.target.value
+                                                                  })}/>
                                                 </div>
 
                                                 <div className="text-center pt-1 mb-3 pb-1">
-                                                    <button className="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3"
+                                                    <button className="btn btn-primary btn-block fa-lg gradient-custom-3 mb-3"
                                                             type="button"
                                                             onClick={login}>
                                                         Log in
@@ -145,7 +125,7 @@ const Login = () => {
 
                                         </div>
                                     </div>
-                                    <div className="col-lg-6 d-flex align-items-center gradient-custom-2">
+                                    <div className="col-lg-6 d-flex align-items-center gradient-custom-3">
                                         <div className="text-white px-3 py-4 p-md-5 mx-md-4">
                                             <h4 className="mb-4">
                                                 Something about a Spotify Thingy</h4>

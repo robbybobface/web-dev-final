@@ -1,7 +1,14 @@
 .intro {
-  background-image: url('../../images/gradient-2.jpg');
-  background-repeat: no-repeat;
-  background-size: cover;
+  background-image: url('https://images.unsplash.com/photo-1614854262318-831574f15f1f?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80') !important;
+  background-repeat: no-repeat !important;
+  background-size: cover !important;
+  background-color: rgba(61, 162, 195, 0.1) !important;
+}
+
+.container-search {
+  z-index: 1;
+  position: relative;
+
 }
 
 .mask-custom {
@@ -23,13 +30,14 @@
   color: white !important;
 }
 
-.form-outline .form-control:focus ~ .form-label {
-  color: #00ce6b !important;
-}
+/*this is the one i want*/
+/*.form-outline .form-control:focus ~ .form-label {*/
+/*  color: #8fffc9 !important;*/
+/*}*/
 
 
 .input-search:focus ~ .label-search {
-  color: #00ce6b !important;
+  color: #8fffc9 !important;
   background-clip: padding-box !important;
   z-index: 2;
 
@@ -38,12 +46,11 @@
 
 .input-search:not(:placeholder-shown) ~ .label-search {
   transform: translateY(-1rem) translateY(0.1rem) scale(.8) !important;
-  color: #00ce6b !important;
-
+  color: #8fffc9 !important;
 }
 
 .label-search:focus {
-  color: #00ce6b !important;
+  color: #ffffff !important;
   background-clip: content-box !important;
 }
 
@@ -51,7 +58,8 @@
 .btn-hover-search {
   width: 100%;
   font-size: 18px;
-  font-family: "Roboto Light", serif;
+  font-family: "Roboto", serif;
+  font-weight: 300;
   color: #fff;
   cursor: pointer;
   height: 45px;
@@ -82,3 +90,133 @@
   background-image: linear-gradient(to right, #9cbab2, #4bbb98, #2b7676, #437662);
   box-shadow: 0 4px 15px 0 rgba(45, 54, 65, 0.75);
 }
+
+.search-category {
+  color: #000000;
+  font-family: 'Roboto', serif;
+  font-weight: 300;
+  font-style: italic;
+
+}
+
+.category-underline {
+  border-bottom: 2px solid black;
+}
+
+.form-check-label {
+  color: white;
+}
+
+.form-check-input {
+  border-color: white;
+  background-color: transparent;
+}
+
+.form-check-input:checked.custom-radio {
+  border-color: white;
+  color: #8fffc9;
+  background-color: transparent;
+}
+
+.form-check-input:focus.custom-radio {
+  border-color: #8fffc9;
+  outline: 0;
+  box-shadow: 0 0 0 0.25rem rgba(0, 255, 115, 0.37);
+}
+
+.form-check-input[type=radio]:checked:after {
+  border-radius: 50%;
+  width: 0.625rem;
+  height: 0.625rem;
+  border-color: #8fffc9;
+  background-color: #8fffc9;
+  transition: border-color;
+  transform: translate(-50%, -50%);
+  position: absolute;
+  left: 50%;
+  top: 50%;
+}
+
+
+.form-check-input[type=radio]:after {
+  content: "";
+  position: absolute;
+  width: 1rem;
+  height: 1rem;
+  z-index: 1;
+  display: block;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0);
+}
+
+.search-track-name {
+  font-family: "Roboto", serif;
+  font-weight: 300;
+  font-size: 22px;
+  color: #00999e;
+  line-height: 1.3;
+}
+
+.item-name-recommended-search {
+  font-size: 22px;
+  font-family: "Roboto", serif;
+  font-weight: 400;
+  line-height: 1.3;
+  color: white;
+}
+
+.search-track-artist {
+  font-family: "Roboto", serif;
+  font-weight: 500;
+  font-size: 15px;
+  color: black;
+  font-style: italic;
+}
+
+.search-track-duration {
+  font-family: "Roboto", serif;
+  font-weight: 300;
+  font-size: 15px;
+  color: #616161;
+}
+
+.green-color {
+  color: #00595c;
+  vertical-align: text-top;
+  padding-left: 2px;
+
+}
+
+.green-color-track {
+  font-size: 32px;
+}
+
+.green-color-track-recommended {
+  font-size: 24px;
+}
+
+.genres {
+  font-family: 'Roboto', serif;
+  font-weight: 400;
+  color: black;
+  font-size: 16px;
+}
+
+.genre-list {
+  font-style: italic;
+  color: #616161;
+}
+
+.search-card {
+  cursor: pointer;
+  background-color: rgba(255, 255, 255, 0.75);
+}
+
+
+.artist-image {
+  width: 100%;
+  height: 16rem;
+  object-fit: cover;
+}
+
+

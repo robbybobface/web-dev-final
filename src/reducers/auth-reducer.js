@@ -28,7 +28,7 @@ const authReducer = (state = {}, action) => {
         case IS_ACCOUNT_OWNER:
             return {
                 ...state,
-                message: action.response,
+                accountOwner: action.response
             };
         case LOGOUT:
             return {
