@@ -39,6 +39,7 @@ const Register = () => {
                     isLoggedInHandler();
                     userHandler();
                     navigate('/search', {});
+                    window.scrollTo(0, 0);
                 }
             })
             .catch(e => toast.error(e));

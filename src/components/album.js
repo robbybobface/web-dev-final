@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
@@ -13,6 +13,9 @@ import moment from "moment";
 import momentDurationFormatSetup from "moment-duration-format";
 import { MDBCol, MDBRow } from "mdb-react-ui-kit";
 import MoreByListItem from "./partials/MoreByListItem";
+import { UserContext } from "../Utils/UserContext";
+import * as service from "../services/user-service";
+import * as albumService from "../services/album-service";
 
 const override = css`
   display: block;
@@ -22,8 +25,12 @@ const override = css`
 
 const Album = () => {
     const { aid } = useParams();
-    const [ loggedIn, setLoggedIn ] = useState(false);
+    const { user, loggedIn } = useContext(UserContext);
+    const [ stateUser, setStateUser ] = user;
+    const [ stateLoggedIn, setStateLoggedIn ] = loggedIn;
     const [ album, setAlbum ] = useState({});
+    const [ localAlbum, setLocalAlbum ] = useState({});
+    const [ localEmpty, setLocalEmpty ] = useState(true);
     const [ moreBy, setMoreBy ] = useState({});
     const [ loading, setLoading ] = useState(true);
     const [ liked, setLiked ] = useState(false);
@@ -76,30 +83,111 @@ const Album = () => {
 
     };
 
-    const loggedInHandler = () => {
-        security.isLoggedIn(dispatch).then(r => {
-            setLoggedIn(r.loggedIn);
-            // console.log(r);
-        });
+    const getLocal = async () => {
+        const localCall = await albumService.findAlbumById(aid);
+        if (localCall.error) {
+            return;
+        }
+        setLocalAlbum(localCall);
     };
 
     const getLiked = () => {
-        setLiked(true);
+        if (stateUser.likedAlbums.length === 0) {
+            return;
+        }
+        stateUser.likedAlbums.map(album => {
+            if (album.albumId === aid) {
+                setLiked(true);
+                setLocalEmpty(false);
+            }
+        });
     };
 
-    function likeAlbumHandler() {
+    const likeAlbumHandler = async () => {
+        // console.log(aid);
+        const originalSongs = stateUser.likedAlbums;
+        // console.log(originalSongs);
+        service.updateUser(
+            { ...stateUser, likedAlbums: [ { albumId: aid }, ...originalSongs ] })
+            .catch(error => toast.error('something went wrong'));
+        toast.success('Album added to liked albums!');
+        const foundAlbum = await albumService.findAlbumById(aid);
+        console.log(foundAlbum);
+        if (foundAlbum.error) {
+            console.log('we got here');
+            console.log(album);
+            const createdAlbum = await albumService.createAlbum({
+                name: album.name,
+                artists: album.artists.map((artist) => artist.name),
+                albumId: album.id,
+                likes: [ stateUser ]
+            }).catch(err => toast.error(err));
+            console.log('please get here');
+            setLocalAlbum(createdAlbum);
+            setLocalEmpty(false);
+            setLiked(true);
+        } else {
+            console.log('how are we here');
+            const updatedAlbum = await albumService.updateAlbum(
+                {
+                    ...foundAlbum,
+                    likes: [ stateUser, ...foundAlbum.likes ]
+                }).catch(
+                err => toast.error(err));
+            setLocalAlbum(updatedAlbum);
+            setLocalEmpty(false);
+            setLiked(true);
+        }
+    };
+    const unlikeAlbumHandler = async () => {
+        const newAlbums = stateUser.likedAlbums.filter((album) => album.albumId !== aid);
+        // console.log(newAlbums);
+        if (newAlbums.length === 0) {
+            service.updateUser(
+                { ...stateUser, likedAlbums: [] })
+                .catch(error => toast.error('something went wrong'));
+            toast.success('Album removed from liked albums!');
 
-    }
+        } else {
+            service.updateUser(
+                { ...stateUser, likedAlbums: [ ...newAlbums ] })
+                .catch(error => toast.error('something went wrong'));
+            toast.success('Album removed from liked albums!');
+        }
 
-    useEffect(() =>
-        loggedInHandler(), [ loggedIn, location.key ]
-    );
+        const foundAlbum = await albumService.findAlbumById(aid);
+        const newUsers = foundAlbum.likes.filter(
+            (user) => user.username !== stateUser.username);
+        if (newUsers.length === 0) {
+            const deletedAlbum = await albumService.deleteAlbum(foundAlbum).catch(
+                err => toast.error(err));
+            setLocalEmpty(true);
+            setLiked(false);
+        } else {
+            const updatedAlbum = await albumService.updateAlbum(
+                { ...foundAlbum, likes: [ ...newUsers ] }).catch(
+                err => toast.error(err));
+            setLocalAlbum(updatedAlbum);
+            setLocalEmpty(false);
+            setLiked(false);
+        }
 
-    useEffect(() => {
+    };
+
+    useMemo(() => {
+        window.scrollTo(0, 0);
         setLoading(true);
         getData().catch(error => toast.error(error));
+    }, []);
+
+    useEffect(() => {
         getLiked();
+        console.log(localAlbum);
     }, [ location.key ]);
+
+    useMemo(() => {
+        getLocal().catch(err => toast.err('Something went wrong!'));
+    }, [ liked ]);
 
     return (
         <>
@@ -126,56 +214,234 @@ const Album = () => {
                     <div className="container py-3">
                         <div className="row d-flex justify-content-center">
                             <div className="col-12 col-sm-12 col-md-5 col-lg-4 d-flex flex-column align-items-center">
-                                <div className="col-10 col-md-12 card gradient-custom mb-4 mb-md-0">
-                                    <div className="card-body text-center">
-                                        <img src={album.images.length === 0
-                                            ? 'https://images.unsplash.com/photo-1573247374056-ba7c8c5ca4fa?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1480&q=80'
-                                            : album.images[0].url}
-                                             alt="avatar"
-                                             className="img-fluid"/>
-                                        <h5 className="item-name mt-3 mt-md-4 mt-xl-4">{album.name}
-                                            {/*{album.explicit*/}
-                                            {/*    ?*/}
-                                            {/*    <span className="material-icons green-color green-color-track">explicit</span>*/}
-                                            {/*    : ''}*/}
-                                        </h5>
-                                        <p className="item-descriptor mb-sm-3 mb-lg-4">
-                                            {album.artists.map(
-                                                (artist, i, { length }) =>
-                                                    length - 1 === i ?
-                                                        <Link to={`/artist/${artist.id}`}>
-                                                            <span className="item-descriptor artist-name">{artist.name}</span>
-                                                        </Link> :
-                                                        <>
+                                <div className="col-12 d-flex flex-column align-items-center justify-content-center">
+                                    <div className="col-10 col-md-12 card gradient-custom mb-4 mb-md-0">
+                                        <div className="card-body text-center">
+                                            <img src={album.images.length === 0
+                                                ? 'https://images.unsplash.com/photo-1573247374056-ba7c8c5ca4fa?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1480&q=80'
+                                                : album.images[0].url}
+                                                 alt="avatar"
+                                                 className="img-fluid"/>
+                                            <h5 className="item-name mt-3 mt-md-4 mt-xl-4">{album.name}</h5>
+                                            <p className="item-descriptor mb-sm-3 mb-lg-4">
+                                                {album.artists.map(
+                                                    (artist, i, { length }) =>
+                                                        length - 1 === i ?
                                                             <Link to={`/artist/${artist.id}`}>
                                                                 <span className="item-descriptor artist-name">{artist.name}</span>
-                                                            </Link>
-                                                            {', '}
+                                                            </Link> :
+                                                            <>
+                                                                <Link to={`/artist/${artist.id}`}>
+                                                                    <span className="item-descriptor artist-name">{artist.name}</span>
+                                                                </Link>
+                                                                {', '}
 
-                                                        </>)
-                                            }
-                                        </p>
+                                                            </>)
+                                                }
+                                            </p>
 
-                                        <div className="d-flex justify-content-center mb-2">
-                                            {loggedIn ? !liked ?
-                                                    <button className="btn-hover-like color-10"
-                                                            onClick={() => {
-                                                                likeAlbumHandler();
-                                                            }}>
-                                                        Like
-                                                    </button>
-                                                    : <button className="btn-hover-like color-3"
-                                                              onClick={() => {
-                                                                  likeAlbumHandler();
-                                                              }}>
-                                                        Unlike
-                                                    </button>
-                                                : ''
-                                            }
+                                            <div className="d-flex justify-content-center mb-2">
+                                                {stateLoggedIn ? !liked ?
+                                                        <button className="btn-hover-like color-10"
+                                                                onClick={() => {
+                                                                    likeAlbumHandler().catch(
+                                                                        error => toast.error(
+                                                                            'Something went wrong'));
+                                                                }}>
+                                                            Like
+                                                        </button>
+                                                        : <button className="btn-hover-like color-3"
+                                                                  onClick={() => {
+                                                                      unlikeAlbumHandler().catch(
+                                                                          error => toast.error(
+                                                                              'Something went wrong'));
+                                                                  }}>
+                                                            Unlike
+                                                        </button>
+                                                    : ''
+                                                }
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div className="card mask-custom-details mt-0 mt-sm-0 mt-md-4 mb-4 w-100">
+                                <div className="card mask-custom-details mb-4 w-100 d-block d-sm-block d-md-none">
+                                    <div className="card-body">
+                                        <p className="mb-2 progress-header">
+                                            Track List
+                                        </p>
+                                        <div className="row align-items-center mb-0 px-2">
+                                            <div className="col-1">
+                                                <p className="mb-0 item-heading">#</p>
+                                            </div>
+                                            <div className="col-7 col-sm-8 col-md-8 col-xl-9">
+                                                <p className="mb-0 item-heading">
+                                                    Title
+                                                </p>
+                                            </div>
+                                            <div className="col-4 col-sm-3 col-md-3 col-xl-2">
+                                                <p className="mb-0 item-heading duration ms-auto">
+                                                    Duration
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <hr className="less-mt"/>
+
+                                        {album.tracks.items && (album.total_tracks < 16)
+                                            ? album.tracks.items.map(
+                                                (track, i, { length }) =>
+                                                    length - 1 === i ?
+                                                        <>
+                                                            <Link to={`/track/${track.id}`}>
+                                                                <div className="track-list-row-last">
+                                                                    <div className="row align-items-center mb-0 px-2">
+                                                                        <div className="col-2 col-sm-2 col-md-2 col-lg-2 col-xl-1">
+                                                                            <p className="mb-0 item-descriptor">{track.track_number}</p>
+                                                                        </div>
+                                                                        <div className="col-7 col-sm-8 col-md-8 col-lg-8 col-xl-9">
+                                                                            <p className="mb-0 item-descriptor">
+                                                                                {track.name}
+                                                                            </p>
+                                                                        </div>
+                                                                        <div className="d-flex col-3 col-sm-2 col-md-2 col-lg-2 col-xl-2">
+                                                                            <p className="mb-0 item-descriptor duration ms-auto">{
+                                                                                track.duration_ms
+                                                                                < 3600000 ?
+                                                                                    moment.duration(
+                                                                                        track.duration_ms,
+                                                                                        "milliseconds").format(
+                                                                                        'm:ss', {
+                                                                                            trim: false
+                                                                                        }) :
+                                                                                    moment.duration(
+                                                                                        track.duration_ms,
+                                                                                        "milliseconds").format(
+                                                                                        'h:m:ss', {
+                                                                                            trim: false
+                                                                                        })}
+                                                                            </p>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </Link>
+                                                        </>
+                                                        :
+                                                        <>
+                                                            <Link to={`/track/${track.id}`}>
+                                                                <div className="track-list-row">
+                                                                    <div className="row align-items-center mb-0 px-2">
+                                                                        <div className="col-2 col-sm-2 col-md-2 col-xl-1">
+                                                                            <p className="mb-0 item-descriptor">{track.track_number}</p>
+                                                                        </div>
+                                                                        <div className="col-7 col-sm-8 col-md-8 col-xl-9">
+                                                                            <p className="mb-0 item-descriptor">
+                                                                                {track.name}
+                                                                            </p>
+                                                                        </div>
+                                                                        <div className="col-3 col-sm-2 col-xl-2">
+                                                                            <p className="mb-0 item-descriptor duration ms-auto">{
+                                                                                track.duration_ms
+                                                                                < 3600000 ?
+                                                                                    moment.duration(
+                                                                                        track.duration_ms,
+                                                                                        "milliseconds").format(
+                                                                                        'm:ss', {
+                                                                                            trim: false
+                                                                                        }) :
+                                                                                    moment.duration(
+                                                                                        track.duration_ms,
+                                                                                        "milliseconds").format(
+                                                                                        'h:m:ss', {
+                                                                                            trim: false
+                                                                                        })}
+                                                                            </p>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </Link>
+                                                            <hr className="hr-no-margin"/>
+                                                        </>)
+                                            :
+                                            album.tracks.items.map(
+                                                (track, i, { length }) =>
+                                                    length - 1 === i ?
+                                                        <>
+                                                            <Link to={`/track/${track.id}`}>
+                                                                <div className="track-list-row-last track-list-row-long-last">
+                                                                    <div className="row align-items-center mb-0 px-2">
+                                                                        <div className="col-2 col-sm-2 col-md-2 col-lg-2 col-xl-1">
+                                                                            <p className="mb-0 item-descriptor">{track.track_number}</p>
+                                                                        </div>
+                                                                        <div className="col-7 col-sm-8 col-md-8 col-lg-8 col-xl-9">
+                                                                            <p className="mb-0 item-descriptor">
+                                                                                {track.name}
+                                                                            </p>
+                                                                        </div>
+                                                                        <div className="d-flex col-3 col-sm-2 col-md-2 col-lg-2 col-xl-2">
+                                                                            <p className="mb-0 item-descriptor duration ms-auto">{
+                                                                                track.duration_ms
+                                                                                < 3600000 ?
+                                                                                    moment.duration(
+                                                                                        track.duration_ms,
+                                                                                        "milliseconds").format(
+                                                                                        'm:ss', {
+                                                                                            trim: false
+                                                                                        }) :
+                                                                                    moment.duration(
+                                                                                        track.duration_ms,
+                                                                                        "milliseconds").format(
+                                                                                        'h:m:ss', {
+                                                                                            trim: false
+                                                                                        })}
+                                                                            </p>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </Link>
+                                                        </>
+                                                        :
+                                                        <>
+                                                            <Link to={`/track/${track.id}`}>
+                                                                <div className="track-list-row track-list-row-long">
+                                                                    <div className="row align-items-center mb-0 px-2">
+                                                                        <div className="col-2 col-sm-2 col-md-2 col-xl-1">
+                                                                            <p className="mb-0 item-descriptor">{track.track_number}</p>
+                                                                        </div>
+                                                                        <div className="col-7 col-sm-8 col-md-8 col-xl-9">
+                                                                            <p className="mb-0 item-descriptor">
+                                                                                {track.name}
+                                                                            </p>
+                                                                        </div>
+                                                                        <div className="col-3 col-sm-2 col-xl-2">
+                                                                            <p className="mb-0 item-descriptor duration ms-auto">{track.duration_ms
+                                                                            < 3600000 ?
+                                                                                moment.duration(
+                                                                                    track.duration_ms,
+                                                                                    "milliseconds").format(
+                                                                                    'm:ss', {
+                                                                                        trim: false
+                                                                                    }) :
+                                                                                moment.duration(
+                                                                                    track.duration_ms,
+                                                                                    "milliseconds").format(
+                                                                                    'h:m:ss', {
+                                                                                        trim: false
+                                                                                    })
+                                                                            }
+                                                                            </p>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </Link>
+                                                            <hr className="hr-no-margin"/>
+
+
+                                                        </>
+                                            )}
+
+
+                                    </div>
+                                </div>
+                                <div className="card mask-custom-details mt-0 mt-sm-0 mt-md-4 mb-4 mb-sm-4 mb-md-1 mb-lg-0 w-100">
                                     <div className="card-body">
                                         <p className="progress-header mb-3">
                                             Album Details
@@ -211,9 +477,52 @@ const Album = () => {
                                         </div>
                                     </div>
                                 </div>
+                                {localEmpty ? '' :
+                                    <div className="card mask-custom-details mt-0 mt-sm-0 mt-md-4 mb-2 mb-sm-3 mb-md-2 mb-lg-0 w-100">
+                                        <div className="card-body">
+                                            <p className="progress-header mb-3">
+                                                Recently Liked By
+                                            </p>
+                                            <div className="row align-items-center">
+                                                <div className="col-sm-5 col-md-5 col-lg-5 col-xl-4">
+                                                    <p className="mb-0 item-heading">Users:</p>
+                                                </div>
+                                                <div className="col-sm-7">
+                                                    <p className="item-descriptor mb-0">{localAlbum.likes.slice(
+                                                        0, 4).map(
+                                                        (user, i, { length }) =>
+                                                            length - 1 === i ?
+                                                                <Link to={`/profile/${user.username}`}>
+                                                                    <span className="item-descriptor artist-name"
+                                                                          key={i}>{user.username}</span>
+                                                                </Link> :
+                                                                <>
+                                                                    <Link to={`/profile/${user.username}`}>
+                                                                        <span className="item-descriptor artist-name"
+                                                                              key={i}>{user.username}</span>
+                                                                    </Link>
+                                                                    {', '}
+
+                                                                </>)
+                                                    }</p>
+                                                </div>
+                                            </div>
+                                            <hr/>
+                                            <div className="row mb-0 align-items-center">
+                                                <div className="col-sm-5 col-md-5 col-lg-5 col-xl-4">
+                                                    <p className="mb-0 item-heading">Total
+                                                                                     Likes:</p>
+                                                </div>
+                                                <div className="col-sm-7">
+                                                    <p className="item-descriptor mb-0">{localAlbum.likes.length}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
                             </div>
                             <div className="col-12 col-sm-12 col-md-7 col-lg-8 d-flex flex-column align-items-center">
-                                <div className="card mask-custom-details mb-4 w-100">
+                                <div className="card mask-custom-details mb-4 w-100 d-none d-md-block">
                                     <div className="card-body">
                                         <p className="mb-2 progress-header">
                                             Track List

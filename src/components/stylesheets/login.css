@@ -96,31 +96,31 @@
 /*}*/
 
 .form-control:focus.form-control-login {
-  border-color: #00aaa6 !important;
-  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px rgb(0, 170, 166) !important;
+  border-color: #008180 !important;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px rgb(0, 129, 128) !important;
 }
 
 
 .form-outline .form-control:focus ~ .form-notch .form-notch-leading {
-  border-top: .125rem solid #00aaa6 !important;
-  border-bottom: .125rem solid #00aaa6 !important;
-  border-left: .125rem solid #00aaa6 !important;
+  border-top: .125rem solid #008180 !important;
+  border-bottom: .125rem solid #008180 !important;
+  border-left: .125rem solid #008180 !important;
 }
 
 .form-outline .form-control:focus ~ .form-notch .form-notch-middle {
   border-bottom: .125rem solid !important;
-  border-color: #00aaa6 !important;
+  border-color: #008180 !important;
 }
 
 .form-outline .form-control:focus ~ .form-notch .form-notch-trailing {
-  border-color: currentcolor currentcolor currentcolor #00aaa6 !important;
-  border-bottom: .125rem solid #00aaa6 !important;
-  border-right: .125rem solid #00aaa6 !important;
-  border-top: .125rem solid #00aaa6 !important;
+  border-color: currentcolor currentcolor currentcolor #008180 !important;
+  border-bottom: .125rem solid #008180 !important;
+  border-right: .125rem solid #008180 !important;
+  border-top: .125rem solid #008180 !important;
 }
 
 .form-outline .form-control:focus ~ .form-label {
-  color: #00aaa6 !important;
+  color: #008180 !important;
 }
 
 .form-outline .form-control.input-search ~ .form-label {
@@ -128,7 +128,7 @@
 }
 
 .form-outline .form-control.form-control-lg:focus ~ .form-label, .form-outline .form-control.form-control-lg.active ~ .form-label {
-  color: #00aaa6 !important;
+  color: #008180 !important;
 }
 
 /*@media (min-width: 768px) {*/

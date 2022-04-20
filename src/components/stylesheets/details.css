@@ -95,6 +95,32 @@
   transition: all 0.1s ease-in-out;
 }
 
+.profile-username {
+  color: #ffffff;
+  font-size: 24px;
+  font-family: "Roboto", serif;
+  font-weight: 500;
+  transition: all 0.1s ease-in-out;
+}
+
+.profile-username.admin-badge {
+  color: #ff197b !important;
+  font-style: italic;
+  font-size: 15px;
+  vertical-align: middle;
+  font-weight: 400;
+}
+
+.profile-bio {
+  color: #1e1e1e;
+  font-size: 20px;
+  font-family: "Roboto", serif;
+  font-weight: 300;
+  font-style: italic;
+  transition: all 0.1s ease-in-out;
+}
+
+
 p.item-descriptor {
   margin-bottom: 8px;
 }
@@ -156,11 +182,11 @@ p.item-descriptor {
 }
 
 .progress-override {
-  background-color: rgba(255, 255, 255, 0.16);
+  background-color: rgba(255, 255, 255, 0.4);
 }
 
 .progress-bar-override {
-  background-color: #00aaa6;
+  background-color: #008180;
 }
 
 .less-mt {
@@ -338,6 +364,67 @@ p.item-descriptor {
   box-shadow: 0 4px 15px 0 rgba(126, 52, 161, 0.75);
 }
 
+.btn-hover-edit {
+  width: 130px;
+  font-size: 18px;
+  font-family: "Roboto", serif;
+  font-weight: 300;
+  color: #fff;
+  cursor: pointer;
+  height: 40px;
+  text-align: center;
+  border: none;
+  background-size: 300% 100%;
+  border-radius: 50px;
+  moz-transition: all .4s ease-in-out;
+  -o-transition: all .4s ease-in-out;
+  -webkit-transition: all .4s ease-in-out;
+  transition: all .4s ease-in-out;
+}
+
+.btn-hover-edit:hover {
+  background-position: 100% 0;
+  moz-transition: all .4s ease-in-out;
+  -o-transition: all .4s ease-in-out;
+  -webkit-transition: all .4s ease-in-out;
+  transition: all .4s ease-in-out;
+}
+
+.btn-hover-edit:focus {
+  outline: none;
+}
+
+.btn-hover-edit.color-8 {
+  background-image: linear-gradient(to right, #9cbab2, #4bbb98, #2b7676, #437662);
+  box-shadow: 0 4px 15px 0 rgba(45, 54, 65, 0.75);
+}
+
+.btn-hover-edit.color-10 {
+  background-image: linear-gradient(to right, #ed6ea0, #ec8c69, #f7186a, #FBB03B);
+  box-shadow: 0 4px 15px 0 rgba(236, 116, 149, 0.75);
+}
+
+.btn-hover-edit.color-4 {
+  background-image: linear-gradient(to right, #fc6076, #ff9a44, #ef9d43, #e75516);
+  box-shadow: 0 4px 15px 0 rgba(252, 104, 110, 0.75);
+}
+
+.btn-hover-edit.color-3 {
+  background-image: linear-gradient(to right, #667eea, #764ba2, #6B8DD6, #8E37D7);
+  box-shadow: 0 4px 15px 0 rgba(116, 79, 168, 0.75);
+}
+
+.btn-hover-edit.color-7 {
+  background-image: linear-gradient(to right, #6253e1, #852D91, #A3A1FF, #F24645);
+  box-shadow: 0 4px 15px 0 rgba(126, 52, 161, 0.75);
+}
+
+/*XS Devices*/
+@media (max-width: 576px) {
+  .card.gradient-custom {
+    width: 75%;
+  }
+}
 
 /*Small Devices*/
 @media (min-width: 576px) {

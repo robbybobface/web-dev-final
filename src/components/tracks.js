@@ -76,6 +76,7 @@ const Tracks = () => {
     };
 
     useEffect(() => {
+        window.scrollTo(0, 0);
         getData().catch(error => toast.error(error));
     }, [ location.key ]);
 

@@ -65,6 +65,10 @@ html {
   height: 50vh;
 }
 
+.custom-height-dashboard {
+  height: 15vh;
+}
+
 .footer-home {
   margin-top: -85px !important;
   z-index: 10 !important;

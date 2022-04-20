@@ -26,3 +26,8 @@ export const isAccountOwner = (username) =>
 export const isLoggedIn = () =>
     api.get(`${SECURITY_API}/user`)
         .then(response => response.data);
+
+export const changePassword = (password) => {
+    api.post(`${SECURITY_API}/change-password`, password)
+        .then(response => response.data).catch(err => console.log(password));
+};

@@ -150,6 +150,7 @@ const Search = () => {
         }, [ search, searchString ]);
 
         useEffect(() => {
+            window.scrollTo(0, 0);
             if (searchString) {
                 searchHandler();
             }

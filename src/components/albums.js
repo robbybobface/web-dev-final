@@ -71,6 +71,7 @@ const Albums = () => {
     };
 
     useEffect(() => {
+        window.scrollTo(0, 0);
         getData().catch(error => toast.error(error));
     }, [ location.key ]);
 

@@ -6,6 +6,7 @@ import './components/stylesheets/header.css';
 import './components/stylesheets/login.css';
 import './components/stylesheets/search.css';
 import './components/stylesheets/details.css';
+import './components/stylesheets/dashboard.css';
 
 import { Provider } from "react-redux";
 import { combineReducers, createStore } from "redux";
@@ -41,11 +42,13 @@ function App() {
     const [ user, setUser ] = useState({});
     const [ loggedIn, setLoggedIn ] = useState(false);
     const [ searchBy, setSearchBy ] = useState('tracks');
+    // const [ usersIndex, setUsersIndex ] = useState(0);
 
     const providerValue = useMemo(() => ({
         loggedIn: [ loggedIn, setLoggedIn ],
         user: [ user, setUser ],
-        searchBy: [ searchBy, setSearchBy ]
+        searchBy: [ searchBy, setSearchBy ],
+        // usersIndex: [ usersIndex, setUsersIndex ]
     }), [ loggedIn, setLoggedIn, user, setUser, searchBy, setSearchBy ]);
 
     return (

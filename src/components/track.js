@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 
 import { css } from "@emotion/react";
 
@@ -8,24 +8,15 @@ import { Credentials } from "../Credentials";
 import { Helmet } from "react-helmet";
 import moment from "moment";
 import momentDurationFormatSetup from "moment-duration-format";
-import { BarLoader, ScaleLoader } from "react-spinners";
+import { ScaleLoader } from "react-spinners";
 import { toast } from "react-toastify";
-import * as security from "../services/auth-service";
 import { useDispatch } from "react-redux";
 import { MDBCol, MDBRow } from "mdb-react-ui-kit";
-import TrackListItem from "./partials/TrackListItem";
 import RecommendedTrackListItem from "./partials/RecommendedTrackListItem";
 
-import {
-    Chart as ChartJS,
-    RadialLinearScale,
-    PointElement,
-    LineElement,
-    Filler,
-    Tooltip,
-    Legend,
-} from 'chart.js';
-import { Radar } from 'react-chartjs-2';
+import { UserContext } from "../Utils/UserContext";
+import * as service from "../services/user-service";
+import * as trackService from "../services/track-service";
 
 const override = css`
   display: block;
@@ -35,8 +26,12 @@ const override = css`
 
 const Track = () => {
     const { tid } = useParams();
-    const [ loggedIn, setLoggedIn ] = useState(false);
+    const { user, loggedIn } = useContext(UserContext);
+    const [ stateUser, setStateUser ] = user;
+    const [ stateLoggedIn, setStateLoggedIn ] = loggedIn;
     const [ track, setTrack ] = useState({});
+    const [ localTrack, setLocalTrack ] = useState({});
+    const [ localEmpty, setLocalEmpty ] = useState(true);
     const [ artist, setArtist ] = useState({});
     const [ genres, setGenres ] = useState([]);
     const [ features, setFeatures ] = useState({});
@@ -51,9 +46,6 @@ const Track = () => {
     const navigate = useNavigate();
 
     const keys = [ 'C', 'C♯/D♭', 'D', 'D♯/E♭', 'E', 'F', 'F♯/G♭', 'G', 'G♯/A♭', 'A', 'A♯/B♭', 'B' ];
-
-    const notRendered = Object.keys(track).length === 0 && Object.keys(artist).length === 0
-        && Object.keys(features).length === 0 && Object.keys(analyses).length === 0;
 
     const spotify = Credentials();
 
@@ -134,6 +126,14 @@ const Track = () => {
 
     };
 
+    const getLocal = async () => {
+        const localCall = await trackService.findTrackById(tid);
+        if (localCall.error) {
+            return;
+        }
+        setLocalTrack(localCall);
+    };
+
     const formatGenres = (artist) => {
         return artist.genres.map(
             (genre) => {
@@ -160,54 +160,113 @@ const Track = () => {
         );
     };
 
-    const loggedInHandler = () => {
-        security.isLoggedIn(dispatch).then(r => {
-            setLoggedIn(r.loggedIn);
-            console.log(r);
-        });
-    };
+    // const loggedInHandler = () => {
+    //     security.isLoggedIn(dispatch).then(r => {
+    //         setLoggedIn(r.loggedIn);
+    //         console.log(r);
+    //     });
+    // };
 
     const getLiked = () => {
-        setLiked(true);
+        if (stateUser.likedSongs.length === 0) {
+            return;
+        }
+        stateUser.likedSongs.map(song => {
+            if (song.songId === tid) {
+                setLiked(true);
+                setLocalEmpty(false);
+            }
+        });
+
     };
 
-    useEffect(() =>
-        loggedInHandler(), [ loggedIn, location.key ]
-    );
+    const likeSongHandler = async () => {
+        // console.log(tid);
+        const originalSongs = stateUser.likedSongs;
+        // console.log(originalSongs);
+        service.updateUser(
+            { ...stateUser, likedSongs: [ { songId: tid }, ...originalSongs ] })
+            .catch(error => toast.error('something went wrong'));
+        toast.success('Song added to liked songs!');
+        const foundTrack = await trackService.findTrackById(tid);
+        console.log(foundTrack);
+        if (foundTrack.error) {
+            console.log('we got here');
+            const createdTrack = await trackService.createTrack({
+                name: track.name,
+                artists: track.artists.map((artist) => artist.name),
+                trackId: track.id,
+                likes: [ stateUser ]
+            }).catch(err => toast.error(err));
+            console.log('please get here');
+            setLocalTrack(createdTrack);
+            setLocalEmpty(false);
+            setLiked(true);
 
-    useEffect(() => {
+        } else {
+            // console.log('how are we here');
+            const updatedTrack = await trackService.updateTrack(
+                {
+                    ...foundTrack,
+                    likes: [ stateUser, ...foundTrack.likes ]
+                }).catch(
+                err => toast.error(err));
+            setLocalTrack(updatedTrack);
+            setLocalEmpty(false);
+            setLiked(true);
+        }
+    };
+    const unlikeSongHandler = async () => {
+        const newSongs = stateUser.likedSongs.filter((song) => song.songId !== tid);
+        // console.log(newSongs);
+        if (newSongs.length === 0) {
+            service.updateUser(
+                { ...stateUser, likedSongs: [] })
+                .catch(error => toast.error('something went wrong'));
+            toast.success('Song removed from liked songs!');
+        } else {
+            service.updateUser(
+                { ...stateUser, likedSongs: [ ...newSongs ] })
+                .catch(error => toast.error('something went wrong'));
+            toast.success('Song removed from liked songs!');
+        }
+        const foundTrack = await trackService.findTrackById(tid);
+        // console.log(foundTrack);
+        const newUsers = foundTrack.likes.filter(
+            (user) => user.username !== stateUser.username);
+        if (newUsers.length === 0) {
+            const deletedTrack = await trackService.deleteTrack(foundTrack).catch(
+                err => toast.error(err));
+            setLocalEmpty(true);
+            setLiked(false);
+        } else {
+            const updatedTrack = await trackService.updateTrack(
+                { ...foundTrack, likes: [ ...newUsers ] }).catch(
+                err => toast.error(err));
+            setLocalTrack(updatedTrack);
+            setLocalEmpty(false);
+            setLiked(false);
+        }
+    };
+
+    // useEffect(() =>
+    //     loggedInHandler(), [ loggedIn, location.key ]
+    // );
+
+    useMemo(() => {
+        window.scrollTo(0, 0);
         setLoading(true);
         getData().catch(error => toast.error(error));
+    }, []);
+
+    useEffect(() => {
         getLiked();
+        console.log(localTrack);
     }, [ location.key ]);
 
-    function likeSongHandler() {
-
-    }
-
-    // ChartJS.register(
-    //     RadialLinearScale,
-    //     PointElement,
-    //     LineElement,
-    //     Filler,
-    //     Tooltip
-    // );
-    //
-    // const analysisData = {
-    //     labels: [ 'Acousticness', 'Danceability', 'Liveness', 'Speechiness', 'Valence' ],
-    //     datasets: [
-    //         {
-    //             data: [ features.acousticness * 100, features.danceability * 100,
-    //                 features.liveness * 100, features.speechiness * 100, features.valence *
-    // 100 ], color: 'rgb(255,255,255)', backgroundColor: 'rgba(30,183,183,0.2)', borderColor:
-    // 'rgb(43,118,118)', borderWidth: 1, pointBackgroundColor: 'rgb(57,164,164)',
-    // pointBorderColor: '#fff', pointHoverBackgroundColor: '#fff', pointHoverBorderColor:
-    // 'rgb(57,164,164)' }, ], }; const analysisOptions = { responsive: true, color: 'white',
-    // scales: { r: { fontSize: '20px', suggestedMin: 0, suggestedMax: 100, grid: { color:
-    // 'rgba(255,255,255,0.4)' }, pointLabels: { color: 'white', font: { size: 15, family:
-    // 'Roboto Light', } }, ticks: { // color: 'white', // showLabelBackdrop: false, callback:
-    // function () { return ""; }, backdropColor: "rgba(0, 0, 0, 0)" } } }, plugins: { legend:
-    // { display: false, }, } };
+    useMemo(() => {
+        getLocal().catch(err => toast.err('Something went wrong!'));
+    }, [ liked ]);
 
     return (
         <>
@@ -232,57 +291,102 @@ const Track = () => {
                 </> :
                 <div className="container py-3">
                     <div className="row d-flex justify-content-center align-content-center">
-                        <div className="col-10 col-sm-10 col-md-5 col-lg-4 d-flex align-items-center justify-content-center">
-                            <div className="card gradient-custom mb-4 mb-md-0">
-                                <div className="card-body text-center">
-                                    <img src={track.album.images.length === 0
-                                        ? 'https://images.unsplash.com/photo-1573247374056-ba7c8c5ca4fa?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1480&q=80'
-                                        : track.album.images[0].url}
-                                         alt="avatar"
-                                         className="img-fluid"/>
-                                    <h5 className="item-name mt-3 mt-md-4 mt-xl-4">{notRendered
-                                        ? ''
-                                        : track.name}
-                                        {track.explicit
-                                            ?
-                                            <span className="material-icons green-color green-color-track">explicit</span>
-                                            : ''}</h5>
-                                    <p className="item-descriptor mb-sm-3 mb-lg-4">
-                                        {track.artists.map(
-                                            (artist, i, { length }) =>
-                                                length - 1 === i ?
-                                                    <Link to={`/artist/${artist.id}`} key={i}>
+                        <div className="col-10 col-sm-12 col-md-5 col-lg-4 d-flex align-items-center justify-content-center">
+                            <div className="col-12 d-flex flex-column justify-content-center align-items-center">
+                                <div className="card gradient-custom mb-4 mb-md-0">
+                                    <div className="card-body text-center">
+                                        <img src={track.album.images.length === 0
+                                            ? 'https://images.unsplash.com/photo-1573247374056-ba7c8c5ca4fa?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1480&q=80'
+                                            : track.album.images[0].url}
+                                             alt="avatar"
+                                             className="img-fluid"/>
+                                        <h5 className="item-name mt-3 mt-md-4 mt-xl-4">{track.name}
+                                            {track.explicit
+                                                ?
+                                                <span className="material-icons green-color green-color-track">explicit</span>
+                                                : ''}</h5>
+                                        <p className="item-descriptor mb-sm-3 mb-lg-4">
+                                            {track.artists.map(
+                                                (artist, i, { length }) =>
+                                                    length - 1 === i ?
+                                                        <Link to={`/artist/${artist.id}`} key={i}>
                                                         <span className="item-descriptor artist-name"
                                                               key={artist.id}>{artist.name}</span>
-                                                    </Link> :
-                                                    <>
-                                                        <Link to={`/artist/${artist.id}`} key={i}>
+                                                        </Link> :
+                                                        <>
+                                                            <Link to={`/artist/${artist.id}`}
+                                                                  key={i}>
                                                             <span className="item-descriptor artist-name"
                                                                   key={artist.id}>{artist.name}</span>
-                                                        </Link>
-                                                        {', '}
+                                                            </Link>
+                                                            {', '}
 
-                                                    </>)
-                                        }
-                                    </p>
-                                    <div className="d-flex justify-content-center mb-2">
-                                        {loggedIn ? !liked ?
-                                                <button className="btn-hover-like color-10"
-                                                        onClick={() => {
-                                                            likeSongHandler();
-                                                        }}>
-                                                    Like
-                                                </button>
-                                                : <button className="btn-hover-like color-3"
-                                                          onClick={() => {
-                                                              likeSongHandler();
-                                                          }}>
-                                                    Unlike
-                                                </button>
-                                            : ''
-                                        }
+                                                        </>)
+                                            }
+                                        </p>
+                                        <div className="d-flex justify-content-center mb-2">
+                                            {stateLoggedIn ? !liked ?
+                                                    <button className="btn-hover-like color-10"
+                                                            onClick={() => {
+                                                                likeSongHandler();
+                                                            }}>
+                                                        Like
+                                                    </button>
+                                                    : <button className="btn-hover-like color-3"
+                                                              onClick={() => {
+                                                                  unlikeSongHandler();
+                                                              }}>
+                                                        Unlike
+                                                    </button>
+                                                : ''
+                                            }
+                                        </div>
                                     </div>
+
                                 </div>
+                                {localEmpty ? '' :
+                                    <div className="card mask-custom-details mt-0 mt-sm-0 mt-md-4 mb-4 w-100 d-none d-md-block">
+                                        <div className="card-body">
+                                            <p className="progress-header mb-3">
+                                                Recently Liked By
+                                            </p>
+                                            <div className="row align-items-center">
+                                                <div className="col-sm-5 col-md-5 col-lg-5 col-xl-4">
+                                                    <p className="mb-0 item-heading">Users:</p>
+                                                </div>
+                                                <div className="col-sm-7">
+                                                    <p className="item-descriptor mb-0">{localTrack.likes.slice(
+                                                        0, 4).map(
+                                                        (user, i, { length }) =>
+                                                            length - 1 === i ?
+                                                                <Link to={`/profile/${user.username}`}>
+                                                                    <span className="item-descriptor artist-name"
+                                                                          key={i}>{user.username}</span>
+                                                                </Link> :
+                                                                <>
+                                                                    <Link to={`/profile/${user.username}`}>
+                                                                        <span className="item-descriptor artist-name"
+                                                                              key={i}>{user.username}</span>
+                                                                    </Link>
+                                                                    {', '}
+
+                                                                </>)
+                                                    }</p>
+                                                </div>
+                                            </div>
+                                            <hr/>
+                                            <div className="row mb-0 align-items-center">
+                                                <div className="col-sm-5 col-md-5 col-lg-5 col-xl-4">
+                                                    <p className="mb-0 item-heading">Total
+                                                                                     Likes:</p>
+                                                </div>
+                                                <div className="col-sm-7">
+                                                    <p className="item-descriptor mb-0">{localTrack.likes.length}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
                             </div>
                         </div>
                         <div className="col-10 col-sm-12 col-md-7 col-lg-8">
@@ -343,9 +447,7 @@ const Track = () => {
                                             <p className="mb-0 item-heading">Duration</p>
                                         </div>
                                         <div className="col-sm-7 col-xl-10">
-                                            <p className="item-descriptor mb-0">{notRendered
-                                                ? ''
-                                                :
+                                            <p className="item-descriptor mb-0">{
                                                 moment.duration(track.duration_ms,
                                                     "milliseconds").format(
                                                     'h [hrs], m [min], ss [secs]')}
@@ -368,13 +470,11 @@ const Track = () => {
                                     </>}
                                     <div className="row mb-0 align-items-center">
                                         <div className="col-sm-5 col-md-4 col-xl-2">
-                                            <p className="mb-0 item-heading">{notRendered ? ''
-                                                : 'Popularity'}</p>
+                                            <p className="mb-0 item-heading">{'Popularity'}</p>
                                         </div>
                                         <div className="col-sm-7">
-                                            <p className="item-descriptor mb-0">{notRendered
-                                                ? ''
-                                                : track.popularity + '/100'}</p>
+                                            <p className="item-descriptor mb-0">{track.popularity
+                                                + '/100'}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -473,55 +573,88 @@ const Track = () => {
                                                     <p className="mb-0 item-heading">Key</p>
                                                 </div>
                                                 <div className="col-sm-7">
-                                                    <p className="item-descriptor mb-0">{notRendered
-                                                        ? '' : keys[analyses.track.key]}
+                                                    <p className="item-descriptor mb-0">{keys[analyses.track.key]}
                                                     </p>
                                                 </div>
                                             </div>
                                             <hr/>
                                             <div className="row align-items-center">
                                                 <div className="col-sm-5 col-md-10 col-xl-4">
-                                                    <p className="mb-0 item-heading">{notRendered
-                                                        ? ''
-                                                        : 'BPM'}</p>
+                                                    <p className="mb-0 item-heading">{'BPM'}</p>
                                                 </div>
                                                 <div className="col-sm-7">
-                                                    <p className="item-descriptor mb-0">{notRendered
-                                                        ? ''
-                                                        : Math.round(analyses.track.tempo)}</p>
+                                                    <p className="item-descriptor mb-0">{Math.round(
+                                                        analyses.track.tempo)}</p>
                                                 </div>
                                             </div>
                                             <hr/>
                                             <div className="row align-items-center">
                                                 <div className="col-sm-5 col-md-10 col-xl-4">
-                                                    <p className="mb-0 item-heading">{notRendered
-                                                        ? ''
-                                                        : 'Time Signature'}</p>
+                                                    <p className="mb-0 item-heading">Time
+                                                                                     Signature</p>
                                                 </div>
                                                 <div className="col-sm-7">
-                                                    <p className="item-descriptor mb-0">{notRendered
-                                                        ? ''
-                                                        : analyses.track.time_signature
+                                                    <p className="item-descriptor mb-0">{analyses.track.time_signature
                                                         + '/4'}</p>
                                                 </div>
                                             </div>
                                             <hr/>
                                             <div className="row align-items-center">
                                                 <div className="col-sm-5 col-md-10 col-xl-4">
-                                                    <p className="mb-0 item-heading">{notRendered
-                                                        ? ''
-                                                        : 'Loudness (dB)'}</p>
+                                                    <p className="mb-0 item-heading">Loudness
+                                                                                     (dB)</p>
                                                 </div>
                                                 <div className="col-sm-7">
-                                                    <p className="item-descriptor mb-0">{notRendered
-                                                        ? ''
-                                                        : analyses.track.loudness}</p>
+                                                    <p className="item-descriptor mb-0">{analyses.track.loudness}</p>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                            {localEmpty ? '' :
+                                <div className="card mask-custom-details mt-0 mt-sm-0 mt-md-4 mb-4 w-100 d-block d-sm-block d-md-none">
+                                    <div className="card-body">
+                                        <p className="progress-header mb-3">
+                                            Recently Liked By
+                                        </p>
+                                        <div className="row align-items-center">
+                                            <div className="col-sm-5 col-md-5 col-lg-5 col-xl-4">
+                                                <p className="mb-0 item-heading">Users:</p>
+                                            </div>
+                                            <div className="col-sm-7">
+                                                <p className="item-descriptor mb-0">{localTrack.likes.slice(
+                                                    0, 4).map(
+                                                    (user, i, { length }) =>
+                                                        length - 1 === i ?
+                                                            <Link to={`/profile/${user.username}`}>
+                                                                    <span className="item-descriptor artist-name"
+                                                                          key={i}>{user.username}</span>
+                                                            </Link> :
+                                                            <>
+                                                                <Link to={`/profile/${user.username}`}>
+                                                                        <span className="item-descriptor artist-name"
+                                                                              key={i}>{user.username}</span>
+                                                                </Link>
+                                                                {', '}
+
+                                                            </>)
+                                                }</p>
+                                            </div>
+                                        </div>
+                                        <hr/>
+                                        <div className="row mb-0 align-items-center">
+                                            <div className="col-sm-5 col-md-5 col-lg-5 col-xl-4">
+                                                <p className="mb-0 item-heading">Total
+                                                                                 Likes:</p>
+                                            </div>
+                                            <div className="col-sm-7">
+                                                <p className="item-descriptor mb-0">{localTrack.likes.length}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
                         </div>
                     </div>
                     {/*<div className="d-none d-md-block d-lg-none row align-items-center justify-content-center">*/}
