@@ -24,14 +24,6 @@ const Login = () => {
                     toast.error('Invalid Username or Password');
                 } else {
                     // console.log(response);
-                    await service.profile(dispatch).then(r => {
-                        setStateUser(r);
-                        console.log(r);
-                    });
-                    await security.isLoggedIn(dispatch).then(r => {
-                        setStateLoggedIn(r.loggedIn);
-                        console.log(r.loggedIn);
-                    });
                     toast.success(response.success, {
                         position: "top-right",
                         autoClose: 5000,
@@ -41,7 +33,8 @@ const Login = () => {
                         draggable: true,
                         progress: undefined,
                     });
-
+                    isLoggedInHandler();
+                    userHandler();
                     navigate('/search', {});
                     window.scrollTo(0, 0);
                 }
