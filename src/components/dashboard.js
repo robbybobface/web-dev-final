@@ -280,7 +280,7 @@ const Dashboard = () => {
                             </div>
                         </div>
                         : ''}
-                </> : ''
+                </> : navigate('/pagenotfound')
             }
         </>
 

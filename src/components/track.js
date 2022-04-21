@@ -123,12 +123,14 @@ const Track = () => {
         } else {
             setRecommended(recommendedCall.data.tracks);
         }
+
         setLoading(false);
 
     };
 
     const getLocal = async () => {
         const localCall = await trackService.findTrackById(tid);
+        console.log(localCall);
         if (localCall.error) {
             return;
         }
@@ -169,15 +171,20 @@ const Track = () => {
     // };
 
     const getLiked = () => {
-        if (stateUser.likedSongs.length === 0) {
-            return;
-        }
-        stateUser.likedSongs.map(song => {
-            if (song.songId === tid) {
-                setLiked(true);
-                setLocalEmpty(false);
+        if (!stateUser) {
+            //
+        } else {
+            if (stateUser.likedSongs.length === 0) {
+                return;
             }
-        });
+            stateUser.likedSongs.map(song => {
+                if (song.songId === tid) {
+                    setLiked(true);
+                    setLocalEmpty(false);
+                }
+            });
+
+        }
 
     };
 
@@ -259,6 +266,7 @@ const Track = () => {
         setLoading(true);
         try {
             getData();
+            // console.log(track);
         } catch (error) {
             toast.error('Could Not Find Song');
             navigate('/search');
@@ -268,9 +276,9 @@ const Track = () => {
     useEffect(() => {
         try {
             getLiked();
-            console.log(localTrack);
+            // console.log(tid);
         } catch (error) {
-            toast.error('Could Not Find Song');
+            toast.error('Could Not Find Song like handler');
             navigate('/search');
         }
     }, [ location.key ]);

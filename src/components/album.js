@@ -94,15 +94,19 @@ const Album = () => {
     };
 
     const getLiked = () => {
-        if (stateUser.likedAlbums.length === 0) {
-            return;
-        }
-        stateUser.likedAlbums.map(album => {
-            if (album.albumId === aid) {
-                setLiked(true);
-                setLocalEmpty(false);
+        if (!stateUser) {
+            //
+        } else {
+            if (stateUser.likedAlbums.length === 0) {
+                return;
             }
-        });
+            stateUser.likedAlbums.map(album => {
+                if (album.albumId === aid) {
+                    setLiked(true);
+                    setLocalEmpty(false);
+                }
+            });
+        }
     };
 
     const likeAlbumHandler = async () => {

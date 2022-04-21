@@ -113,15 +113,19 @@ const Artist = () => {
     };
 
     const getLiked = () => {
-        if (stateUser.likedArtists.length === 0) {
-            return;
-        }
-        stateUser.likedArtists.map(artist => {
-            if (artist.artistId === aid) {
-                setLiked(true);
-                setLocalEmpty(false);
+        if (!stateUser) {
+            //
+        } else {
+            if (stateUser.likedArtists.length === 0) {
+                return;
             }
-        });
+            stateUser.likedArtists.map(artist => {
+                if (artist.artistId === aid) {
+                    setLiked(true);
+                    setLocalEmpty(false);
+                }
+            });
+        }
     };
 
     const likeArtistHandler = async () => {
@@ -227,6 +231,16 @@ const Artist = () => {
             navigate('/search');
         }
     }, [ location.key ]);
+
+    useEffect(() => {
+        try {
+            getLiked();
+            console.log(localArtist);
+        } catch (error) {
+            toast.error('Could Not Find Artist');
+            navigate('/search');
+        }
+    }, []);
 
     useMemo(() => {
         try {
