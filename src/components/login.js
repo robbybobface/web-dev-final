@@ -19,11 +19,19 @@ const Login = () => {
     const login = async () =>
         await security.login(loginUser)
             .catch(error => toast.error('Invalid Username or Password'))
-            .then((response) => {
+            .then(async (response) => {
                 if (response === 'Invalid Username or Password') {
                     toast.error('Invalid Username or Password');
                 } else {
                     // console.log(response);
+                    await service.profile(dispatch).then(r => {
+                        setStateUser(r);
+                        console.log(r);
+                    });
+                    await security.isLoggedIn(dispatch).then(r => {
+                        setStateLoggedIn(r.loggedIn);
+                        console.log(r.loggedIn);
+                    });
                     toast.success(response.success, {
                         position: "top-right",
                         autoClose: 5000,
@@ -33,8 +41,7 @@ const Login = () => {
                         draggable: true,
                         progress: undefined,
                     });
-                    isLoggedInHandler();
-                    userHandler();
+
                     navigate('/search', {});
                     window.scrollTo(0, 0);
                 }
@@ -44,13 +51,14 @@ const Login = () => {
     const userHandler = () => {
         service.profile(dispatch).then(r => {
             setStateUser(r);
-            // console.log(r);
+            console.log(r);
         });
     };
 
     const isLoggedInHandler = () => {
         security.isLoggedIn(dispatch).then(r => {
             setStateLoggedIn(r.loggedIn);
+            console.log(r.loggedIn);
         });
     };
     return (
