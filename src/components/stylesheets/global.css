@@ -89,6 +89,64 @@ html {
   cursor: pointer;
 }
 
+.page-not-found-text {
+  font-family: 'Roboto', serif;
+  font-weight: 300;
+  font-style: italic;
+  color: black;
+  font-size: 200px;
+  padding-top: 125px;
+}
+
+.page-not-found-subtext {
+  font-family: 'Roboto', serif;
+  font-weight: 400;
+  font-style: italic;
+  color: rgba(255, 0, 124, 0.7);
+  font-size: 50px;
+  margin-bottom: 30px;
+}
+
+.btn-hover-page-not-found {
+  width: 150px;
+  font-size: 28px;
+  font-family: "Roboto", serif;
+  font-weight: 300;
+  color: #fff;
+  cursor: pointer;
+  height: 50px;
+  text-align: center;
+  border: none;
+  background-size: 300% 100%;
+  border-radius: 50px;
+  moz-transition: all .4s ease-in-out;
+  -o-transition: all .4s ease-in-out;
+  -webkit-transition: all .4s ease-in-out;
+  transition: all .4s ease-in-out;
+}
+
+.btn-hover-page-not-found:hover {
+  background-position: 100% 0;
+  moz-transition: all .4s ease-in-out;
+  -o-transition: all .4s ease-in-out;
+  -webkit-transition: all .4s ease-in-out;
+  transition: all .4s ease-in-out;
+  box-shadow: 0 4px 15px 0 rgba(0, 175, 255, 0.75);
+}
+
+.btn-hover-page-not-found:focus {
+  outline: none;
+}
+
+.btn-hover-page-not-found.color-10 {
+  background-image: linear-gradient(to right, #ed6ea0, #ec8c69, #00c572, #00a5d7);
+  box-shadow: 0 4px 15px 0 rgba(236, 116, 149, 0.75);
+}
+
+.page-not-found-btn-container {
+  padding-bottom: 141px;
+}
+
 /*body {*/
 /*  -ms-overflow-style: none; !* Internet Explorer 10+ *!*/
 /*  scrollbar-width: none; !* Firefox *!*/
@@ -97,3 +155,109 @@ html {
 /*body::-webkit-scrollbar {*/
 /*  display: none; !* Safari and Chrome *!*/
 /*}*/
+
+
+/*XS Devices*/
+@media (max-width: 576px) {
+  .page-not-found-text {
+    font-size: 125px;
+    padding-top: 180px;
+  }
+
+  .page-not-found-subtext {
+    font-size: 32px;
+    margin-bottom: 30px;
+  }
+
+  .btn-hover-page-not-found {
+    width: 130px;
+    font-size: 24px;
+    height: 45px;
+  }
+
+  .page-not-found-btn-container {
+    padding-bottom: 150px;
+  }
+}
+
+/*Small Devices*/
+@media (min-width: 576px) {
+  .page-not-found-text {
+    font-size: 125px;
+    padding-top: 180px;
+  }
+
+  .page-not-found-subtext {
+    font-size: 32px;
+    margin-bottom: 30px;
+  }
+
+  .btn-hover-page-not-found {
+    width: 130px;
+    font-size: 24px;
+    height: 45px;
+  }
+
+  .page-not-found-btn-container {
+    padding-bottom: 150px;
+  }
+}
+
+/*Medium Devices*/
+@media (min-width: 768px) {
+  .page-not-found-text {
+    font-size: 170px;
+    padding-top: 170px;
+  }
+
+  .page-not-found-subtext {
+    font-size: 35px;
+    margin-bottom: 30px;
+  }
+
+  .btn-hover-page-not-found {
+    width: 150px;
+    font-size: 28px;
+    height: 50px;
+  }
+
+  .page-not-found-btn-container {
+    padding-bottom: 158px;
+  }
+}
+
+/*Large Devices*/
+@media (min-width: 992px) {
+  .page-not-found-text {
+    font-size: 200px;
+    padding-top: 125px;
+  }
+
+  .page-not-found-subtext {
+    font-size: 45px;
+    margin-bottom: 30px;
+  }
+
+  .btn-hover-page-not-found {
+    width: 150px;
+    font-size: 28px;
+    height: 50px;
+  }
+
+  .page-not-found-btn-container {
+    padding-bottom: 143px;
+  }
+
+
+}
+
+/*X-Large Devices*/
+@media (min-width: 1200px) {
+
+}
+
+/*XX-L Devices*/
+@media (min-width: 1400px) {
+
+}
+

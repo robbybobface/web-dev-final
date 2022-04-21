@@ -48,7 +48,11 @@ const Tracks = () => {
         const artistCall = await axios.get(`https://api.spotify.com/v1/artists/${aid}`,
             {
                 headers: { 'Authorization': 'Bearer ' + token.data.access_token }
-            });
+            }).catch((error) => {
+            toast.error('Could Not Find Songs');
+            navigate('/search');
+            throw "Could Not Find Songs";
+        });
         console.log(artistCall.data);
         setArtist(artistCall.data);
         const albumsCall = await axios.get(
@@ -77,7 +81,12 @@ const Tracks = () => {
 
     useEffect(() => {
         window.scrollTo(0, 0);
-        getData().catch(error => toast.error(error));
+        try {
+            getData().catch();
+        } catch (error) {
+            toast.error('Could Not Find Songs');
+            navigate('/search');
+        }
     }, [ location.key ]);
 
     return (

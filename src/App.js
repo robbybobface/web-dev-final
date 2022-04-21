@@ -32,6 +32,10 @@ import Albums from "./components/albums";
 import Footer from "./components/partials/Footer";
 import PrivacyPolicy from "./components/private-policy";
 import Dashboard from "./components/dashboard";
+import ProfileTracks from "./components/profile-tracks";
+import ProfileAlbums from "./components/profile-albums";
+import ProfileArtists from "./components/profile-artists";
+import PageNotFound from "./components/page-not-found";
 
 const reducer = combineReducers({
     user: userReducer, auth: authReducer
@@ -63,9 +67,9 @@ function App() {
                         <Route exact={true} path="/search" element={<Search/>}/>
                         <Route exact={true} path="/search/:searchString" element={<Search/>}/>
                         <Route exact={true} path="/profile/:username" element={<Profile/>}/>
-                        {/*<Route exact={true} path="/profile/:username/tracks" element={<ProfileTracks/>}/>*/}
-                        {/*<Route exact={true} path="/profile/:username/albums" element={<ProfileAlbums/>}/>*/}
-                        {/*<Route exact={true} path="/profile/:username/artists" element={<ProfileArtists/>}/>*/}
+                        <Route exact={true} path="/profile/:username/tracks" element={<ProfileTracks/>}/>
+                        <Route exact={true} path="/profile/:username/albums" element={<ProfileAlbums/>}/>
+                        <Route exact={true} path="/profile/:username/artists" element={<ProfileArtists/>}/>
                         <Route exact={true} path="/artist/:aid" element={<Artist/>}/>
                         <Route exact={true} path="/album/:aid" element={<Album/>}/>
                         <Route exact={true} path="/track/:tid" element={<Track/>}/>
@@ -73,7 +77,7 @@ function App() {
                         <Route exact={true} path="/albums/:aid" element={<Albums/>}/>
                         <Route exact={true} path="/dashboard" element={<Dashboard/>}/>
                         <Route exact={true} path="/privacy-policy" element={<PrivacyPolicy/>}/>
-                        {/*<Route path="*" element={<PageNotFound/>}/>*/}
+                        <Route path="*" element={<PageNotFound/>}/>
                     </Routes>
                     <Footer/>
                     <ToastContainer

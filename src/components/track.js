@@ -263,7 +263,7 @@ const Track = () => {
             toast.error('Could Not Find Song');
             navigate('/search');
         }
-    }, []);
+    }, [ location.key ]);
 
     useEffect(() => {
         try {
@@ -271,7 +271,7 @@ const Track = () => {
             console.log(localTrack);
         } catch (error) {
             toast.error('Could Not Find Song');
-            navigate('/search')
+            navigate('/search');
         }
     }, [ location.key ]);
 
@@ -280,7 +280,7 @@ const Track = () => {
             getLocal().catch(err => toast.err('Something went wrong!'));
         } catch (error) {
             toast.error('Could Not Find Song');
-            navigate('/search')
+            navigate('/search');
         }
     }, [ liked ]);
 

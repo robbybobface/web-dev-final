@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
@@ -7,8 +7,12 @@ import { Helmet } from "react-helmet";
 import { toast } from "react-toastify";
 import { ScaleLoader } from "react-spinners";
 import { css } from "@emotion/react";
+
 import { MDBCol, MDBRow } from "mdb-react-ui-kit";
+import { UserContext } from "../Utils/UserContext";
+import * as userService from "../services/user-service";
 import AlbumListItem from "./partials/AlbumListItem";
+import ArtistListItem from "./partials/ArtistListItem";
 
 const override = css`
   display: block;
@@ -16,11 +20,14 @@ const override = css`
   border-color: #00C9B9;
 `;
 
-const Albums = () => {
-    const { aid } = useParams();
+const ProfileArtists = () => {
+    const { username } = useParams();
     const [ loading, setLoading ] = useState(true);
     const [ artist, setArtist ] = useState({});
-    const [ discography, setDiscography ] = useState({});
+    const { user, loggedIn } = useContext(UserContext);
+    const [ stateUser, setStateUser ] = user;
+    const [ stateLoggedIn, setStateLoggedIn ] = loggedIn;
+    const [ favArtists, setFavArtists ] = useState([]);
 
     const location = useLocation();
     const navigate = useNavigate();
@@ -30,6 +37,17 @@ const Albums = () => {
     const [ token, setToken ] = useState('');
 
     const getData = async () => {
+        const userCall = await userService.findUserByUsername(username).catch((error) => {
+            toast.error('No User with this Username!');
+            navigate('/search');
+            throw "No User with this Username";
+        });
+        if (userCall.error) {
+            toast.error('No User with this Username!');
+            navigate('/search');
+            throw "No User with this Username";
+        }
+        const localFavArtists = userCall.likedArtists.map(artist => artist.artistId).join(',');
         const token = await axios('https://accounts.spotify.com/api/token', {
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
@@ -39,47 +57,29 @@ const Albums = () => {
             method: 'POST'
         });
         setToken(token.data.access_token);
-        const artistCall = await axios.get(`https://api.spotify.com/v1/artists/${aid}`,
-            {
-                headers: { 'Authorization': 'Bearer ' + token.data.access_token }
-            }).catch((error) => {
-            toast.error('Could Not Find Albums');
-            navigate('/search');
-            throw 'Something went wrong';
-        });
-        console.log(artistCall.data);
-        setArtist(artistCall.data);
-        const albumsCall = await axios.get(
-            `https://api.spotify.com/v1/artists/${aid}/albums?include_groups=album&market=US&limit=50`,
-            {
-                headers: { 'Authorization': 'Bearer ' + token.data.access_token }
-            });
-        const checkAlbums = albumsCall.data.items.filter(
-            (recommendation, index) => recommendation.id !== aid && recommendation.name
-                !== albumsCall.data.name &&
-                albumsCall.data.items.findIndex(newRecommendation => {
-                    return newRecommendation.name === recommendation.name;
-                }) === index);
-        console.log(checkAlbums);
-        if (checkAlbums.length !== albumsCall.data.items.length) {
-            setDiscography(checkAlbums);
+        if (localFavArtists !== '') {
+            const artistsCall = await axios.get(
+                `https://api.spotify.com/v1/artists?ids=${localFavArtists}`,
+                {
+                    headers: {
+                        'Authorization': 'Bearer ' + token.data.access_token
+                    }
+                });
+            console.log(artistsCall.data.artists);
+            setFavArtists(artistsCall.data.artists);
         } else {
-            setDiscography(albumsCall.data.items);
+            //
         }
-
         setLoading(false);
-    };
-
-    const albumNavigate = (aid) => {
-        navigate(`/album/${aid}`);
     };
 
     useEffect(() => {
         window.scrollTo(0, 0);
         try {
             getData().catch();
+            console.log(favArtists);
         } catch (error) {
-            toast.error('Could Not Find Albums');
+            toast.error('Could Not Find Songs');
             navigate('/search');
         }
     }, [ location.key ]);
@@ -111,33 +111,36 @@ const Albums = () => {
                         <div className="container py-3">
                             <div className="row d-flex justify-content-center">
                                 <h1 className="search-category text-center py-2">
-                                    <span className="category-underline">Albums by {artist.name}</span>
+                                    <span className="category-underline">Artists Liked By {username}</span>
                                 </h1>
                                 <MDBRow className="row-cols-2 row-cols-md-2 row-cols-lg-4 g-4 flex-row">
                                     {
-                                        discography && discography.filter(
+                                        favArtists && favArtists.filter(
                                             recommendation =>
-                                                recommendation.album_group === 'album').map(album =>
+                                                recommendation.type === 'artist').map(artist =>
                                             <>
                                                 <MDBCol className="align-content-center justify-content-center"
                                                         style={{ display: 'flex' }}
                                                         onClick={() => {
-                                                            albumNavigate(album.id);
-                                                            window.scrollTo(0, 0);
-                                                        }}>
-                                                    <AlbumListItem key={album.id}
-                                                                   album={album}/>
+                                                            navigate(
+                                                                `/artist/${artist.id}`);
+                                                            window.scrollTo(0,
+                                                                0);
+                                                        }
+                                                        }>
+                                                    <ArtistListItem key={artist.id}
+                                                                    artist={artist}/>
                                                 </MDBCol>
                                             </>)
                                     }
                                 </MDBRow>
                             </div>
+
                         </div>
                     </>
             }
         </>
-
     );
 };
 
-export default Albums;
+export default ProfileArtists;

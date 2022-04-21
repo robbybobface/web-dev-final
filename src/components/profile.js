@@ -412,7 +412,7 @@ const Profile = () => {
                                                         </p>
                                                         {favAlbums && favAlbums.length > 4
                                                             ?
-                                                            <Link to={`/profile/${username}/tracks`}>
+                                                            <Link to={`/profile/${username}/albums`}>
                                                                 <p className="view-all align-items-center justify-content-end text-end">View
                                                                                                                                         All</p>
                                                             </Link>
@@ -450,7 +450,7 @@ const Profile = () => {
                                                         </p>
                                                         {favArtists && favArtists.length > 4
                                                             ?
-                                                            <Link to={`/profile/${username}/tracks`}>
+                                                            <Link to={`/profile/${username}/artists`}>
                                                                 <p className="view-all align-items-center justify-content-end text-end">View
                                                                                                                                         All</p>
                                                             </Link>
@@ -562,7 +562,7 @@ const Profile = () => {
                                                             </p>
                                                             {favAlbums && favAlbums.length > 4
                                                                 ?
-                                                                <Link to={`/profile/${username}/tracks`}>
+                                                                <Link to={`/profile/${username}/albums`}>
                                                                     <p className="view-all align-items-center justify-content-end text-end">View
                                                                                                                                             All</p>
                                                                 </Link>
@@ -600,7 +600,7 @@ const Profile = () => {
                                                             </p>
                                                             {favArtists && favArtists.length > 4
                                                                 ?
-                                                                <Link to={`/profile/${username}/tracks`}>
+                                                                <Link to={`/profile/${username}/artists`}>
                                                                     <p className="view-all align-items-center justify-content-end text-end">View
                                                                                                                                             All</p>
                                                                 </Link>

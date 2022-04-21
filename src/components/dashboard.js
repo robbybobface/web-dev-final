@@ -215,12 +215,13 @@ const Dashboard = () => {
                         </div>
                     </div>
                     {pageCount > 1 ?
-                        <div className="row d-flex flex-row align-items-center justify-content-center">
+                        <div className="row d-flex flex-row align-items-center justify-content-center w-100">
                             <div className="col-12 d-flex align-items-center justify-content-center">
                                 <nav aria-label="...">
                                     <MDBPagination circle className="mb-0">
-                                        <MDBPaginationItem>
+                                        <MDBPaginationItem className="page-toggle">
                                             <MDBPaginationLink
+                                                className="page-toggle"
                                                 tabIndex={-1}
                                                 aria-disabled="true"
                                                 disabled={page === 1}
@@ -232,18 +233,20 @@ const Dashboard = () => {
                                         </MDBPaginationItem>
 
                                         <MDBPaginationItem active={page === 1}
-                                                           onClick={previousHandler}>
+                                            // onClick={previousHandler}
+                                        >
                                             <MDBPaginationLink>{page === 1 ? 1
                                                 : page - 1}</MDBPaginationLink>
                                         </MDBPaginationItem>
 
                                         {pageCount === 1 ? '' :
                                             <MDBPaginationItem active={page !== 1}
-                                                               onClick={() => {
-                                                                   if (page === 1) {
-                                                                       nextHandler();
-                                                                   }
-                                                               }}>
+                                                // onClick={() => {
+                                                //     if (page === 1) {
+                                                //         nextHandler();
+                                                //     }
+                                                // }}
+                                            >
                                                 <MDBPaginationLink>
                                                     {page === 1 && pageCount > 1 ? 2 : page === 1
                                                     && pageCount === 1 ? '' : page}
@@ -254,14 +257,17 @@ const Dashboard = () => {
 
 
                                         {page + 1 <= pageCount ? pageCount < 3 ? '' :
-                                                <MDBPaginationItem onClick={nextHandler}>
+                                                <MDBPaginationItem
+                                                    // onClick={nextHandler}
+                                                >
                                                     <MDBPaginationLink>{page === 1 ? 3 : page
                                                         + 1}</MDBPaginationLink>
                                                 </MDBPaginationItem>
                                             : ''}
 
-                                        <MDBPaginationItem>
+                                        <MDBPaginationItem className="page-toggle">
                                             <MDBPaginationLink
+                                                className="page-toggle"
                                                 disabled={page === pageCount}
                                                 onClick={() => {
                                                     nextHandler();

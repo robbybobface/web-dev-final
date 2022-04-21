@@ -61,12 +61,12 @@ const Album = () => {
             }).catch((error) => {
             throw "Could Not Find Album";
         });
-        // console.log(albumCall.data);
+        console.log(albumCall.data);
         setAlbum(albumCall.data);
         const moreByCall = await axios.get(
             `https://api.spotify.com/v1/artists/${albumCall.data.artists[0].id}/albums?include_groups=album%2Csingle&market=US&limit=6`,
             { headers: { 'Authorization': 'Bearer ' + token.data.access_token } });
-        // console.log(moreByCall.data.items);
+        console.log(moreByCall.data.items);
         setMoreBy(moreByCall.data.items);
 
         const checkRecommendations = moreByCall.data.items.filter(
@@ -75,7 +75,7 @@ const Album = () => {
                 moreByCall.data.items.findIndex(newRecommendation => {
                     return newRecommendation.name === recommendation.name;
                 }) === index);
-        // console.log(checkRecommendations);
+        console.log(checkRecommendations);
         if (checkRecommendations.length !== moreByCall.data.items.length) {
             setMoreBy(checkRecommendations);
         } else {
@@ -185,7 +185,7 @@ const Album = () => {
             toast.error('Could Not Find Album');
             navigate('/search');
         }
-    }, []);
+    }, [ location.key ]);
 
     useEffect(() => {
         try {

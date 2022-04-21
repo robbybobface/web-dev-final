@@ -216,7 +216,7 @@ const Artist = () => {
             toast.error('Could Not Find Artist');
             navigate('/search');
         }
-    }, []);
+    }, [ location.key ]);
 
     useEffect(() => {
         try {
