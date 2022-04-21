@@ -178,9 +178,16 @@ const Track = () => {
                 return;
             }
             stateUser.likedSongs.map(song => {
+                // console.log(stateUser);
+                console.log(song.songId);
+                console.log(tid);
                 if (song.songId === tid) {
+                    console.log('got here');
                     setLiked(true);
                     setLocalEmpty(false);
+                } else {
+                    setLiked(false);
+                    setLocalEmpty(true);
                 }
             });
 
@@ -266,7 +273,7 @@ const Track = () => {
         setLoading(true);
         try {
             getData();
-            // console.log(track);
+            console.log(track);
         } catch (error) {
             toast.error('Could Not Find Song');
             navigate('/search');

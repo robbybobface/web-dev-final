@@ -120,9 +120,14 @@ const Artist = () => {
                 return;
             }
             stateUser.likedArtists.map(artist => {
+                console.log(artist.artistId);
+                console.log(aid);
                 if (artist.artistId === aid) {
                     setLiked(true);
                     setLocalEmpty(false);
+                } else {
+                    setLiked(false);
+                    setLocalEmpty(true);
                 }
             });
         }

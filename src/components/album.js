@@ -101,9 +101,14 @@ const Album = () => {
                 return;
             }
             stateUser.likedAlbums.map(album => {
+                console.log(album.albumId);
+                console.log(aid);
                 if (album.albumId === aid) {
                     setLiked(true);
                     setLocalEmpty(false);
+                } else {
+                    setLiked(false);
+                    setLocalEmpty(true);
                 }
             });
         }
