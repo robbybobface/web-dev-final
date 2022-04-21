@@ -249,7 +249,7 @@ const Profile = () => {
                                 <div className="row d-flex justify-content-center">
                                     <div className="col-10 col-sm-12 col-md-5 col-lg-4 d-flex mb-4">
                                         <div className="col-12 d-flex flex-column justify-content-center align-items-center">
-                                            <div className="card gradient-custom mb-0 mb-md-0">
+                                            <div className="card gradient-custom profile-card mb-0 mb-md-0">
                                                 <div className="card-body text-center">
                                                     <p className="profile-username mb-sm-2 mb-lg-2">
                                                         {username}
@@ -364,7 +364,7 @@ const Profile = () => {
                                         </div>
                                     }
                                     {localUser.likedSongs.length > 0 ?
-                                        <div className="col-10 col-sm-12 col-md-12 col-lg-10">
+                                        <div className="col-12 col-sm-12 col-md-12 col-lg-10">
                                             <div className="card mask-custom-details-lighter mb-4">
                                                 <div className="card-body">
                                                     <div className="mb-0 progress-header col-12 d-flex justify-content-between">
@@ -379,7 +379,7 @@ const Profile = () => {
                                                             </Link>
                                                             : ''}
                                                     </div>
-                                                    <MDBRow className="row-cols-2 row-cols-sm-2 row-cols-md-4 row-cols-lg-4 g-4">
+                                                    <MDBRow className="row-cols-2 row-cols-sm-2 row-cols-md-4 row-cols-lg-4 g-2 g-md-4">
                                                         {favTracks.map && favTracks.map(
                                                             (track, index) =>
                                                                 <>
@@ -403,7 +403,7 @@ const Profile = () => {
                                         : ''
                                     }
                                     {localUser.likedAlbums.length > 0 ?
-                                        <div className="col-10 col-sm-12 col-md-12 col-lg-10">
+                                        <div className="col-12 col-sm-12 col-md-12 col-lg-10">
                                             <div className="card mask-custom-details-lighter mb-4">
                                                 <div className="card-body">
                                                     <div className="mb-0 progress-header col-12 d-flex justify-content-between">
@@ -418,7 +418,7 @@ const Profile = () => {
                                                             </Link>
                                                             : ''}
                                                     </div>
-                                                    <MDBRow className="row-cols-2 row-cols-sm-2 row-cols-md-4 row-cols-lg-4 g-4">
+                                                    <MDBRow className="row-cols-2 row-cols-sm-2 row-cols-md-4 row-cols-lg-4 g-2 g-md-4">
                                                         {favAlbums.map && favAlbums.map(
                                                             (album, index) =>
                                                                 <>
@@ -441,7 +441,7 @@ const Profile = () => {
                                         </div>
                                         : ''}
                                     {localUser.likedArtists.length > 0 ?
-                                        <div className="col-10 col-sm-12 col-md-12 col-lg-10">
+                                        <div className="col-12 col-sm-12 col-md-12 col-lg-10">
                                             <div className="card mask-custom-details-lighter mb-4">
                                                 <div className="card-body">
                                                     <div className="mb-0 progress-header col-12 d-flex justify-content-between">
@@ -456,7 +456,7 @@ const Profile = () => {
                                                             </Link>
                                                             : ''}
                                                     </div>
-                                                    <MDBRow className="row-cols-2 row-cols-sm-2 row-cols-md-4 row-cols-lg-4 g-4">
+                                                    <MDBRow className="row-cols-2 row-cols-sm-2 row-cols-md-4 row-cols-lg-4 g-2 g-md-4">
                                                         {favArtists.map && favArtists.map(
                                                             (artist, index) =>
                                                                 <>
@@ -496,7 +496,7 @@ const Profile = () => {
                                 <div className="row d-flex justify-content-center">
                                     <div className="col-10 col-sm-12 col-md-7 col-lg-4 d-flex mb-4">
                                         <div className="col-12 d-flex flex-column align-items-center">
-                                            <div className="card gradient-custom mb-0 mb-md-0">
+                                            <div className="card gradient-custom profile-card mb-0 mb-md-0">
                                                 <div className="card-body text-center">
                                                     <p className="profile-username mb-sm-2 mb-lg-2">
                                                         {username}
@@ -513,7 +513,7 @@ const Profile = () => {
                                     </div>
                                     <div className="col-12 col-lg-8 d-flex flex-column justify-content-center align-items-center">
                                         {localUser.likedSongs.length > 0 ?
-                                            <div className="col-10 col-sm-12 col-md-12 col-lg-12 justify-content-center align-items-center">
+                                            <div className="col-12 col-sm-12 col-md-12 col-lg-12 justify-content-center align-items-center">
                                                 <div className="card mask-custom-details-lighter mb-4">
                                                     <div className="card-body">
                                                         <div className="mb-0 progress-header col-12 d-flex justify-content-between">
@@ -528,7 +528,7 @@ const Profile = () => {
                                                                 </Link>
                                                                 : ''}
                                                         </div>
-                                                        <MDBRow className="row-cols-2 row-cols-sm-2 row-cols-md-4 row-cols-lg-4 g-4">
+                                                        <MDBRow className="row-cols-2 row-cols-sm-2 row-cols-md-4 row-cols-lg-4 g-2 g-md-4">
                                                             {favTracks.map && favTracks.map(
                                                                 (track, index) =>
                                                                     <>
@@ -553,7 +553,7 @@ const Profile = () => {
                                             : ''
                                         }
                                         {localUser.likedAlbums.length > 0 ?
-                                            <div className="col-10 col-sm-12 col-md-12 col-lg-12">
+                                            <div className="col-12 col-sm-12 col-md-12 col-lg-12">
                                                 <div className="card mask-custom-details-lighter mb-4">
                                                     <div className="card-body">
                                                         <div className="mb-0 progress-header col-12 d-flex justify-content-between">
@@ -568,7 +568,7 @@ const Profile = () => {
                                                                 </Link>
                                                                 : ''}
                                                         </div>
-                                                        <MDBRow className="row-cols-2 row-cols-sm-2 row-cols-md-4 row-cols-lg-4 g-4">
+                                                        <MDBRow className="row-cols-2 row-cols-sm-2 row-cols-md-4 row-cols-lg-4 g-2 g-md-4">
                                                             {favAlbums.map && favAlbums.map(
                                                                 (album, index) =>
                                                                     <>
@@ -591,7 +591,7 @@ const Profile = () => {
                                             </div>
                                             : ''}
                                         {localUser.likedArtists.length > 0 ?
-                                            <div className="col-10 col-sm-12 col-md-12 col-lg-12">
+                                            <div className="col-12 col-sm-12 col-md-12 col-lg-12">
                                                 <div className="card mask-custom-details-lighter mb-4">
                                                     <div className="card-body">
                                                         <div className="mb-0 progress-header col-12 d-flex justify-content-between">
@@ -606,7 +606,7 @@ const Profile = () => {
                                                                 </Link>
                                                                 : ''}
                                                         </div>
-                                                        <MDBRow className="row-cols-2 row-cols-sm-2 row-cols-md-4 row-cols-lg-4 g-4">
+                                                        <MDBRow className="row-cols-2 row-cols-sm-2 row-cols-md-4 row-cols-lg-4 g-2 g-md-4">
                                                             {favArtists.map && favArtists.map(
                                                                 (artist, index) =>
                                                                     <>

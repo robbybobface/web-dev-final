@@ -426,8 +426,12 @@ p.item-descriptor {
 
 /*XS Devices*/
 @media (max-width: 576px) {
-  .card.gradient-custom {
+  .card.gradient-custom.profile-card {
     width: 75%;
+  }
+
+  .form-check-label {
+    font-size: 13px;
   }
 }
 
