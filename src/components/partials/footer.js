@@ -1,9 +1,5 @@
-import * as security from "../../services/auth-service";
-import * as service from "../../services/profile-service";
-import React, {useEffect, useState} from "react";
-import {useDispatch} from "react-redux";
-import {useLocation, useNavigate} from "react-router-dom";
-import {toast} from "react-toastify";
+import React, { useEffect, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
     MDBCol,
     MDBRow,
@@ -13,30 +9,56 @@ import {
 } from "mdb-react-ui-kit";
 
 const Footer = () => {
-    const [page, setPage] = useState('home');
+    const [ page, setPage ] = useState('home');
     const navigate = useNavigate();
+    const location = useLocation();
+
+    const pageHandler = () => {
+        const url = location.pathname.split('/');
+        // console.log(url);
+        if (url[1] !== '') {
+            setPage(url[1]);
+            // console.log(page);
+        } else {
+            setPage('home');
+            // console.log(page);
+        }
+    };
+
+    useEffect(() =>
+        pageHandler(), [ location.key ]
+    );
 
     return (
         <>
-            <MDBFooter expand="lg" dark sticky bgColor={page === 'home' ? '' : 'white'} className='w-100'>
-                <MDBContainer className='text-center p-3  w-100 text-white'
-                              style={{ backgroundColor: 'rgba(0, 0, 0, 0.2)' }}>
-                    <MDBRow>
+            <MDBFooter expand="lg"
+                       dark
+                       bgColor={page === 'home' ? '' : 'white'}
+                       className={`w-100 ${page === 'home' ? 'footer-home' : ''}`}>
+                <MDBContainer className={`text-center p-3 mt-5 w-100 text-black`}>
+                    <MDBRow className={`align-items-center justify-content-center`}>
                         <MDBCol>
-                            <div>
+                            <MDBPaginationLink className="text-black footer-text"
+                                               onClick={() => {
+                                                   navigate('/');
+                                               }}>
+
                                 © 2022 Copyright:&nbsp;
-                                <a className='text-white' href='/'>
-                                    Spotify Clone
-                                </a>
-                            </div>
+                                <span className="privacy-link">
+                                    Spotify Search
+                                    </span>
+                            </MDBPaginationLink>
+
                         </MDBCol>
 
                         <MDBCol>
-                            <MDBPaginationLink className='text-white'
-                                   onClick={() => {
-                                       navigate('/privacy-policy');
-                                   }}>
+                            <MDBPaginationLink className="text-black footer-text"
+                                               onClick={() => {
+                                                   navigate('/privacy-policy');
+                                               }}>
+                                <span className="privacy-link">
                                 Privacy Policy
+                                    </span>
                             </MDBPaginationLink>
 
                         </MDBCol>
@@ -45,6 +67,6 @@ const Footer = () => {
             </MDBFooter>
         </>
     );
-}
+};
 
 export default Footer;
