@@ -430,8 +430,26 @@ p.item-descriptor {
     width: 75%;
   }
 
-  .form-check-label {
-    font-size: 13px;
+  .header-home {
+    font-size: 60px;
+  }
+
+  .header-text {
+    font-size: 25px;
+  }
+
+  /*.form-check-label {*/
+  /*  font-size: 13px;*/
+  /*}*/
+  .category-toggle {
+    margin-left: -10px;
+    margin-right: -10px;
+  }
+
+  .form-check-input[type=radio] {
+    margin-right: auto;
+    margin-left: 14px;
+    /* display: block; */
   }
 }
 

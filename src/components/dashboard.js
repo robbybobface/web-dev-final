@@ -155,12 +155,12 @@ const Dashboard = () => {
                                                 Username
                                             </p>
                                         </div>
-                                        <div className="col-6">
+                                        <div className="col-5">
                                             <p className="mb-0 item-heading user-list">
                                                 Email
                                             </p>
                                         </div>
-                                        <div className="col-2">
+                                        <div className="col-3">
                                             <p className="mb-0 item-heading user-list duration ms-auto">
                                                 Admin Status
                                             </p>
