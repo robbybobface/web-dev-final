@@ -13,15 +13,15 @@ export const register = (user) =>
 
 export const login = (user) =>
     api.post(`${SECURITY_API}/login`, user)
-        .then(response => response.data);
+        .then(response => response.data).catch(err => 'Invalid Username or Password');
 
 export const logout = () =>
     api.post(`${SECURITY_API}/logout`)
         .then(response => response.data);
 
-export const isAccountOwner = (user) =>
-    api.post(`${SECURITY_API}/profile`, user)
-        .then(response => response.data);
+export const isAccountOwner = (username) =>
+    api.post(`${SECURITY_API}/profile`, username)
+        .then(response => response.data).catch(err => console.log(username));
 
 export const isLoggedIn = () =>
     api.get(`${SECURITY_API}/user`)
