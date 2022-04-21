@@ -66,8 +66,9 @@ const Track = () => {
                 headers: {
                     'Authorization': 'Bearer ' + token.data.access_token
                 }
-            });
-        // console.log(trackCall);
+            }).catch((error) => {
+            throw "Could Not Find Song";
+        });
         setTrack(trackCall.data);
         const artistCall = await axios.get(
             `https://api.spotify.com/v1/artists/${trackCall.data.artists[0].id}`,
@@ -256,16 +257,31 @@ const Track = () => {
     useMemo(() => {
         window.scrollTo(0, 0);
         setLoading(true);
-        getData().catch(error => toast.error(error));
+        try {
+            getData();
+        } catch (error) {
+            toast.error('Could Not Find Song');
+            navigate('/search');
+        }
     }, []);
 
     useEffect(() => {
-        getLiked();
-        console.log(localTrack);
+        try {
+            getLiked();
+            console.log(localTrack);
+        } catch (error) {
+            toast.error('Could Not Find Song');
+            navigate('/search')
+        }
     }, [ location.key ]);
 
     useMemo(() => {
-        getLocal().catch(err => toast.err('Something went wrong!'));
+        try {
+            getLocal().catch(err => toast.err('Something went wrong!'));
+        } catch (error) {
+            toast.error('Could Not Find Song');
+            navigate('/search')
+        }
     }, [ liked ]);
 
     return (

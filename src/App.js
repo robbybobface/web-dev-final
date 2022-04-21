@@ -63,6 +63,9 @@ function App() {
                         <Route exact={true} path="/search" element={<Search/>}/>
                         <Route exact={true} path="/search/:searchString" element={<Search/>}/>
                         <Route exact={true} path="/profile/:username" element={<Profile/>}/>
+                        {/*<Route exact={true} path="/profile/:username/tracks" element={<ProfileTracks/>}/>*/}
+                        {/*<Route exact={true} path="/profile/:username/albums" element={<ProfileAlbums/>}/>*/}
+                        {/*<Route exact={true} path="/profile/:username/artists" element={<ProfileArtists/>}/>*/}
                         <Route exact={true} path="/artist/:aid" element={<Artist/>}/>
                         <Route exact={true} path="/album/:aid" element={<Album/>}/>
                         <Route exact={true} path="/track/:tid" element={<Track/>}/>

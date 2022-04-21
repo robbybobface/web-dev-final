@@ -58,7 +58,9 @@ const Album = () => {
         const albumCall = await axios.get(`https://api.spotify.com/v1/albums/${aid}?market=US`,
             {
                 headers: { 'Authorization': 'Bearer ' + token.data.access_token }
-            });
+            }).catch((error) => {
+            throw "Could Not Find Album";
+        });
         // console.log(albumCall.data);
         setAlbum(albumCall.data);
         const moreByCall = await axios.get(
@@ -177,16 +179,31 @@ const Album = () => {
     useMemo(() => {
         window.scrollTo(0, 0);
         setLoading(true);
-        getData().catch(error => toast.error(error));
+        try {
+            getData();
+        } catch (error) {
+            toast.error('Could Not Find Album');
+            navigate('/search');
+        }
     }, []);
 
     useEffect(() => {
-        getLiked();
-        console.log(localAlbum);
+        try {
+            getLiked();
+            console.log(localAlbum);
+        } catch (error) {
+            toast.error('Could Not Find Album');
+            navigate('/search');
+        }
     }, [ location.key ]);
 
     useMemo(() => {
-        getLocal().catch(err => toast.err('Something went wrong!'));
+        try {
+            getLocal().catch(err => toast.err('Something went wrong!'));
+        } catch (error) {
+            toast.error('Could Not Find Album');
+            navigate('/search');
+        }
     }, [ liked ]);
 
     return (
