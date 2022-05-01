@@ -39,7 +39,9 @@ const Artist = () => {
     const [ albumSearch, setAlbumSearch ] = useState(true);
     const [ singleSearch, setSingleSearch ] = useState(false);
 
-    const [ liked, setLiked ] = useState(false);
+    const [ liked, setLiked ] = useState(stateUser.likedArtists.filter(artist => {
+        return artist.artistId === aid;
+    }).length > 0);
 
     const location = useLocation();
     const dispatch = useDispatch();
@@ -112,28 +114,29 @@ const Artist = () => {
         console.log(localArtist);
     };
 
-    const getLiked = () => {
-        if (!stateUser) {
-            //
-        } else {
-            if (stateUser.likedArtists.length === 0) {
-                return;
-            }
-            stateUser.likedArtists.map(artist => {
-                console.log(artist.artistId);
-                console.log(aid);
-                if (artist.artistId === aid) {
-                    setLiked(true);
-                    setLocalEmpty(false);
-                } else {
-                    setLiked(false);
-                    setLocalEmpty(true);
-                }
-            });
-        }
-    };
+    // const getLiked = () => {
+    //     if (!stateUser) {
+    //         //
+    //     } else {
+    //         if (stateUser.likedArtists.length === 0) {
+    //             return;
+    //         }
+    //         stateUser.likedArtists.map(artist => {
+    //             console.log(artist.artistId);
+    //             console.log(aid);
+    //             if (artist.artistId === aid) {
+    //                 setLiked(true);
+    //                 setLocalEmpty(false);
+    //             } else {
+    //                 setLiked(false);
+    //                 setLocalEmpty(true);
+    //             }
+    //         });
+    //     }
+    // };
 
     const likeArtistHandler = async () => {
+        setLoading(true);
         // console.log(aid);
         const originalArtists = stateUser.likedArtists;
         // console.log(originalArtists);
@@ -154,6 +157,7 @@ const Artist = () => {
             setLocalArtist(createdArtist);
             setLocalEmpty(false);
             setLiked(true);
+            setLoading(false);
         } else {
             console.log('how are we here');
             const updatedArtist = await artistService.updateArtist(
@@ -166,10 +170,12 @@ const Artist = () => {
             setLocalArtist(updatedArtist);
             setLocalEmpty(false);
             setLiked(true);
+            setLoading(false);
         }
     };
 
     const unlikeArtistHandler = async () => {
+        setLoading(true);
         const newArtists = stateUser.likedArtists.filter((artist) => artist.artistId !== aid);
         console.log(newArtists);
         if (newArtists.length === 0) {
@@ -196,6 +202,7 @@ const Artist = () => {
                 err => toast.error(err));
             setLocalEmpty(true);
             setLiked(false);
+            setLoading(false);
         } else {
             const updatedArtist = await artistService.updateArtist(
                 { ...foundArtist, likes: [ ...newUsers ] }).catch(
@@ -203,6 +210,7 @@ const Artist = () => {
             setLocalArtist(updatedArtist);
             setLocalEmpty(false);
             setLiked(true);
+            setLoading(false);
         }
     };
 
@@ -227,25 +235,25 @@ const Artist = () => {
         }
     }, [ location.key ]);
 
-    useEffect(() => {
-        try {
-            getLiked();
-            console.log(localArtist);
-        } catch (error) {
-            toast.error('Could Not Find Artist');
-            navigate('/search');
-        }
-    }, [ location.key ]);
+    // useEffect(() => {
+    //     try {
+    //         getLiked();
+    //         console.log(localArtist);
+    //     } catch (error) {
+    //         toast.error('Could Not Find Artist');
+    //         navigate('/search');
+    //     }
+    // }, [ location.key ]);
 
-    useEffect(() => {
-        try {
-            getLiked();
-            console.log(localArtist);
-        } catch (error) {
-            toast.error('Could Not Find Artist');
-            navigate('/search');
-        }
-    }, []);
+    // useEffect(() => {
+    //     try {
+    //         getLiked();
+    //         console.log(localArtist);
+    //     } catch (error) {
+    //         toast.error('Could Not Find Artist');
+    //         navigate('/search');
+    //     }
+    // }, []);
 
     useMemo(() => {
         try {

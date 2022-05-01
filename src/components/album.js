@@ -33,7 +33,9 @@ const Album = () => {
     const [ localEmpty, setLocalEmpty ] = useState(true);
     const [ moreBy, setMoreBy ] = useState({});
     const [ loading, setLoading ] = useState(true);
-    const [ liked, setLiked ] = useState(false);
+    const [ liked, setLiked ] = useState(stateUser.likedAlbums.filter(album => {
+        return album.albumId === aid;
+    }).length > 0);
 
     const location = useLocation();
     const dispatch = useDispatch();
@@ -93,28 +95,29 @@ const Album = () => {
         setLocalAlbum(localCall);
     };
 
-    const getLiked = () => {
-        if (!stateUser) {
-            //
-        } else {
-            if (stateUser.likedAlbums.length === 0) {
-                return;
-            }
-            stateUser.likedAlbums.map(album => {
-                console.log(album.albumId);
-                console.log(aid);
-                if (album.albumId === aid) {
-                    setLiked(true);
-                    setLocalEmpty(false);
-                } else {
-                    setLiked(false);
-                    setLocalEmpty(true);
-                }
-            });
-        }
-    };
+    // const getLiked = () => {
+    //     if (!stateUser) {
+    //         //
+    //     } else {
+    //         if (stateUser.likedAlbums.length === 0) {
+    //             return;
+    //         }
+    //         stateUser.likedAlbums.map(album => {
+    //             console.log(album.albumId);
+    //             console.log(aid);
+    //             if (album.albumId === aid) {
+    //                 setLiked(true);
+    //                 setLocalEmpty(false);
+    //             } else {
+    //                 setLiked(false);
+    //                 setLocalEmpty(true);
+    //             }
+    //         });
+    //     }
+    // };
 
     const likeAlbumHandler = async () => {
+        setLoading(true);
         // console.log(aid);
         const originalSongs = stateUser.likedAlbums;
         // console.log(originalSongs);
@@ -137,6 +140,7 @@ const Album = () => {
             setLocalAlbum(createdAlbum);
             setLocalEmpty(false);
             setLiked(true);
+            setLoading(false);
         } else {
             console.log('how are we here');
             const updatedAlbum = await albumService.updateAlbum(
@@ -148,9 +152,11 @@ const Album = () => {
             setLocalAlbum(updatedAlbum);
             setLocalEmpty(false);
             setLiked(true);
+            setLoading(false);
         }
     };
     const unlikeAlbumHandler = async () => {
+        setLoading(true);
         const newAlbums = stateUser.likedAlbums.filter((album) => album.albumId !== aid);
         // console.log(newAlbums);
         if (newAlbums.length === 0) {
@@ -174,6 +180,7 @@ const Album = () => {
                 err => toast.error(err));
             setLocalEmpty(true);
             setLiked(false);
+            setLoading(false);
         } else {
             const updatedAlbum = await albumService.updateAlbum(
                 { ...foundAlbum, likes: [ ...newUsers ] }).catch(
@@ -181,6 +188,7 @@ const Album = () => {
             setLocalAlbum(updatedAlbum);
             setLocalEmpty(false);
             setLiked(false);
+            setLoading(false);
         }
 
     };
@@ -196,15 +204,15 @@ const Album = () => {
         }
     }, [ location.key ]);
 
-    useEffect(() => {
-        try {
-            getLiked();
-            console.log(localAlbum);
-        } catch (error) {
-            toast.error('Could Not Find Album');
-            navigate('/search');
-        }
-    }, [ location.key ]);
+    // useEffect(() => {
+    //     try {
+    //         getLiked();
+    //         console.log(localAlbum);
+    //     } catch (error) {
+    //         toast.error('Could Not Find Album');
+    //         navigate('/search');
+    //     }
+    // }, [ location.key ]);
 
     useMemo(() => {
         try {

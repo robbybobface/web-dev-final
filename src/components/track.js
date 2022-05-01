@@ -39,7 +39,10 @@ const Track = () => {
     const [ recommended, setRecommended ] = useState({});
     const [ loading, setLoading ] = useState(true);
 
-    const [ liked, setLiked ] = useState(false);
+
+    const [ liked, setLiked ] = useState(stateUser.likedSongs.filter(song => {
+        return song.songId === tid;
+    }).length > 0);
 
     const location = useLocation();
     const dispatch = useDispatch();
@@ -123,9 +126,7 @@ const Track = () => {
         } else {
             setRecommended(recommendedCall.data.tracks);
         }
-
         setLoading(false);
-
     };
 
     const getLocal = async () => {
@@ -170,32 +171,37 @@ const Track = () => {
     //     });
     // };
 
-    const getLiked = () => {
-        if (!stateUser) {
-            //
-        } else {
-            if (stateUser.likedSongs.length === 0) {
-                return;
-            }
-            stateUser.likedSongs.map(song => {
-                // console.log(stateUser);
-                console.log(song.songId);
-                console.log(tid);
-                if (song.songId === tid) {
-                    console.log('got here');
-                    setLiked(true);
-                    setLocalEmpty(false);
-                } else {
-                    setLiked(false);
-                    setLocalEmpty(true);
-                }
-            });
-
-        }
-
-    };
+    // const getLiked = async () => {
+    //     setLoadingLiked(true);
+    //     console.log(stateUser);
+    //     if (!stateUser) {
+    //         //
+    //     } else {
+    //         if (stateUser.likedSongs.length === 0) {
+    //             return;
+    //         }
+    //         stateUser.likedSongs.map(song => {
+    //             // console.log(stateUser);
+    //             // console.log(song.songId);
+    //             // console.log(tid);
+    //             if (song.songId === tid) {
+    //                 console.log('got here');
+    //                 setLiked(true);
+    //                 setLocalEmpty(false);
+    //                 console.log(liked);
+    //                 console.log(localEmpty);
+    //             } else {
+    //                 setLiked(false);
+    //                 setLocalEmpty(true);
+    //             }
+    //         });
+    //     }
+    //     setLoadingLiked(false);
+    //
+    // };
 
     const likeSongHandler = async () => {
+        setLoading(true);
         // console.log(tid);
         const originalSongs = stateUser.likedSongs;
         // console.log(originalSongs);
@@ -217,7 +223,7 @@ const Track = () => {
             setLocalTrack(createdTrack);
             setLocalEmpty(false);
             setLiked(true);
-
+            setLoading(false);
         } else {
             // console.log('how are we here');
             const updatedTrack = await trackService.updateTrack(
@@ -229,9 +235,11 @@ const Track = () => {
             setLocalTrack(updatedTrack);
             setLocalEmpty(false);
             setLiked(true);
+            setLoading(false);
         }
     };
     const unlikeSongHandler = async () => {
+        setLoading(true);
         const newSongs = stateUser.likedSongs.filter((song) => song.songId !== tid);
         // console.log(newSongs);
         if (newSongs.length === 0) {
@@ -244,6 +252,7 @@ const Track = () => {
                 { ...stateUser, likedSongs: [ ...newSongs ] })
                 .catch(error => toast.error('something went wrong'));
             toast.success('Song removed from liked songs!');
+
         }
         const foundTrack = await trackService.findTrackById(tid);
         // console.log(foundTrack);
@@ -254,6 +263,7 @@ const Track = () => {
                 err => toast.error(err));
             setLocalEmpty(true);
             setLiked(false);
+            setLoading(false);
         } else {
             const updatedTrack = await trackService.updateTrack(
                 { ...foundTrack, likes: [ ...newUsers ] }).catch(
@@ -261,6 +271,7 @@ const Track = () => {
             setLocalTrack(updatedTrack);
             setLocalEmpty(false);
             setLiked(false);
+            setLoading(false);
         }
     };
 
@@ -270,9 +281,8 @@ const Track = () => {
 
     useMemo(() => {
         window.scrollTo(0, 0);
-        setLoading(true);
         try {
-            getData();
+            getData().finally();
             console.log(track);
         } catch (error) {
             toast.error('Could Not Find Song');
@@ -280,15 +290,15 @@ const Track = () => {
         }
     }, [ location.key ]);
 
-    useEffect(() => {
-        try {
-            getLiked();
-            // console.log(tid);
-        } catch (error) {
-            toast.error('Could Not Find Song like handler');
-            navigate('/search');
-        }
-    }, [ location.key ]);
+    // useEffect(() => {
+    //     setLoading(true);
+    //     try {
+    //         getLiked().finally();
+    //     } catch (error) {
+    //         toast.error('Could Not Find Song like handler');
+    //         navigate('/search');
+    //     }
+    // }, []);
 
     useMemo(() => {
         try {
@@ -307,7 +317,7 @@ const Track = () => {
                     + '  background-size: cover !important;\n'
                     + '  background-color: rgba(61, 162, 195, 0.1) !important; }'}</style>
             </Helmet>
-            {loading ?
+            {loading?
                 <>
                     <div className="d-flex align-items-center justify-content-center custom-height">
                         <ScaleLoader color={`white`}
@@ -735,7 +745,5 @@ const Track = () => {
 
     );
 };
-;
-;
 
 export default Track;
