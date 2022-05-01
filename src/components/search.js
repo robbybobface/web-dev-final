@@ -183,6 +183,11 @@ const Search = () => {
                                                       setSearch(e.target.value);
                                                   }}
                                                   value={search || searchString && search}
+                                                  onKeyDown={(event) => {
+                                                      if (event.key === "Enter") {
+                                                          searchHandler();
+                                                      }
+                                                  }}
                                         />
                                     </div>
 
