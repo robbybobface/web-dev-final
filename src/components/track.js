@@ -17,6 +17,7 @@ import RecommendedTrackListItem from "./partials/RecommendedTrackListItem";
 import { UserContext } from "../Utils/UserContext";
 import * as service from "../services/user-service";
 import * as trackService from "../services/track-service";
+import * as albumService from "../services/album-service";
 
 const override = css`
   display: block;
@@ -39,7 +40,6 @@ const Track = () => {
     const [ recommended, setRecommended ] = useState({});
     const [ loading, setLoading ] = useState(true);
 
-
     const [ liked, setLiked ] = useState(stateUser.likedSongs.filter(song => {
         return song.songId === tid;
     }).length > 0);
@@ -55,6 +55,7 @@ const Track = () => {
     const [ token, setToken ] = useState('');
 
     const getData = async () => {
+        setLoading(true);
         const token = await axios('https://accounts.spotify.com/api/token', {
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
@@ -133,6 +134,8 @@ const Track = () => {
         const localCall = await trackService.findTrackById(tid);
         console.log(localCall);
         if (localCall.error) {
+            setLocalTrack({});
+            console.log(localTrack);
             return;
         }
         setLocalTrack(localCall);
@@ -171,37 +174,30 @@ const Track = () => {
     //     });
     // };
 
-    // const getLiked = async () => {
-    //     setLoadingLiked(true);
-    //     console.log(stateUser);
-    //     if (!stateUser) {
-    //         //
-    //     } else {
-    //         if (stateUser.likedSongs.length === 0) {
-    //             return;
-    //         }
-    //         stateUser.likedSongs.map(song => {
-    //             // console.log(stateUser);
-    //             // console.log(song.songId);
-    //             // console.log(tid);
-    //             if (song.songId === tid) {
-    //                 console.log('got here');
-    //                 setLiked(true);
-    //                 setLocalEmpty(false);
-    //                 console.log(liked);
-    //                 console.log(localEmpty);
-    //             } else {
-    //                 setLiked(false);
-    //                 setLocalEmpty(true);
-    //             }
-    //         });
-    //     }
-    //     setLoadingLiked(false);
-    //
-    // };
+    const getLiked = async () => {
+        console.log(stateUser);
+        if (!stateUser) {
+            //
+        } else {
+            if (stateUser.likedSongs.filter(song => song.songId === tid).length > 0) {
+                setLiked(true);
+                setLocalEmpty(false);
+            } else {
+                const localCall = await trackService.findTrackById(tid);
+                if (localCall.error) {
+                    setLiked(false);
+                    setLocalEmpty(true);
+                    console.log('error finding track');
+                } else {
+                    console.log(localCall);
+                    setLiked(false);
+                    setLocalEmpty(false);
+                }
+            }
+        }
+    };
 
     const likeSongHandler = async () => {
-        setLoading(true);
         // console.log(tid);
         const originalSongs = stateUser.likedSongs;
         // console.log(originalSongs);
@@ -223,7 +219,7 @@ const Track = () => {
             setLocalTrack(createdTrack);
             setLocalEmpty(false);
             setLiked(true);
-            setLoading(false);
+            // setLoading(false);
         } else {
             // console.log('how are we here');
             const updatedTrack = await trackService.updateTrack(
@@ -235,11 +231,10 @@ const Track = () => {
             setLocalTrack(updatedTrack);
             setLocalEmpty(false);
             setLiked(true);
-            setLoading(false);
+            // setLoading(false);
         }
     };
     const unlikeSongHandler = async () => {
-        setLoading(true);
         const newSongs = stateUser.likedSongs.filter((song) => song.songId !== tid);
         // console.log(newSongs);
         if (newSongs.length === 0) {
@@ -263,7 +258,7 @@ const Track = () => {
                 err => toast.error(err));
             setLocalEmpty(true);
             setLiked(false);
-            setLoading(false);
+            // setLoading(false);
         } else {
             const updatedTrack = await trackService.updateTrack(
                 { ...foundTrack, likes: [ ...newUsers ] }).catch(
@@ -271,7 +266,7 @@ const Track = () => {
             setLocalTrack(updatedTrack);
             setLocalEmpty(false);
             setLiked(false);
-            setLoading(false);
+            // setLoading(false);
         }
     };
 
@@ -283,22 +278,23 @@ const Track = () => {
         window.scrollTo(0, 0);
         try {
             getData().finally();
-            console.log(track);
         } catch (error) {
             toast.error('Could Not Find Song');
             navigate('/search');
         }
     }, [ location.key ]);
 
-    // useEffect(() => {
-    //     setLoading(true);
-    //     try {
-    //         getLiked().finally();
-    //     } catch (error) {
-    //         toast.error('Could Not Find Song like handler');
-    //         navigate('/search');
-    //     }
-    // }, []);
+    useEffect(() => {
+        setLoading(true);
+        try {
+            console.log(stateUser);
+            console.log(liked);
+            getLiked();
+        } catch (error) {
+            toast.error('Could Not Find Song like handler');
+            navigate('/search');
+        }
+    }, [ location.key ]);
 
     useMemo(() => {
         try {
@@ -307,7 +303,7 @@ const Track = () => {
             toast.error('Could Not Find Song');
             navigate('/search');
         }
-    }, [ liked ]);
+    }, []);
 
     return (
         <>
@@ -317,7 +313,7 @@ const Track = () => {
                     + '  background-size: cover !important;\n'
                     + '  background-color: rgba(61, 162, 195, 0.1) !important; }'}</style>
             </Helmet>
-            {loading?
+            {loading ?
                 <>
                     <div className="d-flex align-items-center justify-content-center custom-height">
                         <ScaleLoader color={`white`}
@@ -369,13 +365,18 @@ const Track = () => {
                                             {stateLoggedIn ? !liked ?
                                                     <button className="btn-hover-like color-10"
                                                             onClick={() => {
-                                                                likeSongHandler();
+                                                                setLoading(true);
+                                                                likeSongHandler().then(getLocal).then(
+                                                                    r => setLoading(false));
                                                             }}>
                                                         Like
                                                     </button>
                                                     : <button className="btn-hover-like color-3"
                                                               onClick={() => {
-                                                                  unlikeSongHandler();
+                                                                  setLoading(true);
+                                                                  unlikeSongHandler().then(
+                                                                      getLocal).then(
+                                                                      r => setLoading(false));
                                                               }}>
                                                         Unlike
                                                     </button>
@@ -385,7 +386,7 @@ const Track = () => {
                                     </div>
 
                                 </div>
-                                {localEmpty ? '' :
+                                {localEmpty && !localTrack.length ? '' :
                                     <div className="card mask-custom-details mt-0 mt-sm-0 mt-md-4 mb-4 w-100 d-none d-md-block">
                                         <div className="card-body">
                                             <p className="progress-header mb-3">
@@ -396,22 +397,23 @@ const Track = () => {
                                                     <p className="mb-0 item-heading">Users:</p>
                                                 </div>
                                                 <div className="col-sm-7">
-                                                    <p className="item-descriptor mb-0">{localTrack.likes.slice(
-                                                        0, 4).map(
-                                                        (user, i, { length }) =>
-                                                            length - 1 === i ?
-                                                                <Link to={`/profile/${user.username}`}>
+                                                    <p className="item-descriptor mb-0">{!localTrack.likes
+                                                        ? '' : localTrack.likes.slice(
+                                                            0, 4).map(
+                                                            (user, i, { length }) =>
+                                                                length - 1 === i ?
+                                                                    <Link to={`/profile/${user.username}`}>
                                                                     <span className="item-descriptor artist-name"
                                                                           key={i}>{user.username}</span>
-                                                                </Link> :
-                                                                <>
-                                                                    <Link to={`/profile/${user.username}`}>
+                                                                    </Link> :
+                                                                    <>
+                                                                        <Link to={`/profile/${user.username}`}>
                                                                         <span className="item-descriptor artist-name"
                                                                               key={i}>{user.username}</span>
-                                                                    </Link>
-                                                                    {', '}
+                                                                        </Link>
+                                                                        {', '}
 
-                                                                </>)
+                                                                    </>)
                                                     }</p>
                                                 </div>
                                             </div>
@@ -422,7 +424,8 @@ const Track = () => {
                                                                                      Likes:</p>
                                                 </div>
                                                 <div className="col-sm-7">
-                                                    <p className="item-descriptor mb-0">{localTrack.likes.length}</p>
+                                                    <p className="item-descriptor mb-0">{!localTrack.likes
+                                                        ? '' : localTrack.likes.length}</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -664,22 +667,23 @@ const Track = () => {
                                                 <p className="mb-0 item-heading">Users:</p>
                                             </div>
                                             <div className="col-sm-7">
-                                                <p className="item-descriptor mb-0">{localTrack.likes.slice(
-                                                    0, 4).map(
-                                                    (user, i, { length }) =>
-                                                        length - 1 === i ?
-                                                            <Link to={`/profile/${user.username}`}>
+                                                <p className="item-descriptor mb-0">{!localTrack.likes
+                                                    ? '' : localTrack.likes.slice(
+                                                        0, 4).map(
+                                                        (user, i, { length }) =>
+                                                            length - 1 === i ?
+                                                                <Link to={`/profile/${user.username}`}>
                                                                     <span className="item-descriptor artist-name"
                                                                           key={i}>{user.username}</span>
-                                                            </Link> :
-                                                            <>
-                                                                <Link to={`/profile/${user.username}`}>
+                                                                </Link> :
+                                                                <>
+                                                                    <Link to={`/profile/${user.username}`}>
                                                                         <span className="item-descriptor artist-name"
                                                                               key={i}>{user.username}</span>
-                                                                </Link>
-                                                                {', '}
+                                                                    </Link>
+                                                                    {', '}
 
-                                                            </>)
+                                                                </>)
                                                 }</p>
                                             </div>
                                         </div>
@@ -690,7 +694,8 @@ const Track = () => {
                                                                                  Likes:</p>
                                             </div>
                                             <div className="col-sm-7">
-                                                <p className="item-descriptor mb-0">{localTrack.likes.length}</p>
+                                                <p className="item-descriptor mb-0">{!localTrack.likes
+                                                    ? '' : localTrack.likes.length}</p>
                                             </div>
                                         </div>
                                     </div>

@@ -63,12 +63,12 @@ const Album = () => {
             }).catch((error) => {
             throw "Could Not Find Album";
         });
-        console.log(albumCall.data);
+        // console.log(albumCall.data);
         setAlbum(albumCall.data);
         const moreByCall = await axios.get(
             `https://api.spotify.com/v1/artists/${albumCall.data.artists[0].id}/albums?include_groups=album%2Csingle&market=US&limit=6`,
             { headers: { 'Authorization': 'Bearer ' + token.data.access_token } });
-        console.log(moreByCall.data.items);
+        // console.log(moreByCall.data.items);
         setMoreBy(moreByCall.data.items);
 
         const checkRecommendations = moreByCall.data.items.filter(
@@ -77,7 +77,7 @@ const Album = () => {
                 moreByCall.data.items.findIndex(newRecommendation => {
                     return newRecommendation.name === recommendation.name;
                 }) === index);
-        console.log(checkRecommendations);
+        // console.log(checkRecommendations);
         if (checkRecommendations.length !== moreByCall.data.items.length) {
             setMoreBy(checkRecommendations);
         } else {
@@ -90,34 +90,38 @@ const Album = () => {
     const getLocal = async () => {
         const localCall = await albumService.findAlbumById(aid);
         if (localCall.error) {
+            setLocalAlbum({});
+            console.log(localAlbum);
             return;
         }
         setLocalAlbum(localCall);
     };
 
-    // const getLiked = () => {
-    //     if (!stateUser) {
-    //         //
-    //     } else {
-    //         if (stateUser.likedAlbums.length === 0) {
-    //             return;
-    //         }
-    //         stateUser.likedAlbums.map(album => {
-    //             console.log(album.albumId);
-    //             console.log(aid);
-    //             if (album.albumId === aid) {
-    //                 setLiked(true);
-    //                 setLocalEmpty(false);
-    //             } else {
-    //                 setLiked(false);
-    //                 setLocalEmpty(true);
-    //             }
-    //         });
-    //     }
-    // };
+    const getLiked = async () => {
+        if (!stateUser) {
+            //
+        } else {
+            if (stateUser.likedAlbums.length === 0) {
+                return;
+            }
+            if (stateUser.likedAlbums.filter(album => album.albumId === aid).length > 0) {
+                setLiked(true);
+                setLocalEmpty(false);
+            } else {
+                const localCall = await albumService.findAlbumById(aid);
+                if (localCall.error) {
+                    setLiked(false);
+                    setLocalEmpty(true);
+                    return;
+                }
+                setLiked(false);
+                setLocalEmpty(false);
+            }
+        }
+    };
 
     const likeAlbumHandler = async () => {
-        setLoading(true);
+        // setLoading(true);
         // console.log(aid);
         const originalSongs = stateUser.likedAlbums;
         // console.log(originalSongs);
@@ -140,7 +144,7 @@ const Album = () => {
             setLocalAlbum(createdAlbum);
             setLocalEmpty(false);
             setLiked(true);
-            setLoading(false);
+            // setLoading(false);
         } else {
             console.log('how are we here');
             const updatedAlbum = await albumService.updateAlbum(
@@ -152,11 +156,11 @@ const Album = () => {
             setLocalAlbum(updatedAlbum);
             setLocalEmpty(false);
             setLiked(true);
-            setLoading(false);
+            // setLoading(false);
         }
     };
     const unlikeAlbumHandler = async () => {
-        setLoading(true);
+        // setLoading(true);
         const newAlbums = stateUser.likedAlbums.filter((album) => album.albumId !== aid);
         // console.log(newAlbums);
         if (newAlbums.length === 0) {
@@ -180,7 +184,7 @@ const Album = () => {
                 err => toast.error(err));
             setLocalEmpty(true);
             setLiked(false);
-            setLoading(false);
+            // setLoading(false);
         } else {
             const updatedAlbum = await albumService.updateAlbum(
                 { ...foundAlbum, likes: [ ...newUsers ] }).catch(
@@ -188,14 +192,13 @@ const Album = () => {
             setLocalAlbum(updatedAlbum);
             setLocalEmpty(false);
             setLiked(false);
-            setLoading(false);
+            // setLoading(false);
         }
 
     };
 
     useMemo(() => {
         window.scrollTo(0, 0);
-        setLoading(true);
         try {
             getData();
         } catch (error) {
@@ -204,15 +207,16 @@ const Album = () => {
         }
     }, [ location.key ]);
 
-    // useEffect(() => {
-    //     try {
-    //         getLiked();
-    //         console.log(localAlbum);
-    //     } catch (error) {
-    //         toast.error('Could Not Find Album');
-    //         navigate('/search');
-    //     }
-    // }, [ location.key ]);
+    useEffect(() => {
+        try {
+            console.log(stateUser);
+            console.log(liked);
+            getLiked();
+        } catch (error) {
+            toast.error('Could Not Find Album');
+            navigate('/search');
+        }
+    }, [ location.key ]);
 
     useMemo(() => {
         try {
@@ -221,7 +225,7 @@ const Album = () => {
             toast.error('Could Not Find Album');
             navigate('/search');
         }
-    }, [ liked ]);
+    }, []);
 
     return (
         <>
@@ -278,17 +282,23 @@ const Album = () => {
                                                 {stateLoggedIn ? !liked ?
                                                         <button className="btn-hover-like color-10"
                                                                 onClick={() => {
+                                                                    setLoading(true);
                                                                     likeAlbumHandler().catch(
                                                                         error => toast.error(
-                                                                            'Something went wrong'));
+                                                                            'Something went wrong')).then(
+                                                                        getLocal).then(
+                                                                        r => setLoading(false));
                                                                 }}>
                                                             Like
                                                         </button>
                                                         : <button className="btn-hover-like color-3"
                                                                   onClick={() => {
+                                                                      setLoading(true);
                                                                       unlikeAlbumHandler().catch(
                                                                           error => toast.error(
-                                                                              'Something went wrong'));
+                                                                              'Something went wrong')).then(
+                                                                          getLocal).then(
+                                                                          r => setLoading(false));
                                                                   }}>
                                                             Unlike
                                                         </button>
@@ -511,7 +521,7 @@ const Album = () => {
                                         </div>
                                     </div>
                                 </div>
-                                {localEmpty ? '' :
+                                {localEmpty && !localAlbum.length ? '' :
                                     <div className="card mask-custom-details mt-0 mt-sm-0 mt-md-4 mb-2 mb-sm-3 mb-md-2 mb-lg-0 w-100">
                                         <div className="card-body">
                                             <p className="progress-header mb-3">
@@ -522,22 +532,23 @@ const Album = () => {
                                                     <p className="mb-0 item-heading">Users:</p>
                                                 </div>
                                                 <div className="col-sm-7">
-                                                    <p className="item-descriptor mb-0">{localAlbum.likes.slice(
-                                                        0, 4).map(
-                                                        (user, i, { length }) =>
-                                                            length - 1 === i ?
-                                                                <Link to={`/profile/${user.username}`}>
+                                                    <p className="item-descriptor mb-0">{!localAlbum.likes
+                                                        ? '' : localAlbum.likes.slice(
+                                                            0, 4).map(
+                                                            (user, i, { length }) =>
+                                                                length - 1 === i ?
+                                                                    <Link to={`/profile/${user.username}`}>
                                                                     <span className="item-descriptor artist-name"
                                                                           key={i}>{user.username}</span>
-                                                                </Link> :
-                                                                <>
-                                                                    <Link to={`/profile/${user.username}`}>
+                                                                    </Link> :
+                                                                    <>
+                                                                        <Link to={`/profile/${user.username}`}>
                                                                         <span className="item-descriptor artist-name"
                                                                               key={i}>{user.username}</span>
-                                                                    </Link>
-                                                                    {', '}
+                                                                        </Link>
+                                                                        {', '}
 
-                                                                </>)
+                                                                    </>)
                                                     }</p>
                                                 </div>
                                             </div>
@@ -548,7 +559,8 @@ const Album = () => {
                                                                                      Likes:</p>
                                                 </div>
                                                 <div className="col-sm-7">
-                                                    <p className="item-descriptor mb-0">{localAlbum.likes.length}</p>
+                                                    <p className="item-descriptor mb-0">{!localAlbum.likes
+                                                        ? '' : localAlbum.likes.length}</p>
                                                 </div>
                                             </div>
                                         </div>

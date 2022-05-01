@@ -16,6 +16,7 @@ import PopularSongListItem from "./partials/PopularSongList";
 import { UserContext } from "../Utils/UserContext";
 import * as service from "../services/user-service";
 import * as artistService from "../services/artist-service";
+import * as trackService from "../services/track-service";
 
 const override = css`
   display: block;
@@ -108,35 +109,40 @@ const Artist = () => {
         const localCall = await artistService.findArtistById(aid);
         console.log(localCall);
         if (localCall.error) {
+            setLocalArtist({});
+            console.log(localArtist);
             return;
         }
         setLocalArtist(localCall);
         console.log(localArtist);
     };
 
-    // const getLiked = () => {
-    //     if (!stateUser) {
-    //         //
-    //     } else {
-    //         if (stateUser.likedArtists.length === 0) {
-    //             return;
-    //         }
-    //         stateUser.likedArtists.map(artist => {
-    //             console.log(artist.artistId);
-    //             console.log(aid);
-    //             if (artist.artistId === aid) {
-    //                 setLiked(true);
-    //                 setLocalEmpty(false);
-    //             } else {
-    //                 setLiked(false);
-    //                 setLocalEmpty(true);
-    //             }
-    //         });
-    //     }
-    // };
+    const getLiked = async () => {
+        if (!stateUser) {
+            //
+        } else {
+            if (stateUser.likedArtists.length === 0) {
+                return;
+            }
+
+            if (stateUser.likedArtists.filter(artist => artist.artistId === aid).length > 0) {
+                setLiked(true);
+                setLocalEmpty(false);
+            } else {
+                const localCall = await artistService.findArtistById(aid);
+                if (localCall.error) {
+                    setLiked(false);
+                    setLocalEmpty(true);
+                    return;
+                }
+                setLiked(false);
+                setLocalEmpty(false);
+            }
+        }
+    };
 
     const likeArtistHandler = async () => {
-        setLoading(true);
+        // setLoading(true);
         // console.log(aid);
         const originalArtists = stateUser.likedArtists;
         // console.log(originalArtists);
@@ -157,7 +163,7 @@ const Artist = () => {
             setLocalArtist(createdArtist);
             setLocalEmpty(false);
             setLiked(true);
-            setLoading(false);
+            // setLoading(false);
         } else {
             console.log('how are we here');
             const updatedArtist = await artistService.updateArtist(
@@ -170,12 +176,12 @@ const Artist = () => {
             setLocalArtist(updatedArtist);
             setLocalEmpty(false);
             setLiked(true);
-            setLoading(false);
+            // setLoading(false);
         }
     };
 
     const unlikeArtistHandler = async () => {
-        setLoading(true);
+        // setLoading(true);
         const newArtists = stateUser.likedArtists.filter((artist) => artist.artistId !== aid);
         console.log(newArtists);
         if (newArtists.length === 0) {
@@ -202,7 +208,7 @@ const Artist = () => {
                 err => toast.error(err));
             setLocalEmpty(true);
             setLiked(false);
-            setLoading(false);
+            // setLoading(false);
         } else {
             const updatedArtist = await artistService.updateArtist(
                 { ...foundArtist, likes: [ ...newUsers ] }).catch(
@@ -210,7 +216,7 @@ const Artist = () => {
             setLocalArtist(updatedArtist);
             setLocalEmpty(false);
             setLiked(true);
-            setLoading(false);
+            // setLoading(false);
         }
     };
 
@@ -235,15 +241,17 @@ const Artist = () => {
         }
     }, [ location.key ]);
 
-    // useEffect(() => {
-    //     try {
-    //         getLiked();
-    //         console.log(localArtist);
-    //     } catch (error) {
-    //         toast.error('Could Not Find Artist');
-    //         navigate('/search');
-    //     }
-    // }, [ location.key ]);
+    useEffect(() => {
+        try {
+            console.log(stateUser);
+            console.log(liked);
+            getLiked();
+            console.log(localArtist);
+        } catch (error) {
+            toast.error('Could Not Find Artist');
+            navigate('/search');
+        }
+    }, [ location.key ]);
 
     // useEffect(() => {
     //     try {
@@ -262,7 +270,7 @@ const Artist = () => {
             toast.error('Could Not Find Artist');
             navigate('/search');
         }
-    }, [ liked ]);
+    }, []);
 
     return (
         <>
@@ -348,13 +356,19 @@ const Artist = () => {
                                                 {stateLoggedIn ? !liked ?
                                                         <button className="btn-hover-like color-10"
                                                                 onClick={() => {
-                                                                    likeArtistHandler();
+                                                                    setLoading(true);
+                                                                    likeArtistHandler().then(
+                                                                        getLocal).then(
+                                                                        r => setLoading(false));
                                                                 }}>
                                                             Like
                                                         </button>
                                                         : <button className="btn-hover-like color-3"
                                                                   onClick={() => {
-                                                                      unlikeArtistHandler();
+                                                                      setLoading(true);
+                                                                      unlikeArtistHandler().then(
+                                                                          getLocal).then(
+                                                                          r => setLoading(false));
                                                                   }}>
                                                             Unlike
                                                         </button>
@@ -363,7 +377,7 @@ const Artist = () => {
                                             </div>
                                         </div>
                                     </div>
-                                    {localEmpty ? '' :
+                                    {localEmpty && !localArtist.length ? '' :
                                         <div className="card mask-custom-details mt-0 mt-sm-0 mt-md-4 mb-4 w-100 d-none d-md-block">
                                             <div className="card-body">
                                                 <p className="progress-header mb-3">
@@ -374,22 +388,23 @@ const Artist = () => {
                                                         <p className="mb-0 item-heading">Users:</p>
                                                     </div>
                                                     <div className="col-sm-7">
-                                                        <p className="item-descriptor mb-0">{localArtist.likes.slice(
-                                                            0, 4).map(
-                                                            (user, i, { length }) =>
-                                                                length - 1 === i ?
-                                                                    <Link to={`/profile/${user.username}`}>
+                                                        <p className="item-descriptor mb-0">{!localArtist.likes
+                                                            ? '' : localArtist.likes.slice(
+                                                                0, 4).map(
+                                                                (user, i, { length }) =>
+                                                                    length - 1 === i ?
+                                                                        <Link to={`/profile/${user.username}`}>
                                                                     <span className="item-descriptor artist-name"
                                                                           key={i}>{user.username}</span>
-                                                                    </Link> :
-                                                                    <>
-                                                                        <Link to={`/profile/${user.username}`}>
+                                                                        </Link> :
+                                                                        <>
+                                                                            <Link to={`/profile/${user.username}`}>
                                                                         <span className="item-descriptor artist-name"
                                                                               key={i}>{user.username}</span>
-                                                                        </Link>
-                                                                        {', '}
+                                                                            </Link>
+                                                                            {', '}
 
-                                                                    </>)
+                                                                        </>)
                                                         }</p>
                                                     </div>
                                                 </div>
@@ -400,7 +415,8 @@ const Artist = () => {
                                                                                          Likes:</p>
                                                     </div>
                                                     <div className="col-sm-7">
-                                                        <p className="item-descriptor mb-0">{localArtist.likes.length}</p>
+                                                        <p className="item-descriptor mb-0">{!localArtist.likes
+                                                            ? '' : localArtist.likes.length}</p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -439,7 +455,7 @@ const Artist = () => {
                                             )}
                                         </div>
                                     </div>
-                                    {localEmpty ? '' :
+                                    {localEmpty && !localArtist.length ? '' :
                                         <div className="card mask-custom-details mt-0 mt-sm-0 mt-md-4 mb-4 w-100 d-block d-sm-block d-md-none">
                                             <div className="card-body">
                                                 <p className="progress-header mb-3">
@@ -450,22 +466,23 @@ const Artist = () => {
                                                         <p className="mb-0 item-heading">Users:</p>
                                                     </div>
                                                     <div className="col-sm-7">
-                                                        <p className="item-descriptor mb-0">{localArtist.likes.slice(
-                                                            0, 4).map(
-                                                            (user, i, { length }) =>
-                                                                length - 1 === i ?
-                                                                    <Link to={`/profile/${user.username}`}>
+                                                        <p className="item-descriptor mb-0">{!localArtist.likes
+                                                            ? '' : localArtist.likes.slice(
+                                                                0, 4).map(
+                                                                (user, i, { length }) =>
+                                                                    length - 1 === i ?
+                                                                        <Link to={`/profile/${user.username}`}>
                                                                     <span className="item-descriptor artist-name"
                                                                           key={i}>{user.username}</span>
-                                                                    </Link> :
-                                                                    <>
-                                                                        <Link to={`/profile/${user.username}`}>
+                                                                        </Link> :
+                                                                        <>
+                                                                            <Link to={`/profile/${user.username}`}>
                                                                         <span className="item-descriptor artist-name"
                                                                               key={i}>{user.username}</span>
-                                                                        </Link>
-                                                                        {', '}
+                                                                            </Link>
+                                                                            {', '}
 
-                                                                    </>)
+                                                                        </>)
                                                         }</p>
                                                     </div>
                                                 </div>
@@ -476,7 +493,8 @@ const Artist = () => {
                                                                                          Likes:</p>
                                                     </div>
                                                     <div className="col-sm-7">
-                                                        <p className="item-descriptor mb-0">{localArtist.likes.length}</p>
+                                                        <p className="item-descriptor mb-0">{!localArtist.likes
+                                                            ? '' : localArtist.likes.length}</p>
                                                     </div>
                                                 </div>
                                             </div>
