@@ -15,9 +15,10 @@ const Register = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
-    const register = () =>
-        security.register(registerUser)
-            .then((response) => {
+    const register = async () =>
+        await security.register(registerUser)
+            .catch()
+            .then(async (response) => {
                 console.log(response);
                 if (response.error === 'User validation failed: email: invalid email') {
                     toast.error('Please enter a valid email');
@@ -36,9 +37,8 @@ const Register = () => {
                         draggable: true,
                         progress: undefined,
                     });
-                    isLoggedInHandler();
-                    userHandler();
-                    navigate('/search', {});
+                    await isLoggedInHandler();
+                    await userHandler();
                     window.scrollTo(0, 0);
                 }
             })
@@ -47,8 +47,8 @@ const Register = () => {
     const userHandler = () => {
         service.profile(dispatch).then(r => {
             setStateUser(r);
-            // console.log(r);
-        });
+            console.log(r);
+        }).then(r => navigate('/search', {}));
     };
 
     const isLoggedInHandler = () => {
@@ -146,17 +146,14 @@ const Register = () => {
                                         <div className="col-lg-6 d-flex align-items-center gradient-custom-3">
                                             <div className="text-white px-3 py-4 p-md-5 mx-md-4">
                                                 <h4 className="mb-4">
-                                                    Something about a Spotify Thingy</h4>
+                                                    Welcome to Spotify Search</h4>
                                                 <p className="small mb-0">
-                                                    Lorem ipsum dolor sit amet, consectetur
-                                                    adipisicing
-                                                    elit, sed do eiusmod tempor incididunt ut labore
-                                                    et
-                                                    dolore magna aliqua. Ut enim ad minim veniam,
-                                                    quis
-                                                    nostrud exercitation ullamco laboris nisi ut
-                                                    aliquip
-                                                    ex ea commodo consequat.</p>
+                                                    Using the Spotify Search tool you can discover
+                                                    Spotify's Hidden Details about Artists, Albums,
+                                                    and Tracks. With an account you can save your
+                                                    favorite artists, albums, and tracks. Also with
+                                                    your saved songs you can use our recommendation
+                                                    tool to find new songs you'll love!</p>
                                             </div>
                                         </div>
                                     </div>

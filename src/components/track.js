@@ -35,6 +35,7 @@ const Track = () => {
     const [ localEmpty, setLocalEmpty ] = useState(true);
     const [ artist, setArtist ] = useState({});
     const [ genres, setGenres ] = useState([]);
+    const [ baseGenres, setBaseGenres ] = useState([]);
     const [ features, setFeatures ] = useState({});
     const [ analyses, setAnalyses ] = useState({});
     const [ recommended, setRecommended ] = useState({});
@@ -85,7 +86,8 @@ const Track = () => {
         setArtist(artistCall.data);
         const genreCall = await formatGenres(artistCall.data);
         setGenres(genreCall);
-        // console.log(genreCall);
+        setBaseGenres(artistCall.data.genres);
+        console.log(...artistCall.data.genres);
 
         const featureCall = await axios.get(
             `https://api.spotify.com/v1/audio-features/${tid}`,
@@ -200,9 +202,14 @@ const Track = () => {
     const likeSongHandler = async () => {
         // console.log(tid);
         const originalSongs = stateUser.likedSongs;
-        // console.log(originalSongs);
+        const originalGenres = stateUser.likedGenres;
+        console.log(genres);
         service.updateUser(
-            { ...stateUser, likedSongs: [ { songId: tid }, ...originalSongs ] })
+            {
+                ...stateUser,
+                likedSongs: [ { songId: tid }, ...originalSongs ],
+                likedGenres: [ ...baseGenres, ...originalGenres ]
+            })
             .catch(error => toast.error('something went wrong'));
         toast.success('Song added to liked songs!');
         const foundTrack = await trackService.findTrackById(tid);
@@ -236,15 +243,16 @@ const Track = () => {
     };
     const unlikeSongHandler = async () => {
         const newSongs = stateUser.likedSongs.filter((song) => song.songId !== tid);
+        const newGenres = stateUser.likedGenres.filter((genre) => !genres.includes(genre));
         // console.log(newSongs);
         if (newSongs.length === 0) {
             service.updateUser(
-                { ...stateUser, likedSongs: [] })
+                { ...stateUser, likedSongs: [], likedGenres: [] })
                 .catch(error => toast.error('something went wrong'));
             toast.success('Song removed from liked songs!');
         } else {
             service.updateUser(
-                { ...stateUser, likedSongs: [ ...newSongs ] })
+                { ...stateUser, likedSongs: [ ...newSongs ], likedGenres: [ ...newGenres ] })
                 .catch(error => toast.error('something went wrong'));
             toast.success('Song removed from liked songs!');
 

@@ -33,9 +33,8 @@ const Login = () => {
                         draggable: true,
                         progress: undefined,
                     });
-                    isLoggedInHandler();
-                    userHandler();
-                    navigate('/search', {});
+                    await isLoggedInHandler();
+                    await userHandler();
                     window.scrollTo(0, 0);
                 }
             });
@@ -45,7 +44,7 @@ const Login = () => {
         service.profile(dispatch).then(r => {
             setStateUser(r);
             console.log(r);
-        });
+        }).then(r => navigate('/search', {}));
     };
 
     const isLoggedInHandler = () => {
@@ -57,7 +56,7 @@ const Login = () => {
     return (
         <>
             <section className="gradient-form">
-                <div className="container">
+                <div className="container login-container">
                     <div className="row d-flex justify-content-center align-items-center">
                         <div className="col-xl-10">
                             <div className="card rounded-3 text-black">
@@ -130,13 +129,13 @@ const Login = () => {
                                     <div className="col-lg-6 d-flex align-items-center gradient-custom-3">
                                         <div className="text-white px-3 py-4 p-md-5 mx-md-4">
                                             <h4 className="mb-4">
-                                                Something about a Spotify Thingy</h4>
+                                                Welcome Back to Spotify Search</h4>
                                             <p className="small mb-0">
-                                                Lorem ipsum dolor sit amet, consectetur adipisicing
-                                                elit, sed do eiusmod tempor incididunt ut labore et
-                                                dolore magna aliqua. Ut enim ad minim veniam, quis
-                                                nostrud exercitation ullamco laboris nisi ut aliquip
-                                                ex ea commodo consequat.</p>
+                                                Using the Spotify Search tool you can discover
+                                                Spotify's Hidden Details about Artists, Albums, and
+                                                Tracks. Remember to save your favorite artists,
+                                                albums, and tracks. Also use our recommendation tool
+                                                to find new songs you'll love!</p>
                                         </div>
                                     </div>
                                 </div>

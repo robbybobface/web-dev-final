@@ -145,9 +145,14 @@ const Artist = () => {
         // setLoading(true);
         // console.log(aid);
         const originalArtists = stateUser.likedArtists;
-        // console.log(originalArtists);
+        const originalGenres = stateUser.likedGenres;
+        console.log(originalGenres);
         service.updateUser(
-            { ...stateUser, likedArtists: [ { artistId: aid }, ...originalArtists ] })
+            {
+                ...stateUser,
+                likedArtists: [ { artistId: aid }, ...originalArtists ],
+                likedGenres: [ ...artist.genres, ...originalGenres ]
+            })
             .catch(error => toast.error('something went wrong'));
         toast.success('Artist added to liked artists!');
         const foundArtist = await artistService.findArtistById(aid);
@@ -182,18 +187,21 @@ const Artist = () => {
 
     const unlikeArtistHandler = async () => {
         // setLoading(true);
+
         const newArtists = stateUser.likedArtists.filter((artist) => artist.artistId !== aid);
+        const newGenres = stateUser.likedGenres.filter((genre) => !genres.includes(genre));
         console.log(newArtists);
+        console.log(newGenres);
         if (newArtists.length === 0) {
             service.updateUser(
-                { ...stateUser, likedArtists: [] })
+                { ...stateUser, likedArtists: [], likedGenres: [] })
                 .catch(error => toast.error('something went wrong'));
             setLiked(false);
             toast.success('Artist removed from liked artists!');
 
         } else {
             service.updateUser(
-                { ...stateUser, likedSongs: [ ...newArtists ] })
+                { ...stateUser, likedSongs: [ ...newArtists ], likedGenres: [ ...newGenres ] })
                 .catch(error => toast.error('something went wrong'));
             setLiked(false);
             toast.success('Artist removed from liked artists!');
