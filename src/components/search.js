@@ -192,7 +192,7 @@ const Search = () => {
         getFeatured().catch(error => toast.error(error));
         console.log(stateLoggedIn);
         console.log(stateUser);
-        if (stateLoggedIn) {
+        if (stateLoggedIn && stateUser) {
             if (stateUser.likedSongs.length > 0 && stateUser.likedArtists.length > 0
                 && stateUser.likedGenres.length > 0) {
                 getRecommended().catch(error => toast.error(error)).then(r => setLoading(false));
@@ -274,7 +274,7 @@ const Search = () => {
                                               onClick={albumHandler}/>
                                 </div>
                             </div>
-                            {!stateLoggedIn && stateUser ? '' : stateUser.likedArtists.length > 1
+                            {!stateLoggedIn ? '' : stateUser.likedArtists.length > 1
                             && stateUser.likedSongs.length > 1 && stateUser.likedGenres.length > 0
                                 ? !getRecommendations ?
                                     <div className="row d-flex mt-4 mb-0 align-items-center justify-content-center">
