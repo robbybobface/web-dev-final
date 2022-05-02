@@ -33,9 +33,14 @@ const Album = () => {
     const [ localEmpty, setLocalEmpty ] = useState(true);
     const [ moreBy, setMoreBy ] = useState({});
     const [ loading, setLoading ] = useState(true);
-    const [ liked, setLiked ] = useState(stateUser.likedAlbums.filter(album => {
-        return album.albumId === aid;
-    }).length > 0);
+    const [ liked, setLiked ] = useState(() => {
+        if (stateLoggedIn) {
+            return stateUser.likedAlbums.filter(album => {
+                return album.albumId === aid;
+            }).length > 0;
+        }
+        return false;
+    });
 
     const location = useLocation();
     const dispatch = useDispatch();

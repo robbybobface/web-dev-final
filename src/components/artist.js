@@ -40,9 +40,14 @@ const Artist = () => {
     const [ albumSearch, setAlbumSearch ] = useState(true);
     const [ singleSearch, setSingleSearch ] = useState(false);
 
-    const [ liked, setLiked ] = useState(stateUser.likedArtists.filter(artist => {
-        return artist.artistId === aid;
-    }).length > 0);
+    const [ liked, setLiked ] = useState(() => {
+        if (stateLoggedIn) {
+            return stateUser.likedArtists.filter(artist => {
+                return artist.artistId === aid;
+            }).length > 0;
+        }
+        return false;
+    });
 
     const location = useLocation();
     const dispatch = useDispatch();

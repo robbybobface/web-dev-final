@@ -41,9 +41,14 @@ const Track = () => {
     const [ recommended, setRecommended ] = useState({});
     const [ loading, setLoading ] = useState(true);
 
-    const [ liked, setLiked ] = useState(stateUser.likedSongs.filter(song => {
-        return song.songId === tid;
-    }).length > 0);
+    const [ liked, setLiked ] = useState(() => {
+        if (stateLoggedIn) {
+            return stateUser.likedSongs.filter(song => {
+                return song.songId === tid;
+            }).length > 0;
+        }
+        return false;
+    });
 
     const location = useLocation();
     const dispatch = useDispatch();
